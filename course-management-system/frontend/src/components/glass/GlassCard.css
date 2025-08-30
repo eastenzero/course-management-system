@@ -1,0 +1,251 @@
+/* 毛玻璃卡片样式 - 基于新设计规范 */
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-normal) var(--easing-standard);
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* 主要卡片样式 */
+.glass-card--primary {
+  background: var(--glass-bg-primary);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: var(--glass-highlight-width) solid var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+}
+
+/* 次要卡片样式 */
+.glass-card--secondary {
+  background: var(--glass-bg-secondary);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border: var(--glass-highlight-width) solid var(--glass-border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 强调卡片样式 */
+.glass-card--accent {
+  background: var(--glass-bg-tertiary);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  border: var(--glass-highlight-width) solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 毛玻璃效果强度 */
+.glass-effect--strong {
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+}
+
+.glass-effect--medium {
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+}
+
+.glass-effect--light {
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+}
+
+/* 悬浮效果 */
+.glass-hover:hover {
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.glass-card--primary.glass-hover:hover {
+  background: var(--glass-bg-tertiary);
+  border-color: var(--color-primary);
+}
+
+.glass-card--secondary.glass-hover:hover {
+  background: var(--glass-bg-primary);
+  border-color: var(--glass-border);
+}
+
+.glass-card--accent.glass-hover:hover {
+  background: var(--glass-bg-tertiary);
+  border-color: var(--color-accent);
+  box-shadow: 0 8px 32px var(--color-primary)20;
+}
+
+/* 加载状态 */
+.glass-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -200px;
+  width: 200px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: glassShimmer 2s infinite;
+}
+
+@keyframes glassShimmer {
+  0% {
+    left: -200px;
+  }
+  100% {
+    left: calc(100% + 200px);
+  }
+}
+
+/* 卡片内容样式 */
+.glass-card .ant-card-body {
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+.glass-card .ant-card-head {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 16px 24px;
+}
+
+.glass-card .ant-card-head-title {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.glass-card .ant-card-actions {
+  background: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.glass-card .ant-card-actions > li {
+  margin: 12px 0;
+}
+
+.glass-card .ant-card-actions > li > span {
+  color: #4b5563;
+  transition: color 0.3s ease;
+}
+
+.glass-card .ant-card-actions > li > span:hover {
+  color: #1890ff;
+}
+
+/* 响应式设计 */
+@media (max-width: 1199px) {
+  .glass-card {
+    margin: 12px 0;
+  }
+  
+  .glass-card .ant-card-body {
+    padding: 20px;
+  }
+  
+  .glass-card .ant-card-head {
+    padding: 14px 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .glass-card {
+    margin: 8px 0;
+  }
+  
+  .glass-card--primary,
+  .glass-card--secondary,
+  .glass-card--accent {
+    border-radius: 12px;
+  }
+  
+  .glass-card .ant-card-body {
+    padding: 16px;
+  }
+  
+  .glass-card .ant-card-head {
+    padding: 12px 16px;
+  }
+  
+  .glass-card .ant-card-head-title {
+    font-size: 14px;
+  }
+  
+  /* 移动端优化毛玻璃效果 */
+  .glass-card--primary {
+    backdrop-filter: blur(10px) saturate(120%);
+  }
+  
+  .glass-card--secondary {
+    backdrop-filter: blur(8px) saturate(110%);
+  }
+  
+  .glass-card--accent {
+    backdrop-filter: blur(9px) saturate(115%);
+  }
+}
+
+/* 深色模式支持 */
+[data-theme='dark'] .glass-card--primary {
+  background: rgba(31, 41, 55, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .glass-card--secondary {
+  background: rgba(31, 41, 55, 0.6);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .glass-card--accent {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme='dark'] .glass-card .ant-card-head-title {
+  color: #f9fafb;
+}
+
+[data-theme='dark'] .glass-card .ant-card-head,
+[data-theme='dark'] .glass-card .ant-card-actions {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 浏览器兼容性 */
+@supports not (backdrop-filter: blur(10px)) {
+  .glass-card--primary {
+    background: rgba(255, 255, 255, 0.9);
+  }
+  
+  .glass-card--secondary {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  .glass-card--accent {
+    background: rgba(230, 244, 255, 0.9);
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .glass-card {
+    background: white !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+}

@@ -1,0 +1,369 @@
+/* 毛玻璃效果示例页面样式 */
+.glass-demo-page {
+  min-height: 100vh;
+  background: 
+    radial-gradient(1200px 600px at 10% 10%, rgba(24, 144, 255, 0.25), transparent 60%),
+    radial-gradient(1000px 500px at 90% 20%, rgba(64, 169, 255, 0.25), transparent 60%),
+    linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.glass-demo-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(800px 400px at 20% 80%, rgba(24, 144, 255, 0.12), transparent 60%),
+    radial-gradient(900px 450px at 80% 30%, rgba(105, 192, 255, 0.12), transparent 60%);
+  filter: blur(20px) saturate(120%);
+  z-index: -1;
+}
+
+.glass-demo-content {
+  position: relative;
+  z-index: 1;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 页面标题区域 */
+.glass-demo-header {
+  margin-bottom: 32px;
+}
+
+.welcome-banner {
+  padding: 0 !important;
+}
+
+.welcome-content {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+}
+
+.user-avatar {
+  background: linear-gradient(135deg, #1890ff, #40a9ff);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 24px rgba(24, 144, 255, 0.3);
+}
+
+.welcome-text {
+  flex: 1;
+}
+
+.welcome-text h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  background: linear-gradient(135deg, #1890ff, #40a9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.welcome-text p {
+  margin: 0;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.welcome-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1890ff;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* 统计卡片行 */
+.stats-row {
+  margin-bottom: 32px;
+}
+
+.stats-row .ant-statistic-title {
+  color: #4b5563;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.stats-row .ant-statistic-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 主要内容区域 */
+.main-content {
+  margin-bottom: 32px;
+}
+
+/* 课程进度样式 */
+.course-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.course-name {
+  font-weight: 500;
+  color: #374151;
+}
+
+.progress-value {
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.progress-item .ant-progress-bg {
+  border-radius: 4px;
+}
+
+/* 活动列表样式 */
+.activity-item {
+  border: none !important;
+  padding: 16px 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.activity-item:last-child {
+  border-bottom: none !important;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.activity-time {
+  font-size: 12px;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 公告卡片 */
+.announcement-card {
+  background: linear-gradient(135deg, rgba(145, 213, 255, 0.15), rgba(24, 144, 255, 0.08)) !important;
+}
+
+.announcement-content h3 {
+  margin: 0 0 16px 0;
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.announcement-content p {
+  margin: 0 0 20px 0;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.announcement-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1199px) {
+  .glass-demo-content {
+    padding: 20px;
+  }
+  
+  .welcome-content {
+    padding: 24px;
+    gap: 20px;
+  }
+  
+  .welcome-text h1 {
+    font-size: 24px;
+  }
+  
+  .welcome-stats {
+    gap: 24px;
+  }
+  
+  .stat-number {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .glass-demo-content {
+    padding: 16px;
+  }
+  
+  .welcome-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    gap: 16px;
+  }
+  
+  .welcome-text h1 {
+    font-size: 20px;
+  }
+  
+  .welcome-text p {
+    font-size: 14px;
+  }
+  
+  .welcome-stats {
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .stat-number {
+    font-size: 24px;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+  }
+  
+  .stats-row {
+    margin-bottom: 24px;
+  }
+  
+  .main-content {
+    margin-bottom: 24px;
+  }
+  
+  .announcement-actions {
+    flex-direction: column;
+  }
+  
+  .announcement-actions .ant-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-demo-content {
+    padding: 12px;
+  }
+  
+  .welcome-content {
+    padding: 16px;
+  }
+  
+  .welcome-text h1 {
+    font-size: 18px;
+  }
+  
+  .stats-row .ant-col {
+    margin-bottom: 16px;
+  }
+  
+  .course-progress {
+    gap: 16px;
+  }
+  
+  .activity-item {
+    padding: 12px 0 !important;
+  }
+}
+
+/* 动画效果 */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glass-demo-content > * {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.glass-demo-content > *:nth-child(1) { animation-delay: 0.1s; }
+.glass-demo-content > *:nth-child(2) { animation-delay: 0.2s; }
+.glass-demo-content > *:nth-child(3) { animation-delay: 0.3s; }
+.glass-demo-content > *:nth-child(4) { animation-delay: 0.4s; }
+
+/* 深色模式支持 */
+[data-theme='dark'] .glass-demo-page {
+  background: 
+    radial-gradient(1200px 600px at 10% 10%, rgba(24, 144, 255, 0.15), transparent 60%),
+    radial-gradient(1000px 500px at 90% 20%, rgba(64, 169, 255, 0.15), transparent 60%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+}
+
+[data-theme='dark'] .welcome-text h1,
+[data-theme='dark'] .course-name,
+[data-theme='dark'] .activity-title,
+[data-theme='dark'] .announcement-content h3 {
+  color: #f9fafb;
+}
+
+[data-theme='dark'] .welcome-text p,
+[data-theme='dark'] .announcement-content p {
+  color: #d1d5db;
+}
+
+[data-theme='dark'] .stat-label,
+[data-theme='dark'] .activity-time {
+  color: #9ca3af;
+}
+
+[data-theme='dark'] .activity-item {
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 打印样式 */
+@media print {
+  .glass-demo-page {
+    background: white !important;
+  }
+  
+  .glass-demo-page::before {
+    display: none;
+  }
+  
+  .glass-demo-content > * {
+    animation: none;
+  }
+}

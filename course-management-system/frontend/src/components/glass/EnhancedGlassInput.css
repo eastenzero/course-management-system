@@ -1,0 +1,85 @@
+/* Enhanced Glass Input Styles */
+.enhanced-glass-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.enhanced-glass-input {
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha));
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+/* 玻璃效果等级 */
+.enhanced-glass-input.glass-sm {
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  backdrop-filter: blur(var(--blur-sm));
+}
+
+.enhanced-glass-input.glass-md {
+  background: rgba(255, 255, 255, var(--glass-alpha-primary));
+  backdrop-filter: blur(var(--blur-md));
+}
+
+.enhanced-glass-input.glass-lg {
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+  backdrop-filter: blur(var(--blur-lg));
+}
+
+/* 聚焦发光效果 */
+.enhanced-glass-input.glass-focus-glow:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary), 0.2), var(--shadow-sm);
+}
+
+/* 深色模式 */
+:root[data-theme-mode="dark"] .enhanced-glass-input.glass-sm {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-input.glass-md {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-input.glass-lg {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+}
+
+/* 浮动标签 */
+.glass-floating-label-text {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--neutral-text-tertiary);
+  pointer-events: none;
+  transition: all var(--duration-normal) var(--easing-standard);
+  background: var(--neutral-bg-primary);
+  padding: 0 4px;
+}
+
+.enhanced-glass-input:focus + .glass-floating-label-text,
+.enhanced-glass-input:not(:placeholder-shown) + .glass-floating-label-text {
+  top: 0;
+  font-size: 12px;
+  color: var(--color-primary);
+}
+
+/* 禁用玻璃效果 */
+.enhanced-glass-input.glass-disabled {
+  backdrop-filter: none !important;
+  background: var(--neutral-bg-primary) !important;
+  border: 1px solid var(--neutral-border) !important;
+}
+
+/* 兼容性降级 */
+@supports not (backdrop-filter: blur(1px)) {
+  .enhanced-glass-input:not(.glass-disabled) {
+    background: rgba(255, 255, 255, 0.9) !important;
+  }
+  
+  :root[data-theme-mode="dark"] .enhanced-glass-input:not(.glass-disabled) {
+    background: rgba(0, 0, 0, 0.8) !important;
+  }
+}

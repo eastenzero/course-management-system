@@ -1,0 +1,266 @@
+/* 主题选择器样式 */
+.theme-selector-trigger {
+  color: var(--neutral-text-secondary);
+  transition: var(--duration-normal) var(--easing-standard);
+}
+
+.theme-selector-trigger:hover {
+  color: var(--color-primary);
+  background: var(--glass-bg-secondary);
+  backdrop-filter: var(--glass-blur-sm);
+}
+
+.theme-selector-drawer .ant-drawer-content {
+  background: var(--glass-bg-primary);
+  backdrop-filter: var(--glass-blur-md);
+}
+
+.theme-selector-content {
+  padding: 0;
+}
+
+/* 模式选择器 */
+.mode-selector {
+  background: var(--glass-bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  backdrop-filter: var(--glass-blur-sm);
+}
+
+.mode-selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mode-selector .ant-card-body {
+  padding: 16px;
+}
+
+/* 主题分类 */
+.theme-category {
+  margin-bottom: 24px;
+}
+
+.category-header {
+  margin-bottom: 16px;
+}
+
+.category-header .ant-typography {
+  margin-bottom: 4px;
+}
+
+/* 主题预览卡片 */
+.theme-preview {
+  background: var(--glass-bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  backdrop-filter: var(--glass-blur-sm);
+  transition: all var(--duration-normal) var(--easing-standard);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-preview:hover {
+  background: var(--glass-bg-tertiary);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-preview.selected {
+  background: var(--glass-bg-tertiary);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary)20;
+}
+
+.theme-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.selected-icon {
+  color: var(--color-primary);
+  font-size: 16px;
+}
+
+/* 颜色样本 */
+.theme-preview-colors {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform var(--duration-fast) var(--easing-standard);
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+/* 主题演示 */
+.theme-preview-demo {
+  height: 40px;
+}
+
+.demo-card {
+  height: 100%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.demo-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+.demo-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.demo-button {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  opacity: 0.8;
+}
+
+.demo-text-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.demo-line {
+  height: 3px;
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+.demo-line.short {
+  width: 60%;
+}
+
+/* 当前主题信息 */
+.current-theme-info {
+  background: var(--glass-bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  backdrop-filter: var(--glass-blur-sm);
+}
+
+.current-theme-info .ant-card-body {
+  padding: 16px;
+}
+
+/* 使用指南 */
+.theme-guide {
+  background: var(--glass-bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  backdrop-filter: var(--glass-blur-sm);
+}
+
+.theme-guide .ant-card-body {
+  padding: 16px;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .theme-selector-drawer {
+    width: 100% !important;
+  }
+  
+  .theme-preview-colors {
+    gap: 4px;
+  }
+  
+  .color-swatch {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* 深色模式适配 */
+[data-mode="dark"] .theme-preview {
+  background: var(--glass-bg-primary);
+}
+
+[data-mode="dark"] .theme-preview:hover,
+[data-mode="dark"] .theme-preview.selected {
+  background: var(--glass-bg-secondary);
+}
+
+[data-mode="dark"] .demo-card::before {
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+}
+
+/* 动画效果 */
+.theme-preview {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 玻璃拟态增强效果 */
+.theme-selector-drawer .ant-drawer-header {
+  background: var(--glass-bg-primary);
+  backdrop-filter: var(--glass-blur-md);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.theme-selector-drawer .ant-drawer-body {
+  background: transparent;
+}
+
+/* 滚动条样式 */
+.theme-selector-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.theme-selector-content::-webkit-scrollbar-track {
+  background: var(--glass-bg-secondary);
+  border-radius: 3px;
+}
+
+.theme-selector-content::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 3px;
+  opacity: 0.6;
+}
+
+.theme-selector-content::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
+}

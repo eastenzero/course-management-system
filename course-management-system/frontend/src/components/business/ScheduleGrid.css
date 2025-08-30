@@ -1,0 +1,379 @@
+/* 课程表网格样式 */
+.schedule-grid-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.schedule-grid {
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+  background-color: #ffffff;
+}
+
+/* 时间表头 */
+.time-header {
+  display: flex;
+  background-color: #fafafa;
+  border-bottom: 2px solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.corner-cell {
+  width: 120px;
+  min-width: 120px;
+  height: 80px;
+  background-color: #f5f5f5;
+  border-right: 1px solid #f0f0f0;
+}
+
+.time-slot-header {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 8px;
+  text-align: center;
+  border-right: 1px solid #f0f0f0;
+  background-color: #fafafa;
+}
+
+.time-slot-header:last-child {
+  border-right: none;
+}
+
+.slot-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 4px;
+}
+
+.slot-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.slot-time .anticon {
+  font-size: 10px;
+}
+
+/* 课程表主体 */
+.schedule-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-row {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+  min-height: 100px;
+}
+
+.day-row:last-child {
+  border-bottom: none;
+}
+
+.day-header {
+  width: 120px;
+  min-width: 120px;
+  padding: 16px 12px;
+  background-color: #fafafa;
+  border-right: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.day-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 4px;
+}
+
+.day-date {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.day-cells {
+  flex: 1;
+  display: flex;
+}
+
+/* 课程单元格 */
+.schedule-cell {
+  flex: 1;
+  min-width: 140px;
+  min-height: 100px;
+  border-right: 1px solid #f0f0f0;
+  position: relative;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.schedule-cell:last-child {
+  border-right: none;
+}
+
+.schedule-cell.empty {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.schedule-cell.empty:hover {
+  background-color: #f5f5f5;
+}
+
+.schedule-cell.empty.editable:hover {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+}
+
+.add-indicator {
+  font-size: 24px;
+  color: #d9d9d9;
+  transition: color 0.3s;
+}
+
+.schedule-cell.empty.editable:hover .add-indicator {
+  color: #1890ff;
+}
+
+.schedule-cell.filled {
+  background-color: #ffffff;
+  border-left: 4px solid #1890ff;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.schedule-cell.filled:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.schedule-cell.filled.compact {
+  padding: 8px;
+  min-height: 60px;
+}
+
+/* 课程信息 */
+.course-info {
+  flex: 1;
+}
+
+.course-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.course-code {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-bottom: 8px;
+}
+
+/* 课程详情 */
+.schedule-details {
+  margin: 8px 0;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #595959;
+  margin-bottom: 4px;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-item .anticon {
+  font-size: 10px;
+  color: #8c8c8c;
+}
+
+.detail-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 状态标签 */
+.schedule-status {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.schedule-status .ant-tag {
+  margin: 0;
+  border-radius: 8px;
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .schedule-cell {
+    min-width: 120px;
+  }
+
+  .time-slot-header {
+    min-width: 120px;
+    padding: 8px 4px;
+  }
+
+  .slot-name {
+    font-size: 12px;
+  }
+
+  .slot-time {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .schedule-grid {
+    overflow-x: auto;
+  }
+
+  .time-header,
+  .day-row {
+    min-width: 800px;
+  }
+
+  .corner-cell,
+  .day-header {
+    width: 80px;
+    min-width: 80px;
+  }
+
+  .schedule-cell {
+    min-width: 100px;
+  }
+
+  .time-slot-header {
+    min-width: 100px;
+    padding: 6px 2px;
+  }
+
+  .day-name {
+    font-size: 14px;
+  }
+
+  .course-name {
+    font-size: 12px;
+  }
+
+  .course-code {
+    font-size: 10px;
+  }
+
+  .detail-item {
+    font-size: 10px;
+  }
+
+  .schedule-cell.filled {
+    padding: 8px 6px;
+  }
+}
+
+/* 暗色主题适配 */
+[data-theme='dark'] .schedule-grid {
+  background-color: #1f1f1f;
+}
+
+[data-theme='dark'] .time-header,
+[data-theme='dark'] .day-header {
+  background-color: #2a2a2a;
+  border-color: #404040;
+}
+
+[data-theme='dark'] .corner-cell {
+  background-color: #363636;
+}
+
+[data-theme='dark'] .schedule-cell {
+  border-color: #404040;
+  background-color: #1f1f1f;
+}
+
+[data-theme='dark'] .schedule-cell.empty:hover {
+  background-color: #2a2a2a;
+}
+
+[data-theme='dark'] .schedule-cell.filled:hover {
+  background-color: #2a2a2a;
+}
+
+[data-theme='dark'] .course-name {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .course-code {
+  color: #a6a6a6;
+}
+
+[data-theme='dark'] .detail-item {
+  color: #a6a6a6;
+}
+
+[data-theme='dark'] .slot-name,
+[data-theme='dark'] .day-name {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .slot-time,
+[data-theme='dark'] .day-date {
+  color: #a6a6a6;
+}
+
+/* 动画效果 */
+.schedule-cell {
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.schedule-cell.filled:hover {
+  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* 自定义滚动条 */
+.schedule-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.schedule-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.schedule-grid::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.schedule-grid::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

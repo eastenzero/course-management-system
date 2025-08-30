@@ -1,0 +1,570 @@
+/* 现代化教育平台样式 */
+
+/* CSS 变量定义 */
+:root {
+  /* 教师端主题变量 */
+  --teacher-primary-start: #667eea;
+  --teacher-primary-end: #764ba2;
+  --teacher-secondary-start: #f093fb;
+  --teacher-secondary-end: #f5576c;
+  --teacher-accent: #4facfe;
+  
+  /* 学生端主题变量 */
+  --student-primary-start: #4facfe;
+  --student-primary-end: #00f2fe;
+  --student-secondary-start: #43e97b;
+  --student-secondary-end: #38f9d7;
+  --student-accent: #ff6b6b;
+  
+  /* 通用色彩变量 */
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #ff4d4f;
+  --info-color: #1890ff;
+  
+  /* 动画时长 */
+  --animation-fast: 0.2s;
+  --animation-normal: 0.3s;
+  --animation-slow: 0.5s;
+  --animation-ease: cubic-bezier(0.645, 0.045, 0.355, 1);
+  
+  /* 阴影层级 */
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-modal: 0 12px 40px rgba(0, 0, 0, 0.15);
+  --shadow-teacher: 0 8px 25px rgba(102, 126, 234, 0.4);
+  --shadow-student: 0 8px 25px rgba(79, 172, 254, 0.4);
+  
+  /* 圆角 */
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 20px;
+}
+
+/* 现代化背景 */
+.modern-layout {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+.teacher-layout {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.student-layout {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* 现代化卡片样式 */
+.modern-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-card);
+  border: none;
+  transition: all var(--animation-normal) var(--animation-ease);
+  overflow: hidden;
+  position: relative;
+}
+
+.modern-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.modern-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--teacher-primary-start), var(--teacher-primary-end));
+  opacity: 0;
+  transition: opacity var(--animation-normal) var(--animation-ease);
+}
+
+.modern-card:hover::before {
+  opacity: 1;
+}
+
+/* 统计卡片样式 */
+.stat-card {
+  position: relative;
+  padding: 24px;
+  border-radius: var(--border-radius-lg);
+  color: white;
+  overflow: hidden;
+  transition: all var(--animation-normal) var(--animation-ease);
+  cursor: pointer;
+  border: none;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.stat-card-courses {
+  background: linear-gradient(135deg, var(--teacher-primary-start) 0%, var(--teacher-primary-end) 100%);
+}
+
+.stat-card-students {
+  background: linear-gradient(135deg, var(--teacher-secondary-start) 0%, var(--teacher-secondary-end) 100%);
+}
+
+.stat-card-grades {
+  background: linear-gradient(135deg, var(--student-primary-start) 0%, var(--student-primary-end) 100%);
+}
+
+.stat-card-tasks {
+  background: linear-gradient(135deg, var(--student-secondary-start) 0%, var(--student-secondary-end) 100%);
+}
+
+.stat-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  animation: countUp 0.8s ease-out;
+}
+
+.stat-label {
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* 浮动装饰元素 */
+.floating-shapes {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.shape {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 60px;
+  height: 60px;
+  top: -20px;
+  right: -20px;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 40px;
+  height: 40px;
+  bottom: -10px;
+  right: 20px;
+  animation-delay: 2s;
+}
+
+.shape-3 {
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  right: -10px;
+  animation-delay: 4s;
+}
+
+/* 欢迎头部组件 */
+.welcome-header {
+  position: relative;
+  padding: 32px;
+  border-radius: var(--border-radius-xl);
+  margin-bottom: 24px;
+  overflow: hidden;
+  color: white;
+}
+
+.teacher-theme {
+  background: linear-gradient(135deg, var(--teacher-primary-start) 0%, var(--teacher-primary-end) 100%);
+}
+
+.student-theme {
+  background: linear-gradient(135deg, var(--student-primary-start) 0%, var(--student-primary-end) 100%);
+}
+
+.welcome-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.floating-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.element {
+  position: absolute;
+  font-size: 24px;
+  opacity: 0.3;
+  animation: gentleFloat 8s ease-in-out infinite;
+}
+
+.element-1 {
+  top: 20%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.element-2 {
+  top: 60%;
+  right: 20%;
+  animation-delay: 2s;
+}
+
+.element-3 {
+  top: 40%;
+  right: 5%;
+  animation-delay: 4s;
+}
+
+.welcome-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatar-container {
+  position: relative;
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 16px;
+  height: 16px;
+  background: var(--success-color);
+  border: 3px solid white;
+  border-radius: 50%;
+}
+
+.greeting-text {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.motivational-text {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 12px;
+}
+
+.quick-stats {
+  font-size: 14px;
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+/* 现代化按钮样式 */
+.modern-button {
+  background: linear-gradient(135deg, var(--teacher-primary-start) 0%, var(--teacher-primary-end) 100%);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  color: white;
+  font-weight: 600;
+  transition: all var(--animation-normal) var(--animation-ease);
+  box-shadow: var(--shadow-light);
+}
+
+.modern-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-teacher);
+  color: white;
+}
+
+.modern-button.student-style {
+  background: linear-gradient(135deg, var(--student-primary-start) 0%, var(--student-primary-end) 100%);
+}
+
+.modern-button.student-style:hover {
+  box-shadow: var(--shadow-student);
+}
+
+/* 快速操作按钮 */
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  border: none;
+  border-radius: var(--border-radius-lg);
+  background: white;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: all var(--animation-normal) var(--animation-ease);
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.quick-action-btn.primary {
+  border-left: 4px solid var(--teacher-primary-start);
+}
+
+.quick-action-btn.secondary {
+  border-left: 4px solid var(--student-primary-start);
+}
+
+.quick-action-btn.accent {
+  border-left: 4px solid var(--student-secondary-start);
+}
+
+.btn-icon {
+  font-size: 24px;
+  margin-right: 16px;
+  color: var(--teacher-primary-start);
+}
+
+.btn-content {
+  flex: 1;
+}
+
+.btn-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 4px;
+}
+
+.btn-description {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.btn-arrow {
+  font-size: 16px;
+  color: #bfbfbf;
+  transition: all var(--animation-normal) var(--animation-ease);
+}
+
+.quick-action-btn:hover .btn-arrow {
+  color: var(--teacher-primary-start);
+  transform: translateX(4px);
+}
+
+/* 动画定义 */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-3deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 576px) {
+  .welcome-header {
+    padding: 24px 20px;
+  }
+
+  .welcome-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .quick-action-btn {
+    padding: 16px;
+  }
+
+  .greeting-text {
+    font-size: 24px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-card {
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 992px) {
+  .welcome-header {
+    padding: 28px;
+  }
+}
+
+/* 工具类 */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.6s ease-out;
+}
+
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+.hover-lift {
+  transition: transform var(--animation-normal) var(--animation-ease);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* 性能优化 */
+.optimized-animation {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* 无障碍设计 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .modern-card {
+    border: 2px solid #000;
+  }
+
+  .stat-card {
+    border: 2px solid #fff;
+  }
+}

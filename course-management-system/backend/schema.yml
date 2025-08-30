@@ -1,0 +1,6580 @@
+openapi: 3.0.3
+info:
+  title: Course Management System API
+  version: 1.0.0
+  description: API documentation for the Course Management System
+paths:
+  /api/v1/algorithms/analyze/:
+    post:
+      operationId: algorithms_analyze_create
+      description: 分析排课方案
+      tags:
+      - algorithms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/algorithms/export/:
+    post:
+      operationId: algorithms_export_create
+      description: 导出排课方案
+      tags:
+      - algorithms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/algorithms/generate/:
+    post:
+      operationId: algorithms_generate_create
+      description: 生成排课方案
+      tags:
+      - algorithms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/algorithms/optimize/:
+    post:
+      operationId: algorithms_optimize_create
+      description: 优化排课方案
+      tags:
+      - algorithms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/algorithms/statistics/:
+    get:
+      operationId: algorithms_statistics_retrieve
+      description: 获取算法统计信息
+      tags:
+      - algorithms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/classrooms/:
+    get:
+      operationId: analytics_classrooms_retrieve
+      description: 获取教室分析数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/courses/:
+    get:
+      operationId: analytics_courses_retrieve
+      description: 获取课程分析列表
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/courses/popular_courses/:
+    get:
+      operationId: analytics_courses_popular_courses_retrieve
+      description: 获取热门课程
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/dashboard/course_distribution/:
+    get:
+      operationId: analytics_dashboard_course_distribution_retrieve
+      description: 获取课程类型分布
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/dashboard/stats/:
+    get:
+      operationId: analytics_dashboard_stats_retrieve
+      description: 获取仪表板统计数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/enrollments/trends/:
+    get:
+      operationId: analytics_enrollments_trends_retrieve
+      description: 获取选课趋势数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/export/courses/:
+    post:
+      operationId: analytics_export_courses_create
+      description: 导出课程分析数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/export/dashboard/:
+    post:
+      operationId: analytics_export_dashboard_create
+      description: 导出仪表板数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/export/users/:
+    post:
+      operationId: analytics_export_users_create
+      description: 导出用户分析数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/overview/:
+    get:
+      operationId: analytics_overview_retrieve
+      description: 获取概览分析数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/realtime/activities/:
+    get:
+      operationId: analytics_realtime_activities_retrieve
+      description: 获取实时活动数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/realtime/stats/:
+    get:
+      operationId: analytics_realtime_stats_retrieve
+      description: 获取实时统计数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/reports/:
+    get:
+      operationId: analytics_reports_retrieve
+      description: 获取报表数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/trends/:
+    get:
+      operationId: analytics_trends_retrieve
+      description: 获取趋势分析数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/analytics/users/:
+    get:
+      operationId: analytics_users_retrieve
+      description: 获取用户分析数据
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/:
+    get:
+      operationId: auth_list
+      description: 用户列表和创建视图（管理员专用）
+      parameters:
+      - in: query
+        name: department
+        schema:
+          type: string
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: user_type
+        schema:
+          type: string
+          title: 用户类型
+          enum:
+          - academic_admin
+          - admin
+          - student
+          - teacher
+        description: |-
+          * `admin` - 超级管理员
+          * `academic_admin` - 教务管理员
+          * `teacher` - 教师
+          * `student` - 学生
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+    post:
+      operationId: auth_create
+      description: 用户列表和创建视图（管理员专用）
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/auth/{id}/:
+    get:
+      operationId: auth_retrieve
+      description: 用户详情视图（管理员专用）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: auth_update
+      description: 用户详情视图（管理员专用）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: auth_partial_update
+      description: 用户详情视图（管理员专用）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: auth_destroy
+      description: 用户详情视图（管理员专用）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/auth/login/:
+    post:
+      operationId: auth_auth_login_create
+      description: 使用用户名/邮箱和密码进行登录，返回JWT访问令牌
+      summary: 用户登录
+      tags:
+      - 用户管理
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+            examples:
+              LoginExample:
+                value:
+                  username: student001
+                  password: password123
+                summary: 登录示例
+                description: 使用用户名和密码登录
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 登录成功
+                  data:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        description: JWT访问令牌
+                      refresh:
+                        type: string
+                        description: JWT刷新令牌
+                      user:
+                        $ref: '#/components/schemas/UserProfile'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 用户名或密码错误
+          description: ''
+  /api/v1/auth/auth/logout/:
+    post:
+      operationId: auth_auth_logout_create
+      description: 用户登出，将刷新令牌加入黑名单
+      summary: 用户登出
+      tags:
+      - 用户管理
+      requestBody:
+        content:
+          type:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          properties:
+            schema:
+              refresh:
+                type: string
+                description: JWT刷新令牌
+          required:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 登出成功
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 登出失败
+          description: ''
+  /api/v1/auth/auth/refresh/:
+    post:
+      operationId: auth_auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/auth/change-password/:
+    post:
+      operationId: auth_change_password_create
+      description: 修改密码视图
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangePassword'
+          description: ''
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: 使用用户名/邮箱和密码进行登录，返回JWT访问令牌
+      summary: 用户登录
+      tags:
+      - 用户管理
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+            examples:
+              LoginExample:
+                value:
+                  username: student001
+                  password: password123
+                summary: 登录示例
+                description: 使用用户名和密码登录
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 登录成功
+                  data:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        description: JWT访问令牌
+                      refresh:
+                        type: string
+                        description: JWT刷新令牌
+                      user:
+                        $ref: '#/components/schemas/UserProfile'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 用户名或密码错误
+          description: ''
+  /api/v1/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      description: 用户登出，将刷新令牌加入黑名单
+      summary: 用户登出
+      tags:
+      - 用户管理
+      requestBody:
+        content:
+          type:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          properties:
+            schema:
+              refresh:
+                type: string
+                description: JWT刷新令牌
+          required:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 登出成功
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 登出失败
+          description: ''
+  /api/v1/auth/profile/:
+    get:
+      operationId: auth_profile_retrieve
+      description: 用户资料视图
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: auth_profile_update
+      description: 用户资料视图
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: auth_profile_partial_update
+      description: 用户资料视图
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/v1/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/auth/user/:
+    get:
+      operationId: auth_user_retrieve
+      description: 用户资料视图
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: auth_user_update
+      description: 用户资料视图
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: auth_user_partial_update
+      description: 用户资料视图
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/v1/classrooms/:
+    get:
+      operationId: classrooms_list
+      description: 教室列表和创建视图
+      parameters:
+      - in: query
+        name: building
+        schema:
+          type: integer
+      - in: query
+        name: floor
+        schema:
+          type: integer
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - in: query
+        name: is_available
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: room_type
+        schema:
+          type: string
+          title: 教室类型
+          enum:
+          - auditorium
+          - computer
+          - gym
+          - lab
+          - lecture
+          - library
+          - multimedia
+          - other
+          - seminar
+          - studio
+        description: |-
+          * `lecture` - 普通教室
+          * `lab` - 实验室
+          * `computer` - 机房
+          * `multimedia` - 多媒体教室
+          * `seminar` - 研讨室
+          * `auditorium` - 阶梯教室
+          * `studio` - 工作室
+          * `library` - 图书馆
+          * `gym` - 体育馆
+          * `other` - 其他
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - classrooms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClassroomListList'
+          description: ''
+    post:
+      operationId: classrooms_create
+      description: 教室列表和创建视图
+      tags:
+      - classrooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classroom'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/v1/classrooms/{id}/:
+    get:
+      operationId: classrooms_retrieve
+      description: 教室详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classrooms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+    put:
+      operationId: classrooms_update
+      description: 教室详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classrooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classroom'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+    patch:
+      operationId: classrooms_partial_update
+      description: 教室详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classrooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClassroom'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+    delete:
+      operationId: classrooms_destroy
+      description: 教室详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classrooms
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/classrooms/availability/:
+    get:
+      operationId: classrooms_availability_retrieve
+      description: 查询教室可用性
+      tags:
+      - classrooms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/classrooms/buildings/:
+    get:
+      operationId: classrooms_buildings_list
+      description: 教学楼列表和创建视图
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - classrooms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBuildingList'
+          description: ''
+    post:
+      operationId: classrooms_buildings_create
+      description: 教学楼列表和创建视图
+      tags:
+      - classrooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Building'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+  /api/v1/classrooms/buildings/{id}/:
+    get:
+      operationId: classrooms_buildings_retrieve
+      description: 教学楼详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classrooms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+    put:
+      operationId: classrooms_buildings_update
+      description: 教学楼详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classrooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Building'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+    patch:
+      operationId: classrooms_buildings_partial_update
+      description: 教学楼详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classrooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBuilding'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+    delete:
+      operationId: classrooms_buildings_destroy
+      description: 教学楼详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classrooms
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/classrooms/utilization/:
+    get:
+      operationId: classrooms_utilization_retrieve
+      description: 教室利用率统计
+      tags:
+      - classrooms
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/:
+    get:
+      operationId: courses_list
+      description: 课程列表和创建视图
+      parameters:
+      - in: query
+        name: academic_year
+        schema:
+          type: string
+      - in: query
+        name: course_type
+        schema:
+          type: string
+          title: 课程类型
+          enum:
+          - elective
+          - professional
+          - public
+          - required
+        description: |-
+          * `required` - 必修课
+          * `elective` - 选修课
+          * `public` - 公共课
+          * `professional` - 专业课
+      - in: query
+        name: credits
+        schema:
+          type: integer
+      - in: query
+        name: department
+        schema:
+          type: string
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - in: query
+        name: is_published
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: semester
+        schema:
+          type: string
+      tags:
+      - 课程管理
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCourseListList'
+          description: ''
+    post:
+      operationId: courses_create
+      description: 课程列表和创建视图
+      tags:
+      - 课程管理
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /api/v1/courses/{course_id}/difficulty-analysis/:
+    get:
+      operationId: courses_difficulty_analysis_retrieve
+      description: 课程难度分析
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/{course_id}/drop/:
+    post:
+      operationId: courses_drop_create
+      description: 退课
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/{course_id}/evaluation-stats/:
+    get:
+      operationId: courses_evaluation_stats_retrieve
+      description: 获取课程评价统计
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/{course_id}/grade-distribution/:
+    get:
+      operationId: courses_grade_distribution_retrieve
+      description: 获取指定课程的成绩分布统计数据，包括各等级人数、平均分、及格率等
+      summary: 课程成绩分布分析
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        description: 课程ID
+        required: true
+      tags:
+      - 数据分析
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      course_info:
+                        type: object
+                      distribution:
+                        type: object
+                      statistics:
+                        type: object
+          description: ''
+  /api/v1/courses/{course_id}/grade-summary/:
+    get:
+      operationId: courses_grade_summary_retrieve
+      description: 获取课程成绩汇总
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/{course_id}/grades/export/:
+    get:
+      operationId: courses_grades_export_retrieve
+      description: 导出成绩
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/{course_id}/grades/import/:
+    post:
+      operationId: courses_grades_import_create
+      description: 导入成绩
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/{course_id}/grades/template/:
+    get:
+      operationId: courses_grades_template_retrieve
+      description: 下载成绩导入模板
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/{id}/:
+    get:
+      operationId: courses_retrieve
+      description: 课程详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    put:
+      operationId: courses_update
+      description: 课程详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    patch:
+      operationId: courses_partial_update
+      description: 课程详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    delete:
+      operationId: courses_destroy
+      description: 课程详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/courses/class-comparison/:
+    get:
+      operationId: courses_class_comparison_retrieve
+      description: 班级成绩对比
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/enrollments/:
+    get:
+      operationId: courses_enrollments_list
+      description: 选课记录列表和创建视图
+      parameters:
+      - in: query
+        name: course__department
+        schema:
+          type: string
+      - in: query
+        name: course__semester
+        schema:
+          type: string
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          title: 状态
+          enum:
+          - completed
+          - dropped
+          - enrolled
+          - failed
+        description: |-
+          * `enrolled` - 已选课
+          * `dropped` - 已退课
+          * `completed` - 已完成
+          * `failed` - 未通过
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEnrollmentList'
+          description: ''
+    post:
+      operationId: courses_enrollments_create
+      description: 选课记录列表和创建视图
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollmentCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentCreate'
+          description: ''
+  /api/v1/courses/enrollments/{id}/:
+    get:
+      operationId: courses_enrollments_retrieve
+      description: 选课记录详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    put:
+      operationId: courses_enrollments_update
+      description: 选课记录详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Enrollment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    patch:
+      operationId: courses_enrollments_partial_update
+      description: 选课记录详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEnrollment'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    delete:
+      operationId: courses_enrollments_destroy
+      description: 选课记录详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/courses/evaluations/:
+    get:
+      operationId: courses_evaluations_list
+      description: 课程评价列表和创建视图
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCourseEvaluationList'
+          description: ''
+    post:
+      operationId: courses_evaluations_create
+      description: 课程评价列表和创建视图
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseEvaluation'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseEvaluation'
+          description: ''
+  /api/v1/courses/evaluations/{id}/:
+    get:
+      operationId: courses_evaluations_retrieve
+      description: 课程评价详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseEvaluation'
+          description: ''
+    put:
+      operationId: courses_evaluations_update
+      description: 课程评价详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseEvaluation'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseEvaluation'
+          description: ''
+    patch:
+      operationId: courses_evaluations_partial_update
+      description: 课程评价详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourseEvaluation'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseEvaluation'
+          description: ''
+    delete:
+      operationId: courses_evaluations_destroy
+      description: 课程评价详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/courses/grade-components/:
+    get:
+      operationId: courses_grade_components_list
+      description: 获取课程的成绩组成配置列表或创建新的成绩组成配置
+      summary: 成绩组成配置
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - 成绩管理
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGradeComponentList'
+          description: ''
+    post:
+      operationId: courses_grade_components_create
+      description: 获取课程的成绩组成配置列表或创建新的成绩组成配置
+      summary: 成绩组成配置
+      tags:
+      - 成绩管理
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GradeComponent'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradeComponent'
+          description: ''
+  /api/v1/courses/grade-components/{id}/:
+    get:
+      operationId: courses_grade_components_retrieve
+      description: 成绩组成详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradeComponent'
+          description: ''
+    put:
+      operationId: courses_grade_components_update
+      description: 成绩组成详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GradeComponent'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradeComponent'
+          description: ''
+    patch:
+      operationId: courses_grade_components_partial_update
+      description: 成绩组成详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGradeComponent'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradeComponent'
+          description: ''
+    delete:
+      operationId: courses_grade_components_destroy
+      description: 成绩组成详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/courses/grade-components/apply-template/:
+    post:
+      operationId: courses_grade_components_apply_template_create
+      description: 应用成绩组成模板
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/grade-components/batch-create/:
+    post:
+      operationId: courses_grade_components_batch_create_create
+      description: 批量创建成绩组成
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/grade-components/copy/:
+    post:
+      operationId: courses_grade_components_copy_create
+      description: 复制成绩组成配置
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/grade-components/templates/:
+    get:
+      operationId: courses_grade_components_templates_retrieve
+      description: 获取成绩组成模板
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/grades/:
+    get:
+      operationId: courses_grades_list
+      description: 成绩列表和创建视图
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGradeList'
+          description: ''
+    post:
+      operationId: courses_grades_create
+      description: 成绩列表和创建视图
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Grade'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+          description: ''
+  /api/v1/courses/grades/{id}/:
+    get:
+      operationId: courses_grades_retrieve
+      description: 成绩详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+          description: ''
+    put:
+      operationId: courses_grades_update
+      description: 成绩详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Grade'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+          description: ''
+    patch:
+      operationId: courses_grades_partial_update
+      description: 成绩详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGrade'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+          description: ''
+    delete:
+      operationId: courses_grades_destroy
+      description: 成绩详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/courses/grades/recalculate/:
+    post:
+      operationId: courses_grades_recalculate_create
+      description: 重新计算课程成绩
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/statistics/:
+    get:
+      operationId: courses_statistics_retrieve
+      description: 课程统计
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/courses/students/{student_id}/grade-trend/:
+    get:
+      operationId: courses_students_grade_trend_retrieve
+      description: 获取学生成绩趋势
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/:
+    get:
+      operationId: schedules_list
+      description: 课程安排列表和创建视图
+      parameters:
+      - in: query
+        name: academic_year
+        schema:
+          type: string
+      - in: query
+        name: classroom
+        schema:
+          type: integer
+      - in: query
+        name: course
+        schema:
+          type: integer
+      - in: query
+        name: course__department
+        schema:
+          type: string
+      - in: query
+        name: day_of_week
+        schema:
+          type: integer
+          title: 星期
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+        description: |-
+          * `1` - 周一
+          * `2` - 周二
+          * `3` - 周三
+          * `4` - 周四
+          * `5` - 周五
+          * `6` - 周六
+          * `7` - 周日
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: semester
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          title: 状态
+          enum:
+          - active
+          - cancelled
+          - rescheduled
+          - suspended
+        description: |-
+          * `active` - 正常
+          * `cancelled` - 取消
+          * `rescheduled` - 调课
+          * `suspended` - 暂停
+      - in: query
+        name: teacher
+        schema:
+          type: integer
+      - in: query
+        name: time_slot
+        schema:
+          type: integer
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedScheduleListList'
+          description: ''
+    post:
+      operationId: schedules_create
+      description: 课程安排列表和创建视图
+      tags:
+      - schedules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleCreate'
+          description: ''
+  /api/v1/schedules/{id}/:
+    get:
+      operationId: schedules_retrieve
+      description: 课程安排详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+    put:
+      operationId: schedules_update
+      description: 课程安排详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - schedules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+    patch:
+      operationId: schedules_partial_update
+      description: 课程安排详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - schedules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSchedule'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+    delete:
+      operationId: schedules_destroy
+      description: 课程安排详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/schedules/auto-schedule/:
+    post:
+      operationId: schedules_auto_schedule_create
+      description: 智能自动排课
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/batch-create/:
+    post:
+      operationId: schedules_batch_create_create
+      description: 批量创建课程安排
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/check-conflicts/:
+    post:
+      operationId: schedules_check_conflicts_create
+      description: 检查排课冲突
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/export/:
+    get:
+      operationId: schedules_export_retrieve
+      description: 导出课程表
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/import/:
+    post:
+      operationId: schedules_import_create
+      description: 导入课程表
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/optimize/:
+    post:
+      operationId: schedules_optimize_create
+      description: 优化现有排课
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/statistics/:
+    get:
+      operationId: schedules_statistics_retrieve
+      description: 获取课程表统计信息
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/table/:
+    get:
+      operationId: schedules_table_retrieve
+      description: 获取课程表
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/schedules/timeslots/:
+    get:
+      operationId: schedules_timeslots_list
+      description: 时间段列表和创建视图
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTimeSlotList'
+          description: ''
+    post:
+      operationId: schedules_timeslots_create
+      description: 时间段列表和创建视图
+      tags:
+      - schedules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeSlot'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlot'
+          description: ''
+  /api/v1/schedules/timeslots/{id}/:
+    get:
+      operationId: schedules_timeslots_retrieve
+      description: 时间段详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlot'
+          description: ''
+    put:
+      operationId: schedules_timeslots_update
+      description: 时间段详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - schedules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeSlot'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlot'
+          description: ''
+    patch:
+      operationId: schedules_timeslots_partial_update
+      description: 时间段详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - schedules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTimeSlot'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlot'
+          description: ''
+    delete:
+      operationId: schedules_timeslots_destroy
+      description: 时间段详情视图
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - schedules
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/students/available-courses/:
+    get:
+      operationId: students_available_courses_retrieve
+      description: 获取可选课程列表
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/students/check-conflicts/:
+    post:
+      operationId: students_check_conflicts_create
+      description: 检查选课冲突
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/students/dashboard/:
+    get:
+      operationId: students_dashboard_retrieve
+      description: 学生仪表板数据
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/students/drop/{course_id}/:
+    delete:
+      operationId: students_drop_destroy
+      description: 退课
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/students/enroll/:
+    post:
+      operationId: students_enroll_create
+      description: 选课
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/students/gpa/:
+    get:
+      operationId: students_gpa_retrieve
+      description: GPA统计
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/students/grades/:
+    get:
+      operationId: students_grades_retrieve
+      description: 成绩列表
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/students/my-courses/:
+    get:
+      operationId: students_my_courses_list
+      description: 我的课程列表
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStudentEnrollmentList'
+          description: ''
+  /api/v1/students/profile/:
+    get:
+      operationId: students_profile_retrieve
+      description: 学生档案视图
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+          description: ''
+    put:
+      operationId: students_profile_update
+      description: 学生档案视图
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+          description: ''
+    patch:
+      operationId: students_profile_partial_update
+      description: 学生档案视图
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+          description: ''
+  /api/v1/students/schedule/:
+    get:
+      operationId: students_schedule_retrieve
+      description: 获取个人课程表
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/teachers/course/{course_id}/grade-stats/:
+    get:
+      operationId: teachers_course_grade_stats_retrieve
+      description: 获取课程成绩统计
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/teachers/course/{course_id}/students/:
+    get:
+      operationId: teachers_course_students_retrieve
+      description: 获取课程学生列表
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/teachers/dashboard/:
+    get:
+      operationId: teachers_dashboard_retrieve
+      description: 教师仪表板数据
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/teachers/grade/{enrollment_id}/:
+    put:
+      operationId: teachers_grade_update
+      description: 更新单个学生成绩
+      parameters:
+      - in: path
+        name: enrollment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/teachers/grades/batch/:
+    post:
+      operationId: teachers_grades_batch_create
+      description: 批量录入成绩
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/teachers/my-courses/:
+    get:
+      operationId: teachers_my_courses_list
+      description: 我的课程列表
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTeacherCourseDetailList'
+          description: ''
+  /api/v1/teachers/notice/{notice_id}/publish/:
+    post:
+      operationId: teachers_notice_publish_create
+      description: 发布通知
+      parameters:
+      - in: path
+        name: notice_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/teachers/notice/{id}/:
+    get:
+      operationId: teachers_notice_retrieve
+      description: 教师通知详情
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherNotice'
+          description: ''
+    put:
+      operationId: teachers_notice_update
+      description: 教师通知详情
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - teachers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherNotice'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherNotice'
+          description: ''
+    patch:
+      operationId: teachers_notice_partial_update
+      description: 教师通知详情
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - teachers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTeacherNotice'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherNotice'
+          description: ''
+    delete:
+      operationId: teachers_notice_destroy
+      description: 教师通知详情
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/teachers/notices/:
+    get:
+      operationId: teachers_notices_list
+      description: 教师通知列表和创建
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTeacherNoticeList'
+          description: ''
+    post:
+      operationId: teachers_notices_create
+      description: 教师通知列表和创建
+      tags:
+      - teachers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherNotice'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherNotice'
+          description: ''
+  /api/v1/teachers/profile/:
+    get:
+      operationId: teachers_profile_retrieve
+      description: 教师档案视图
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherProfile'
+          description: ''
+    put:
+      operationId: teachers_profile_update
+      description: 教师档案视图
+      tags:
+      - teachers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherProfile'
+          description: ''
+    patch:
+      operationId: teachers_profile_partial_update
+      description: 教师档案视图
+      tags:
+      - teachers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTeacherProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherProfile'
+          description: ''
+  /api/v1/teachers/schedule/:
+    get:
+      operationId: teachers_schedule_retrieve
+      description: 获取教学安排
+      tags:
+      - teachers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/users/:
+    get:
+      operationId: users_list
+      description: 用户列表和创建视图（管理员专用）
+      parameters:
+      - in: query
+        name: department
+        schema:
+          type: string
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: user_type
+        schema:
+          type: string
+          title: 用户类型
+          enum:
+          - academic_admin
+          - admin
+          - student
+          - teacher
+        description: |-
+          * `admin` - 超级管理员
+          * `academic_admin` - 教务管理员
+          * `teacher` - 教师
+          * `student` - 学生
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+    post:
+      operationId: users_create
+      description: 用户列表和创建视图（管理员专用）
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/users/{id}/:
+    get:
+      operationId: users_retrieve
+      description: 用户详情视图（管理员专用）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: users_update
+      description: 用户详情视图（管理员专用）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_partial_update
+      description: 用户详情视图（管理员专用）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: users_destroy
+      description: 用户详情视图（管理员专用）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/users/auth/login/:
+    post:
+      operationId: users_auth_login_create
+      description: 使用用户名/邮箱和密码进行登录，返回JWT访问令牌
+      summary: 用户登录
+      tags:
+      - 用户管理
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+            examples:
+              LoginExample:
+                value:
+                  username: student001
+                  password: password123
+                summary: 登录示例
+                description: 使用用户名和密码登录
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 登录成功
+                  data:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        description: JWT访问令牌
+                      refresh:
+                        type: string
+                        description: JWT刷新令牌
+                      user:
+                        $ref: '#/components/schemas/UserProfile'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 用户名或密码错误
+          description: ''
+  /api/v1/users/auth/logout/:
+    post:
+      operationId: users_auth_logout_create
+      description: 用户登出，将刷新令牌加入黑名单
+      summary: 用户登出
+      tags:
+      - 用户管理
+      requestBody:
+        content:
+          type:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          properties:
+            schema:
+              refresh:
+                type: string
+                description: JWT刷新令牌
+          required:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 登出成功
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 登出失败
+          description: ''
+  /api/v1/users/auth/refresh/:
+    post:
+      operationId: users_auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/users/change-password/:
+    post:
+      operationId: users_change_password_create
+      description: 修改密码视图
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangePassword'
+          description: ''
+  /api/v1/users/login/:
+    post:
+      operationId: users_login_create
+      description: 使用用户名/邮箱和密码进行登录，返回JWT访问令牌
+      summary: 用户登录
+      tags:
+      - 用户管理
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+            examples:
+              LoginExample:
+                value:
+                  username: student001
+                  password: password123
+                summary: 登录示例
+                description: 使用用户名和密码登录
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 登录成功
+                  data:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        description: JWT访问令牌
+                      refresh:
+                        type: string
+                        description: JWT刷新令牌
+                      user:
+                        $ref: '#/components/schemas/UserProfile'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 用户名或密码错误
+          description: ''
+  /api/v1/users/logout/:
+    post:
+      operationId: users_logout_create
+      description: 用户登出，将刷新令牌加入黑名单
+      summary: 用户登出
+      tags:
+      - 用户管理
+      requestBody:
+        content:
+          type:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          properties:
+            schema:
+              refresh:
+                type: string
+                description: JWT刷新令牌
+          required:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 登出成功
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 登出失败
+          description: ''
+  /api/v1/users/profile/:
+    get:
+      operationId: users_profile_retrieve
+      description: 用户资料视图
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: users_profile_update
+      description: 用户资料视图
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: users_profile_partial_update
+      description: 用户资料视图
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/v1/users/refresh/:
+    post:
+      operationId: users_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/users/user/:
+    get:
+      operationId: users_user_retrieve
+      description: 用户资料视图
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: users_user_update
+      description: 用户资料视图
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: users_user_partial_update
+      description: 用户资料视图
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+components:
+  schemas:
+    Building:
+      type: object
+      description: 教学楼序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: 教学楼名称
+          maxLength: 50
+        code:
+          type: string
+          title: 教学楼代码
+          maxLength: 10
+        address:
+          type: string
+          title: 地址
+          maxLength: 200
+        description:
+          type: string
+          title: 描述
+        classrooms_count:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+          title: 是否启用
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - classrooms_count
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
+    ChangePassword:
+      type: object
+      description: 修改密码序列化器
+      properties:
+        old_password:
+          type: string
+        new_password:
+          type: string
+        new_password_confirm:
+          type: string
+      required:
+      - new_password
+      - new_password_confirm
+      - old_password
+    Classroom:
+      type: object
+      description: 教室序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+          title: 教学楼
+        building_info:
+          type: string
+          readOnly: true
+        room_number:
+          type: string
+          title: 教室号
+          maxLength: 20
+        name:
+          type: string
+          title: 教室名称
+          maxLength: 100
+        full_name:
+          type: string
+          readOnly: true
+        capacity:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          title: 容量
+        room_type:
+          allOf:
+          - $ref: '#/components/schemas/RoomTypeEnum'
+          title: 教室类型
+        room_type_display:
+          type: string
+          readOnly: true
+        floor:
+          type: integer
+          maximum: 50
+          minimum: 1
+          title: 楼层
+        area:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+          nullable: true
+          title: 面积(平方米)
+        equipment:
+          type: object
+          additionalProperties: {}
+          title: 设备信息
+          description: 存储教室设备信息，如投影仪、音响、空调等
+        equipment_list:
+          type: string
+          readOnly: true
+        location_description:
+          type: string
+          title: 位置描述
+        is_available:
+          type: boolean
+          title: 是否可用
+        is_active:
+          type: boolean
+          title: 是否启用
+        maintenance_notes:
+          type: string
+          title: 维护备注
+        last_maintenance:
+          type: string
+          format: date-time
+          nullable: true
+          title: 最后维护时间
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - building
+      - building_info
+      - capacity
+      - created_at
+      - equipment_list
+      - floor
+      - full_name
+      - id
+      - room_number
+      - room_type_display
+      - updated_at
+    ClassroomList:
+      type: object
+      description: 教室列表序列化器（简化版）
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+          title: 教学楼
+        building_name:
+          type: string
+          readOnly: true
+        building_code:
+          type: string
+          readOnly: true
+        room_number:
+          type: string
+          title: 教室号
+          maxLength: 20
+        name:
+          type: string
+          title: 教室名称
+          maxLength: 100
+        full_name:
+          type: string
+          readOnly: true
+        capacity:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          title: 容量
+        room_type:
+          allOf:
+          - $ref: '#/components/schemas/RoomTypeEnum'
+          title: 教室类型
+        room_type_display:
+          type: string
+          readOnly: true
+        floor:
+          type: integer
+          maximum: 50
+          minimum: 1
+          title: 楼层
+        is_available:
+          type: boolean
+          title: 是否可用
+        is_active:
+          type: boolean
+          title: 是否启用
+      required:
+      - building
+      - building_code
+      - building_name
+      - capacity
+      - floor
+      - full_name
+      - id
+      - room_number
+      - room_type_display
+    Course:
+      type: object
+      description: 课程序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          title: 课程代码
+          description: 课程的唯一标识代码
+          maxLength: 20
+        name:
+          type: string
+          title: 课程名称
+          maxLength: 100
+        english_name:
+          type: string
+          title: 英文名称
+          maxLength: 100
+        course_type:
+          allOf:
+          - $ref: '#/components/schemas/CourseTypeEnum'
+          title: 课程类型
+        course_type_display:
+          type: string
+          readOnly: true
+        credits:
+          type: integer
+          maximum: 10
+          minimum: 1
+          title: 学分
+        hours:
+          type: integer
+          maximum: 200
+          minimum: 1
+          title: 学时
+        department:
+          type: string
+          title: 开课院系
+          maxLength: 100
+        semester:
+          type: string
+          title: 开课学期
+          description: 如：2024-2025-1
+          maxLength: 20
+        academic_year:
+          type: string
+          title: 学年
+          description: 如：2024-2025
+          maxLength: 10
+        description:
+          type: string
+          title: 课程描述
+        objectives:
+          type: string
+          title: 课程目标
+        prerequisites:
+          type: array
+          items:
+            type: integer
+            title: 先修课程
+          title: 先修课程
+        prerequisites_info:
+          type: string
+          readOnly: true
+        teachers:
+          type: array
+          items:
+            type: integer
+            title: 授课教师
+          title: 授课教师
+        teachers_info:
+          type: string
+          readOnly: true
+        max_students:
+          type: integer
+          maximum: 500
+          minimum: 1
+          title: 最大选课人数
+        min_students:
+          type: integer
+          minimum: 1
+          title: 最少开课人数
+        grade_components:
+          type: string
+          readOnly: true
+        current_enrollment:
+          type: string
+          readOnly: true
+        is_full:
+          type: string
+          readOnly: true
+        can_open:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+          title: 是否启用
+        is_published:
+          type: boolean
+          title: 是否发布
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - academic_year
+      - can_open
+      - code
+      - course_type_display
+      - created_at
+      - credits
+      - current_enrollment
+      - department
+      - grade_components
+      - hours
+      - id
+      - is_full
+      - name
+      - prerequisites_info
+      - semester
+      - teachers
+      - teachers_info
+      - updated_at
+    CourseEvaluation:
+      type: object
+      description: 课程评价序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        enrollment:
+          type: integer
+          title: 选课记录
+        student_info:
+          type: string
+          readOnly: true
+        course_info:
+          type: string
+          readOnly: true
+        teaching_quality:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 教学质量
+          description: 1-5分
+        course_content:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 课程内容
+          description: 1-5分
+        difficulty_level:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 难度水平
+          description: 1-5分
+        workload:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 课业负担
+          description: 1-5分
+        overall_satisfaction:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 总体满意度
+          description: 1-5分
+        average_rating:
+          type: string
+          readOnly: true
+        comments:
+          type: string
+          title: 评价意见
+        suggestions:
+          type: string
+          title: 改进建议
+        would_recommend:
+          type: boolean
+          title: 是否推荐
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 评价时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - average_rating
+      - course_content
+      - course_info
+      - created_at
+      - difficulty_level
+      - enrollment
+      - id
+      - overall_satisfaction
+      - student_info
+      - teaching_quality
+      - updated_at
+      - workload
+    CourseList:
+      type: object
+      description: 课程列表序列化器（简化版）
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          title: 课程代码
+          description: 课程的唯一标识代码
+          maxLength: 20
+        name:
+          type: string
+          title: 课程名称
+          maxLength: 100
+        course_type:
+          allOf:
+          - $ref: '#/components/schemas/CourseTypeEnum'
+          title: 课程类型
+        course_type_display:
+          type: string
+          readOnly: true
+        credits:
+          type: integer
+          maximum: 10
+          minimum: 1
+          title: 学分
+        hours:
+          type: integer
+          maximum: 200
+          minimum: 1
+          title: 学时
+        department:
+          type: string
+          title: 开课院系
+          maxLength: 100
+        semester:
+          type: string
+          title: 开课学期
+          description: 如：2024-2025-1
+          maxLength: 20
+        max_students:
+          type: integer
+          maximum: 500
+          minimum: 1
+          title: 最大选课人数
+        current_enrollment:
+          type: string
+          readOnly: true
+        is_full:
+          type: string
+          readOnly: true
+        teachers_count:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+          title: 是否启用
+        is_published:
+          type: boolean
+          title: 是否发布
+      required:
+      - code
+      - course_type_display
+      - credits
+      - current_enrollment
+      - department
+      - hours
+      - id
+      - is_full
+      - name
+      - semester
+      - teachers_count
+    CourseTypeEnum:
+      enum:
+      - required
+      - elective
+      - public
+      - professional
+      type: string
+      description: |-
+        * `required` - 必修课
+        * `elective` - 选修课
+        * `public` - 公共课
+        * `professional` - 专业课
+    DayOfWeekEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      type: integer
+      description: |-
+        * `1` - 周一
+        * `2` - 周二
+        * `3` - 周三
+        * `4` - 周四
+        * `5` - 周五
+        * `6` - 周六
+        * `7` - 周日
+    Enrollment:
+      type: object
+      description: 选课记录序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+          title: 学生
+        student_info:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+          title: 课程
+        course_info:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status054Enum'
+          title: 状态
+        status_display:
+          type: string
+          readOnly: true
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: 成绩
+        grade:
+          type: string
+          title: 等级
+          description: 如：A+, A, B+, B, C+, C, D, F
+          maxLength: 5
+        enrolled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 选课时间
+        dropped_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: 退课时间
+        is_active:
+          type: boolean
+          title: 是否有效
+      required:
+      - course
+      - course_info
+      - enrolled_at
+      - id
+      - status_display
+      - student
+      - student_info
+    EnrollmentCreate:
+      type: object
+      description: 选课创建序列化器
+      properties:
+        student:
+          type: integer
+          title: 学生
+        course:
+          type: integer
+          title: 课程
+      required:
+      - course
+      - student
+    EnrollmentStatusEnum:
+      enum:
+      - enrolled
+      - suspended
+      - graduated
+      - dropped
+      type: string
+      description: |-
+        * `enrolled` - 在读
+        * `suspended` - 休学
+        * `graduated` - 毕业
+        * `dropped` - 退学
+    Grade:
+      type: object
+      description: 详细成绩序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        enrollment:
+          type: integer
+          title: 选课记录
+        component:
+          type: integer
+          nullable: true
+          title: 成绩组成
+          description: 关联的成绩组成配置
+        student_info:
+          type: string
+          readOnly: true
+        course_info:
+          type: string
+          readOnly: true
+        component_info:
+          type: string
+          readOnly: true
+        grade_type:
+          allOf:
+          - $ref: '#/components/schemas/GradeTypeEnum'
+          title: 成绩类型
+        grade_type_display:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          title: 成绩项目名称
+          description: 如：第一次作业、期中考试等
+          maxLength: 100
+        description:
+          type: string
+          title: 描述
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 得分
+        max_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 满分
+        percentage_score:
+          type: string
+          readOnly: true
+        weighted_score:
+          type: string
+          readOnly: true
+        letter_grade:
+          type: string
+          readOnly: true
+        weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 权重(%)
+          description: 在总成绩中的权重百分比
+        graded_by:
+          type: integer
+          nullable: true
+          title: 评分教师
+        graded_by_name:
+          type: string
+          readOnly: true
+        graded_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: 评分时间
+        feedback:
+          type: string
+          title: 评语
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - component_info
+      - course_info
+      - created_at
+      - enrollment
+      - grade_type
+      - grade_type_display
+      - graded_by_name
+      - id
+      - letter_grade
+      - name
+      - percentage_score
+      - score
+      - student_info
+      - updated_at
+      - weighted_score
+    GradeComponent:
+      type: object
+      description: 成绩组成序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+          title: 课程
+        name:
+          type: string
+          title: 成绩项目名称
+          description: 如：平时成绩、期中考试、期末考试等
+          maxLength: 100
+        weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 权重(%)
+          description: 在总成绩中的权重百分比
+        max_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 满分
+        is_required:
+          type: boolean
+          title: 是否必需
+          description: 是否为必需的成绩项目
+        description:
+          type: string
+          title: 描述
+        order:
+          type: integer
+          title: 排序
+          description: 显示顺序，数字越小越靠前
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - course
+      - created_at
+      - id
+      - name
+      - updated_at
+      - weight
+    GradeTypeEnum:
+      enum:
+      - assignment
+      - quiz
+      - midterm
+      - final
+      - project
+      - participation
+      - lab
+      - other
+      type: string
+      description: |-
+        * `assignment` - 作业
+        * `quiz` - 小测验
+        * `midterm` - 期中考试
+        * `final` - 期末考试
+        * `project` - 项目
+        * `participation` - 课堂参与
+        * `lab` - 实验
+        * `other` - 其他
+    Login:
+      type: object
+      description: 登录序列化器
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+      - password
+      - username
+    NoticeTypeEnum:
+      enum:
+      - announcement
+      - assignment
+      - exam
+      - schedule_change
+      - other
+      type: string
+      description: |-
+        * `announcement` - 课程公告
+        * `assignment` - 作业通知
+        * `exam` - 考试通知
+        * `schedule_change` - 课程调整
+        * `other` - 其他
+    PaginatedBuildingList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Building'
+    PaginatedClassroomListList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassroomList'
+    PaginatedCourseEvaluationList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseEvaluation'
+    PaginatedCourseListList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseList'
+    PaginatedEnrollmentList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Enrollment'
+    PaginatedGradeComponentList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradeComponent'
+    PaginatedGradeList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Grade'
+    PaginatedScheduleListList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleList'
+    PaginatedStudentEnrollmentList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentEnrollment'
+    PaginatedTeacherCourseDetailList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeacherCourseDetail'
+    PaginatedTeacherNoticeList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeacherNotice'
+    PaginatedTimeSlotList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSlot'
+    PaginatedUserList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    PatchedBuilding:
+      type: object
+      description: 教学楼序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: 教学楼名称
+          maxLength: 50
+        code:
+          type: string
+          title: 教学楼代码
+          maxLength: 10
+        address:
+          type: string
+          title: 地址
+          maxLength: 200
+        description:
+          type: string
+          title: 描述
+        classrooms_count:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+          title: 是否启用
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedClassroom:
+      type: object
+      description: 教室序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building:
+          type: integer
+          title: 教学楼
+        building_info:
+          type: string
+          readOnly: true
+        room_number:
+          type: string
+          title: 教室号
+          maxLength: 20
+        name:
+          type: string
+          title: 教室名称
+          maxLength: 100
+        full_name:
+          type: string
+          readOnly: true
+        capacity:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          title: 容量
+        room_type:
+          allOf:
+          - $ref: '#/components/schemas/RoomTypeEnum'
+          title: 教室类型
+        room_type_display:
+          type: string
+          readOnly: true
+        floor:
+          type: integer
+          maximum: 50
+          minimum: 1
+          title: 楼层
+        area:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+          nullable: true
+          title: 面积(平方米)
+        equipment:
+          type: object
+          additionalProperties: {}
+          title: 设备信息
+          description: 存储教室设备信息，如投影仪、音响、空调等
+        equipment_list:
+          type: string
+          readOnly: true
+        location_description:
+          type: string
+          title: 位置描述
+        is_available:
+          type: boolean
+          title: 是否可用
+        is_active:
+          type: boolean
+          title: 是否启用
+        maintenance_notes:
+          type: string
+          title: 维护备注
+        last_maintenance:
+          type: string
+          format: date-time
+          nullable: true
+          title: 最后维护时间
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedCourse:
+      type: object
+      description: 课程序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          title: 课程代码
+          description: 课程的唯一标识代码
+          maxLength: 20
+        name:
+          type: string
+          title: 课程名称
+          maxLength: 100
+        english_name:
+          type: string
+          title: 英文名称
+          maxLength: 100
+        course_type:
+          allOf:
+          - $ref: '#/components/schemas/CourseTypeEnum'
+          title: 课程类型
+        course_type_display:
+          type: string
+          readOnly: true
+        credits:
+          type: integer
+          maximum: 10
+          minimum: 1
+          title: 学分
+        hours:
+          type: integer
+          maximum: 200
+          minimum: 1
+          title: 学时
+        department:
+          type: string
+          title: 开课院系
+          maxLength: 100
+        semester:
+          type: string
+          title: 开课学期
+          description: 如：2024-2025-1
+          maxLength: 20
+        academic_year:
+          type: string
+          title: 学年
+          description: 如：2024-2025
+          maxLength: 10
+        description:
+          type: string
+          title: 课程描述
+        objectives:
+          type: string
+          title: 课程目标
+        prerequisites:
+          type: array
+          items:
+            type: integer
+            title: 先修课程
+          title: 先修课程
+        prerequisites_info:
+          type: string
+          readOnly: true
+        teachers:
+          type: array
+          items:
+            type: integer
+            title: 授课教师
+          title: 授课教师
+        teachers_info:
+          type: string
+          readOnly: true
+        max_students:
+          type: integer
+          maximum: 500
+          minimum: 1
+          title: 最大选课人数
+        min_students:
+          type: integer
+          minimum: 1
+          title: 最少开课人数
+        grade_components:
+          type: string
+          readOnly: true
+        current_enrollment:
+          type: string
+          readOnly: true
+        is_full:
+          type: string
+          readOnly: true
+        can_open:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+          title: 是否启用
+        is_published:
+          type: boolean
+          title: 是否发布
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedCourseEvaluation:
+      type: object
+      description: 课程评价序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        enrollment:
+          type: integer
+          title: 选课记录
+        student_info:
+          type: string
+          readOnly: true
+        course_info:
+          type: string
+          readOnly: true
+        teaching_quality:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 教学质量
+          description: 1-5分
+        course_content:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 课程内容
+          description: 1-5分
+        difficulty_level:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 难度水平
+          description: 1-5分
+        workload:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 课业负担
+          description: 1-5分
+        overall_satisfaction:
+          type: integer
+          maximum: 5
+          minimum: 1
+          title: 总体满意度
+          description: 1-5分
+        average_rating:
+          type: string
+          readOnly: true
+        comments:
+          type: string
+          title: 评价意见
+        suggestions:
+          type: string
+          title: 改进建议
+        would_recommend:
+          type: boolean
+          title: 是否推荐
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 评价时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedEnrollment:
+      type: object
+      description: 选课记录序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+          title: 学生
+        student_info:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+          title: 课程
+        course_info:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status054Enum'
+          title: 状态
+        status_display:
+          type: string
+          readOnly: true
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: 成绩
+        grade:
+          type: string
+          title: 等级
+          description: 如：A+, A, B+, B, C+, C, D, F
+          maxLength: 5
+        enrolled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 选课时间
+        dropped_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: 退课时间
+        is_active:
+          type: boolean
+          title: 是否有效
+    PatchedGrade:
+      type: object
+      description: 详细成绩序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        enrollment:
+          type: integer
+          title: 选课记录
+        component:
+          type: integer
+          nullable: true
+          title: 成绩组成
+          description: 关联的成绩组成配置
+        student_info:
+          type: string
+          readOnly: true
+        course_info:
+          type: string
+          readOnly: true
+        component_info:
+          type: string
+          readOnly: true
+        grade_type:
+          allOf:
+          - $ref: '#/components/schemas/GradeTypeEnum'
+          title: 成绩类型
+        grade_type_display:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          title: 成绩项目名称
+          description: 如：第一次作业、期中考试等
+          maxLength: 100
+        description:
+          type: string
+          title: 描述
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 得分
+        max_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 满分
+        percentage_score:
+          type: string
+          readOnly: true
+        weighted_score:
+          type: string
+          readOnly: true
+        letter_grade:
+          type: string
+          readOnly: true
+        weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 权重(%)
+          description: 在总成绩中的权重百分比
+        graded_by:
+          type: integer
+          nullable: true
+          title: 评分教师
+        graded_by_name:
+          type: string
+          readOnly: true
+        graded_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: 评分时间
+        feedback:
+          type: string
+          title: 评语
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedGradeComponent:
+      type: object
+      description: 成绩组成序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+          title: 课程
+        name:
+          type: string
+          title: 成绩项目名称
+          description: 如：平时成绩、期中考试、期末考试等
+          maxLength: 100
+        weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 权重(%)
+          description: 在总成绩中的权重百分比
+        max_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 满分
+        is_required:
+          type: boolean
+          title: 是否必需
+          description: 是否为必需的成绩项目
+        description:
+          type: string
+          title: 描述
+        order:
+          type: integer
+          title: 排序
+          description: 显示顺序，数字越小越靠前
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedSchedule:
+      type: object
+      description: 课程安排序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+          title: 课程
+        course_info:
+          type: string
+          readOnly: true
+        teacher:
+          type: integer
+          title: 授课教师
+        teacher_info:
+          type: string
+          readOnly: true
+        classroom:
+          type: integer
+          title: 教室
+        classroom_info:
+          type: string
+          readOnly: true
+        time_slot:
+          type: integer
+          title: 时间段
+        time_slot_info:
+          type: string
+          readOnly: true
+        day_of_week:
+          allOf:
+          - $ref: '#/components/schemas/DayOfWeekEnum'
+          title: 星期
+          minimum: 1
+          maximum: 7
+        day_of_week_display:
+          type: string
+          readOnly: true
+        week_range:
+          type: string
+          title: 周次范围
+          description: 如：1-16周、1-8,10-16周
+          maxLength: 50
+        semester:
+          type: string
+          title: 学期
+          description: 如：2024-2025-1
+          maxLength: 20
+        academic_year:
+          type: string
+          title: 学年
+          description: 如：2024-2025
+          maxLength: 10
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status23eEnum'
+          title: 状态
+        status_display:
+          type: string
+          readOnly: true
+        time_display:
+          type: string
+          readOnly: true
+        location_display:
+          type: string
+          readOnly: true
+        notes:
+          type: string
+          title: 备注
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedStudentProfile:
+      type: object
+      description: 学生档案序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          title: 用户
+        user_info:
+          type: string
+          readOnly: true
+        admission_year:
+          type: integer
+          title: 入学年份
+          description: 如：2024
+        major:
+          type: string
+          title: 专业
+          maxLength: 100
+        class_name:
+          type: string
+          title: 班级
+          description: 如：计算机科学与技术1班
+          maxLength: 50
+        gpa:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        total_credits:
+          type: integer
+          minimum: 0
+          title: 总学分
+        completed_credits:
+          type: integer
+          minimum: 0
+          title: 已完成学分
+        remaining_credits:
+          type: string
+          readOnly: true
+        completion_rate:
+          type: string
+          readOnly: true
+        enrollment_status:
+          allOf:
+          - $ref: '#/components/schemas/EnrollmentStatusEnum'
+          title: 学籍状态
+        enrollment_status_display:
+          type: string
+          readOnly: true
+        emergency_contact:
+          type: string
+          title: 紧急联系人
+          maxLength: 50
+        emergency_phone:
+          type: string
+          title: 紧急联系电话
+          maxLength: 15
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedTeacherNotice:
+      type: object
+      description: 教师通知序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        teacher:
+          type: integer
+          title: 发布教师
+        teacher_name:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+          title: 相关课程
+        course_info:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          title: 通知标题
+          maxLength: 200
+        content:
+          type: string
+          title: 通知内容
+        notice_type:
+          allOf:
+          - $ref: '#/components/schemas/NoticeTypeEnum'
+          title: 通知类型
+        notice_type_display:
+          type: string
+          readOnly: true
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          title: 优先级
+        priority_display:
+          type: string
+          readOnly: true
+        is_published:
+          type: boolean
+          title: 是否发布
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: 发布时间
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedTeacherProfile:
+      type: object
+      description: 教师档案序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          title: 用户
+        user_info:
+          type: string
+          readOnly: true
+        title:
+          allOf:
+          - $ref: '#/components/schemas/TitleEnum'
+          title: 职称
+        title_display:
+          type: string
+          readOnly: true
+        full_name:
+          type: string
+          readOnly: true
+        research_area:
+          type: string
+          title: 研究方向
+          description: 请简要描述您的研究领域和方向
+        office_location:
+          type: string
+          title: 办公室位置
+          description: 如：理学院A座301室
+          maxLength: 100
+        office_hours:
+          type: string
+          title: 答疑时间
+          description: 请填写您的答疑时间安排
+        teaching_experience:
+          type: integer
+          title: 教学经验年数
+        education_background:
+          type: string
+          title: 教育背景
+        office_phone:
+          type: string
+          title: 办公电话
+          maxLength: 15
+        personal_website:
+          type: string
+          format: uri
+          title: 个人网站
+          maxLength: 200
+        teaching_courses_count:
+          type: integer
+          readOnly: true
+        is_active_teacher:
+          type: boolean
+          title: 是否在职
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedTimeSlot:
+      type: object
+      description: 时间段序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: 时间段名称
+          description: 如：第1节课、第2节课
+          maxLength: 50
+        start_time:
+          type: string
+          format: time
+          title: 开始时间
+        end_time:
+          type: string
+          format: time
+          title: 结束时间
+        order:
+          type: integer
+          maximum: 20
+          minimum: 1
+          title: 排序
+          description: 用于排序显示，数字越小越靠前
+        duration_minutes:
+          type: integer
+          readOnly: true
+          title: 时长(分钟)
+          description: 自动计算，不需要手动填写
+        is_active:
+          type: boolean
+          title: 是否启用
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+    PatchedUser:
+      type: object
+      description: 用户序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: 用户名
+          description: 必填；长度为150个字符或以下；只能包含字母、数字、特殊字符“@”、“.”、“-”和“_”。
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: 电子邮件地址
+          maxLength: 254
+        first_name:
+          type: string
+          title: 名字
+          maxLength: 150
+        last_name:
+          type: string
+          title: 姓氏
+          maxLength: 150
+        user_type:
+          allOf:
+          - $ref: '#/components/schemas/UserTypeEnum'
+          title: 用户类型
+        employee_id:
+          type: string
+          nullable: true
+          title: 工号
+          maxLength: 20
+        student_id:
+          type: string
+          nullable: true
+          title: 学号
+          maxLength: 20
+        department:
+          type: string
+          title: 院系
+          maxLength: 100
+        phone:
+          type: string
+          title: 手机号
+          maxLength: 15
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          title: 头像
+        is_active:
+          type: boolean
+          title: 有效
+          description: 指明用户是否被认为是活跃的。以反选代替删除帐号。
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 加入日期
+        password:
+          type: string
+          writeOnly: true
+        password_confirm:
+          type: string
+          writeOnly: true
+    PatchedUserProfile:
+      type: object
+      description: 用户资料序列化器（不包含密码）
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: 用户名
+          description: 必填；长度为150个字符或以下；只能包含字母、数字、特殊字符“@”、“.”、“-”和“_”。
+        email:
+          type: string
+          format: email
+          title: 电子邮件地址
+          maxLength: 254
+        first_name:
+          type: string
+          title: 名字
+          maxLength: 150
+        last_name:
+          type: string
+          title: 姓氏
+          maxLength: 150
+        user_type:
+          allOf:
+          - $ref: '#/components/schemas/UserTypeEnum'
+          readOnly: true
+          title: 用户类型
+        user_type_display:
+          type: string
+          readOnly: true
+        employee_id:
+          type: string
+          nullable: true
+          title: 工号
+          maxLength: 20
+        student_id:
+          type: string
+          nullable: true
+          title: 学号
+          maxLength: 20
+        department:
+          type: string
+          title: 院系
+          maxLength: 100
+        phone:
+          type: string
+          title: 手机号
+          maxLength: 15
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          title: 头像
+        is_active:
+          type: boolean
+          title: 有效
+          description: 指明用户是否被认为是活跃的。以反选代替删除帐号。
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 加入日期
+        display_id:
+          type: string
+          readOnly: true
+    PriorityEnum:
+      enum:
+      - low
+      - normal
+      - high
+      - urgent
+      type: string
+      description: |-
+        * `low` - 低
+        * `normal` - 普通
+        * `high` - 高
+        * `urgent` - 紧急
+    RoomTypeEnum:
+      enum:
+      - lecture
+      - lab
+      - computer
+      - multimedia
+      - seminar
+      - auditorium
+      - studio
+      - library
+      - gym
+      - other
+      type: string
+      description: |-
+        * `lecture` - 普通教室
+        * `lab` - 实验室
+        * `computer` - 机房
+        * `multimedia` - 多媒体教室
+        * `seminar` - 研讨室
+        * `auditorium` - 阶梯教室
+        * `studio` - 工作室
+        * `library` - 图书馆
+        * `gym` - 体育馆
+        * `other` - 其他
+    Schedule:
+      type: object
+      description: 课程安排序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+          title: 课程
+        course_info:
+          type: string
+          readOnly: true
+        teacher:
+          type: integer
+          title: 授课教师
+        teacher_info:
+          type: string
+          readOnly: true
+        classroom:
+          type: integer
+          title: 教室
+        classroom_info:
+          type: string
+          readOnly: true
+        time_slot:
+          type: integer
+          title: 时间段
+        time_slot_info:
+          type: string
+          readOnly: true
+        day_of_week:
+          allOf:
+          - $ref: '#/components/schemas/DayOfWeekEnum'
+          title: 星期
+          minimum: 1
+          maximum: 7
+        day_of_week_display:
+          type: string
+          readOnly: true
+        week_range:
+          type: string
+          title: 周次范围
+          description: 如：1-16周、1-8,10-16周
+          maxLength: 50
+        semester:
+          type: string
+          title: 学期
+          description: 如：2024-2025-1
+          maxLength: 20
+        academic_year:
+          type: string
+          title: 学年
+          description: 如：2024-2025
+          maxLength: 10
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status23eEnum'
+          title: 状态
+        status_display:
+          type: string
+          readOnly: true
+        time_display:
+          type: string
+          readOnly: true
+        location_display:
+          type: string
+          readOnly: true
+        notes:
+          type: string
+          title: 备注
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - academic_year
+      - classroom
+      - classroom_info
+      - course
+      - course_info
+      - created_at
+      - day_of_week
+      - day_of_week_display
+      - id
+      - location_display
+      - semester
+      - status_display
+      - teacher
+      - teacher_info
+      - time_display
+      - time_slot
+      - time_slot_info
+      - updated_at
+      - week_range
+    ScheduleCreate:
+      type: object
+      description: 排课创建序列化器
+      properties:
+        course:
+          type: integer
+          title: 课程
+        teacher:
+          type: integer
+          title: 授课教师
+        classroom:
+          type: integer
+          title: 教室
+        time_slot:
+          type: integer
+          title: 时间段
+        day_of_week:
+          allOf:
+          - $ref: '#/components/schemas/DayOfWeekEnum'
+          title: 星期
+          minimum: 1
+          maximum: 7
+        week_range:
+          type: string
+          title: 周次范围
+          description: 如：1-16周、1-8,10-16周
+          maxLength: 50
+        semester:
+          type: string
+          title: 学期
+          description: 如：2024-2025-1
+          maxLength: 20
+        academic_year:
+          type: string
+          title: 学年
+          description: 如：2024-2025
+          maxLength: 10
+        notes:
+          type: string
+          title: 备注
+      required:
+      - academic_year
+      - classroom
+      - course
+      - day_of_week
+      - semester
+      - teacher
+      - time_slot
+      - week_range
+    ScheduleList:
+      type: object
+      description: 课程安排列表序列化器（简化版）
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course_code:
+          type: string
+          readOnly: true
+        course_name:
+          type: string
+          readOnly: true
+        teacher_name:
+          type: string
+          readOnly: true
+        classroom_name:
+          type: string
+          readOnly: true
+        time_slot_name:
+          type: string
+          readOnly: true
+        day_of_week:
+          allOf:
+          - $ref: '#/components/schemas/DayOfWeekEnum'
+          title: 星期
+          minimum: 1
+          maximum: 7
+        day_of_week_display:
+          type: string
+          readOnly: true
+        semester:
+          type: string
+          title: 学期
+          description: 如：2024-2025-1
+          maxLength: 20
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status23eEnum'
+          title: 状态
+        status_display:
+          type: string
+          readOnly: true
+      required:
+      - classroom_name
+      - course_code
+      - course_name
+      - day_of_week
+      - day_of_week_display
+      - id
+      - semester
+      - status_display
+      - teacher_name
+      - time_slot_name
+    Status054Enum:
+      enum:
+      - enrolled
+      - dropped
+      - completed
+      - failed
+      type: string
+      description: |-
+        * `enrolled` - 已选课
+        * `dropped` - 已退课
+        * `completed` - 已完成
+        * `failed` - 未通过
+    Status23eEnum:
+      enum:
+      - active
+      - cancelled
+      - rescheduled
+      - suspended
+      type: string
+      description: |-
+        * `active` - 正常
+        * `cancelled` - 取消
+        * `rescheduled` - 调课
+        * `suspended` - 暂停
+    StudentEnrollment:
+      type: object
+      description: 学生选课记录序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+          title: 课程
+        course_info:
+          allOf:
+          - $ref: '#/components/schemas/Course'
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status054Enum'
+          title: 状态
+        status_display:
+          type: string
+          readOnly: true
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: 成绩
+        grade:
+          type: string
+          title: 等级
+          description: 如：A+, A, B+, B, C+, C, D, F
+          maxLength: 5
+        grade_display:
+          type: string
+          readOnly: true
+        enrolled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 选课时间
+        dropped_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: 退课时间
+        is_active:
+          type: boolean
+          title: 是否有效
+      required:
+      - course
+      - course_info
+      - dropped_at
+      - enrolled_at
+      - grade_display
+      - id
+      - status_display
+    StudentProfile:
+      type: object
+      description: 学生档案序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          title: 用户
+        user_info:
+          type: string
+          readOnly: true
+        admission_year:
+          type: integer
+          title: 入学年份
+          description: 如：2024
+        major:
+          type: string
+          title: 专业
+          maxLength: 100
+        class_name:
+          type: string
+          title: 班级
+          description: 如：计算机科学与技术1班
+          maxLength: 50
+        gpa:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        total_credits:
+          type: integer
+          minimum: 0
+          title: 总学分
+        completed_credits:
+          type: integer
+          minimum: 0
+          title: 已完成学分
+        remaining_credits:
+          type: string
+          readOnly: true
+        completion_rate:
+          type: string
+          readOnly: true
+        enrollment_status:
+          allOf:
+          - $ref: '#/components/schemas/EnrollmentStatusEnum'
+          title: 学籍状态
+        enrollment_status_display:
+          type: string
+          readOnly: true
+        emergency_contact:
+          type: string
+          title: 紧急联系人
+          maxLength: 50
+        emergency_phone:
+          type: string
+          title: 紧急联系电话
+          maxLength: 15
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - admission_year
+      - class_name
+      - completion_rate
+      - created_at
+      - enrollment_status_display
+      - id
+      - major
+      - remaining_credits
+      - updated_at
+      - user
+      - user_info
+    TeacherCourseDetail:
+      type: object
+      description: 教师课程详情序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          title: 课程代码
+          description: 课程的唯一标识代码
+          maxLength: 20
+        name:
+          type: string
+          title: 课程名称
+          maxLength: 100
+        credits:
+          type: integer
+          maximum: 10
+          minimum: 1
+          title: 学分
+        hours:
+          type: integer
+          maximum: 200
+          minimum: 1
+          title: 学时
+        course_type:
+          allOf:
+          - $ref: '#/components/schemas/CourseTypeEnum'
+          title: 课程类型
+        department:
+          type: string
+          title: 开课院系
+          maxLength: 100
+        semester:
+          type: string
+          title: 开课学期
+          description: 如：2024-2025-1
+          maxLength: 20
+        academic_year:
+          type: string
+          title: 学年
+          description: 如：2024-2025
+          maxLength: 10
+        description:
+          type: string
+          title: 课程描述
+        objectives:
+          type: string
+          title: 课程目标
+        teachers_info:
+          type: string
+          readOnly: true
+        max_students:
+          type: integer
+          maximum: 500
+          minimum: 1
+          title: 最大选课人数
+        min_students:
+          type: integer
+          minimum: 1
+          title: 最少开课人数
+        current_enrollment:
+          type: string
+          readOnly: true
+        enrollment_statistics:
+          type: string
+          readOnly: true
+        grade_statistics:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+          title: 是否启用
+        is_published:
+          type: boolean
+          title: 是否发布
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - academic_year
+      - code
+      - created_at
+      - credits
+      - current_enrollment
+      - department
+      - enrollment_statistics
+      - grade_statistics
+      - hours
+      - id
+      - name
+      - semester
+      - teachers_info
+      - updated_at
+    TeacherNotice:
+      type: object
+      description: 教师通知序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        teacher:
+          type: integer
+          title: 发布教师
+        teacher_name:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+          title: 相关课程
+        course_info:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          title: 通知标题
+          maxLength: 200
+        content:
+          type: string
+          title: 通知内容
+        notice_type:
+          allOf:
+          - $ref: '#/components/schemas/NoticeTypeEnum'
+          title: 通知类型
+        notice_type_display:
+          type: string
+          readOnly: true
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          title: 优先级
+        priority_display:
+          type: string
+          readOnly: true
+        is_published:
+          type: boolean
+          title: 是否发布
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: 发布时间
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - content
+      - course
+      - course_info
+      - created_at
+      - id
+      - notice_type_display
+      - priority_display
+      - published_at
+      - teacher
+      - teacher_name
+      - title
+      - updated_at
+    TeacherProfile:
+      type: object
+      description: 教师档案序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          title: 用户
+        user_info:
+          type: string
+          readOnly: true
+        title:
+          allOf:
+          - $ref: '#/components/schemas/TitleEnum'
+          title: 职称
+        title_display:
+          type: string
+          readOnly: true
+        full_name:
+          type: string
+          readOnly: true
+        research_area:
+          type: string
+          title: 研究方向
+          description: 请简要描述您的研究领域和方向
+        office_location:
+          type: string
+          title: 办公室位置
+          description: 如：理学院A座301室
+          maxLength: 100
+        office_hours:
+          type: string
+          title: 答疑时间
+          description: 请填写您的答疑时间安排
+        teaching_experience:
+          type: integer
+          title: 教学经验年数
+        education_background:
+          type: string
+          title: 教育背景
+        office_phone:
+          type: string
+          title: 办公电话
+          maxLength: 15
+        personal_website:
+          type: string
+          format: uri
+          title: 个人网站
+          maxLength: 200
+        teaching_courses_count:
+          type: integer
+          readOnly: true
+        is_active_teacher:
+          type: boolean
+          title: 是否在职
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - created_at
+      - full_name
+      - id
+      - teaching_courses_count
+      - title_display
+      - updated_at
+      - user
+      - user_info
+    TimeSlot:
+      type: object
+      description: 时间段序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: 时间段名称
+          description: 如：第1节课、第2节课
+          maxLength: 50
+        start_time:
+          type: string
+          format: time
+          title: 开始时间
+        end_time:
+          type: string
+          format: time
+          title: 结束时间
+        order:
+          type: integer
+          maximum: 20
+          minimum: 1
+          title: 排序
+          description: 用于排序显示，数字越小越靠前
+        duration_minutes:
+          type: integer
+          readOnly: true
+          title: 时长(分钟)
+          description: 自动计算，不需要手动填写
+        is_active:
+          type: boolean
+          title: 是否启用
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+      required:
+      - created_at
+      - duration_minutes
+      - end_time
+      - id
+      - name
+      - order
+      - start_time
+      - updated_at
+    TitleEnum:
+      enum:
+      - assistant
+      - lecturer
+      - associate_professor
+      - professor
+      - researcher
+      type: string
+      description: |-
+        * `assistant` - 助教
+        * `lecturer` - 讲师
+        * `associate_professor` - 副教授
+        * `professor` - 教授
+        * `researcher` - 研究员
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    User:
+      type: object
+      description: 用户序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: 用户名
+          description: 必填；长度为150个字符或以下；只能包含字母、数字、特殊字符“@”、“.”、“-”和“_”。
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: 电子邮件地址
+          maxLength: 254
+        first_name:
+          type: string
+          title: 名字
+          maxLength: 150
+        last_name:
+          type: string
+          title: 姓氏
+          maxLength: 150
+        user_type:
+          allOf:
+          - $ref: '#/components/schemas/UserTypeEnum'
+          title: 用户类型
+        employee_id:
+          type: string
+          nullable: true
+          title: 工号
+          maxLength: 20
+        student_id:
+          type: string
+          nullable: true
+          title: 学号
+          maxLength: 20
+        department:
+          type: string
+          title: 院系
+          maxLength: 100
+        phone:
+          type: string
+          title: 手机号
+          maxLength: 15
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          title: 头像
+        is_active:
+          type: boolean
+          title: 有效
+          description: 指明用户是否被认为是活跃的。以反选代替删除帐号。
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 加入日期
+        password:
+          type: string
+          writeOnly: true
+        password_confirm:
+          type: string
+          writeOnly: true
+      required:
+      - date_joined
+      - id
+      - password
+      - password_confirm
+      - username
+    UserProfile:
+      type: object
+      description: 用户资料序列化器（不包含密码）
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: 用户名
+          description: 必填；长度为150个字符或以下；只能包含字母、数字、特殊字符“@”、“.”、“-”和“_”。
+        email:
+          type: string
+          format: email
+          title: 电子邮件地址
+          maxLength: 254
+        first_name:
+          type: string
+          title: 名字
+          maxLength: 150
+        last_name:
+          type: string
+          title: 姓氏
+          maxLength: 150
+        user_type:
+          allOf:
+          - $ref: '#/components/schemas/UserTypeEnum'
+          readOnly: true
+          title: 用户类型
+        user_type_display:
+          type: string
+          readOnly: true
+        employee_id:
+          type: string
+          nullable: true
+          title: 工号
+          maxLength: 20
+        student_id:
+          type: string
+          nullable: true
+          title: 学号
+          maxLength: 20
+        department:
+          type: string
+          title: 院系
+          maxLength: 100
+        phone:
+          type: string
+          title: 手机号
+          maxLength: 15
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          title: 头像
+        is_active:
+          type: boolean
+          title: 有效
+          description: 指明用户是否被认为是活跃的。以反选代替删除帐号。
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 加入日期
+        display_id:
+          type: string
+          readOnly: true
+      required:
+      - date_joined
+      - display_id
+      - id
+      - user_type
+      - user_type_display
+      - username
+    UserTypeEnum:
+      enum:
+      - admin
+      - academic_admin
+      - teacher
+      - student
+      type: string
+      description: |-
+        * `admin` - 超级管理员
+        * `academic_admin` - 教务管理员
+        * `teacher` - 教师
+        * `student` - 学生
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

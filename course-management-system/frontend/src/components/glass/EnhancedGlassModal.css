@@ -1,0 +1,239 @@
+/* Enhanced Glass Modal Styles */
+.enhanced-glass-modal {
+  border-radius: var(--radius-modal) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+/* 玻璃效果等级 */
+.enhanced-glass-modal.glass-sm {
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+}
+
+.enhanced-glass-modal.glass-md {
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  background: rgba(255, 255, 255, var(--glass-alpha-primary));
+}
+
+.enhanced-glass-modal.glass-lg {
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+}
+
+/* 兼容性降级 */
+.enhanced-glass-modal.glass-fallback {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 噪点纹理 */
+.enhanced-glass-modal.glass-noise::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+  background-size: var(--glass-noise-size) var(--glass-noise-size);
+  opacity: var(--glass-noise-opacity);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Modal内容区域 */
+.glass-modal-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* 遮罩层样式 */
+.enhanced-glass-mask.mask-blur {
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+.enhanced-glass-mask.mask-fallback {
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* 进入动画 - 淡入 */
+.enhanced-glass-modal.enter-fade {
+  animation: glassModalFadeIn var(--duration-enter) var(--easing-standard);
+}
+
+.enhanced-glass-modal.exit-fade {
+  animation: glassModalFadeOut var(--duration-exit) var(--easing-standard);
+}
+
+@keyframes glassModalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes glassModalFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* 进入动画 - 缩放 */
+.enhanced-glass-modal.enter-scale {
+  animation: glassModalScaleIn var(--duration-enter) var(--easing-standard);
+}
+
+.enhanced-glass-modal.exit-scale {
+  animation: glassModalScaleOut var(--duration-exit) var(--easing-standard);
+}
+
+@keyframes glassModalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glassModalScaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+/* 进入动画 - 滑入 */
+.enhanced-glass-modal.enter-slide {
+  animation: glassModalSlideIn var(--duration-enter) var(--easing-standard);
+}
+
+.enhanced-glass-modal.exit-slide {
+  animation: glassModalSlideOut var(--duration-exit) var(--easing-standard);
+}
+
+@keyframes glassModalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glassModalSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .enhanced-glass-modal.glass-sm {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-modal.glass-md {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-modal.glass-lg {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-modal.glass-fallback {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-modal.glass-noise::before {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+}
+
+/* 无障碍支持 */
+.enhanced-glass-modal:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .enhanced-glass-modal.enter-fade,
+  .enhanced-glass-modal.exit-fade,
+  .enhanced-glass-modal.enter-scale,
+  .enhanced-glass-modal.exit-scale,
+  .enhanced-glass-modal.enter-slide,
+  .enhanced-glass-modal.exit-slide {
+    animation: none;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .enhanced-glass-modal {
+    border: 2px solid var(--neutral-border);
+    background: var(--neutral-bg-primary) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .enhanced-glass-mask {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .enhanced-glass-modal {
+    border-radius: var(--radius-lg) !important;
+    margin: var(--spacing-md);
+    max-width: calc(100vw - 32px) !important;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .enhanced-glass-modal {
+    background: white !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .enhanced-glass-mask {
+    display: none !important;
+  }
+}

@@ -1,0 +1,398 @@
+/* 无障碍与可用性样式 */
+/* 确保所有用户都能正常使用界面 */
+
+/* 焦点可见性增强 */
+:focus {
+  outline: 2px solid var(--color-primary) !important;
+  outline-offset: 2px !important;
+  border-radius: var(--radius-sm);
+}
+
+/* 玻璃组件焦点样式 */
+.enhanced-glass-button:focus,
+.enhanced-glass-card:focus,
+.enhanced-glass-input:focus,
+.enhanced-glass-table:focus,
+.enhanced-glass-modal:focus {
+  outline: 2px solid var(--color-primary) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.2) !important;
+}
+
+/* 高对比度焦点 */
+@media (prefers-contrast: high) {
+  :focus {
+    outline: 3px solid #000 !important;
+    outline-offset: 2px !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+  
+  :root[data-theme-mode="dark"] :focus {
+    outline-color: #fff !important;
+    background: #000 !important;
+    color: #fff !important;
+  }
+}
+
+/* 键盘导航增强 */
+.keyboard-navigation {
+  /* 隐藏鼠标焦点，只显示键盘焦点 */
+}
+
+.keyboard-navigation *:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.keyboard-navigation *:focus-visible {
+  outline: 2px solid var(--color-primary) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.2) !important;
+}
+
+/* 跳转链接 */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-primary);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+  transition: top var(--duration-fast) var(--easing-standard);
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* 屏幕阅读器专用内容 */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.sr-only-focusable:focus {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  padding: inherit !important;
+  margin: inherit !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+}
+
+/* 对比度增强 */
+@media (prefers-contrast: high) {
+  :root {
+    --neutral-text-primary: #000;
+    --neutral-text-secondary: #333;
+    --neutral-text-tertiary: #666;
+    --neutral-bg-primary: #fff;
+    --neutral-bg-secondary: #f5f5f5;
+    --neutral-bg-tertiary: #e0e0e0;
+    --neutral-border: #000;
+  }
+  
+  :root[data-theme-mode="dark"] {
+    --neutral-text-primary: #fff;
+    --neutral-text-secondary: #ccc;
+    --neutral-text-tertiary: #999;
+    --neutral-bg-primary: #000;
+    --neutral-bg-secondary: #1a1a1a;
+    --neutral-bg-tertiary: #333;
+    --neutral-border: #fff;
+  }
+  
+  /* 强制高对比度背景 */
+  .enhanced-glass-button,
+  .enhanced-glass-card,
+  .enhanced-glass-input,
+  .enhanced-glass-table,
+  .enhanced-glass-modal {
+    background: var(--neutral-bg-primary) !important;
+    border: 2px solid var(--neutral-border) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* 确保文本对比度 */
+  * {
+    color: var(--neutral-text-primary) !important;
+  }
+  
+  .ant-typography {
+    color: var(--neutral-text-primary) !important;
+  }
+  
+  .ant-typography.ant-typography-secondary {
+    color: var(--neutral-text-secondary) !important;
+  }
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* 禁用所有变换动画 */
+  .enhanced-glass-button:hover,
+  .enhanced-glass-card:hover,
+  .stat-card:hover,
+  .course-item:hover,
+  .achievement-item:hover {
+    transform: none !important;
+  }
+  
+  /* 禁用背景动画 */
+  .student-welcome::before,
+  .achievement-icon::before {
+    animation: none !important;
+  }
+  
+  /* 保留必要的状态变化 */
+  .enhanced-glass-button:hover,
+  .enhanced-glass-card:hover {
+    background-color: var(--neutral-bg-secondary) !important;
+  }
+}
+
+/* 大字体支持 */
+@media (min-resolution: 2dppx) {
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .enhanced-glass-button,
+  .enhanced-glass-input {
+    min-height: 44px; /* 触摸目标最小尺寸 */
+  }
+}
+
+/* 触摸设备优化 */
+@media (pointer: coarse) {
+  .enhanced-glass-button,
+  .enhanced-glass-input,
+  .quick-action-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* 增加点击区域 */
+  .user-avatar-wrapper,
+  .collapse-trigger,
+  .notification-btn,
+  .theme-btn {
+    padding: var(--spacing-sm);
+  }
+}
+
+/* 颜色盲友好 */
+.status-indicator {
+  position: relative;
+}
+
+.status-indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -16px;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-success::before {
+  background: #52c41a;
+  content: '✓';
+  color: white;
+  font-size: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-warning::before {
+  background: #faad14;
+  content: '!';
+  color: white;
+  font-size: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-error::before {
+  background: #ff4d4f;
+  content: '×';
+  color: white;
+  font-size: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 语言方向支持 */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .enhanced-main-layout .enhanced-sidebar {
+  right: 0;
+  left: auto;
+  border-right: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[dir="rtl"] .header-left {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+[dir="rtl"] .header-right {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* 错误状态可见性 */
+.error-message {
+  color: var(--color-error) !important;
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.error-message::before {
+  content: '⚠';
+  font-size: 16px;
+}
+
+/* 成功状态可见性 */
+.success-message {
+  color: var(--color-success) !important;
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.success-message::before {
+  content: '✓';
+  font-size: 16px;
+}
+
+/* 加载状态可见性 */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--neutral-text-secondary);
+}
+
+.loading-indicator::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--neutral-text-tertiary);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-indicator::before {
+    animation: none;
+    content: '⏳';
+    border: none;
+    width: auto;
+    height: auto;
+  }
+}
+
+/* 表单验证增强 */
+.form-field-error {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 2px rgba(var(--color-error-rgb), 0.2) !important;
+}
+
+.form-field-success {
+  border-color: var(--color-success) !important;
+  box-shadow: 0 0 0 2px rgba(var(--color-success-rgb), 0.2) !important;
+}
+
+/* 工具提示可访问性 */
+.tooltip-content {
+  background: var(--neutral-text-primary);
+  color: var(--neutral-bg-primary);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  max-width: 200px;
+  text-align: center;
+}
+
+/* 模态框可访问性 */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative;
+  background: var(--neutral-bg-primary);
+  border-radius: var(--radius-lg);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* 打印样式 */
+@media print {
+  .skip-link,
+  .enhanced-glass-button,
+  .notification-btn,
+  .theme-btn {
+    display: none !important;
+  }
+  
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  .enhanced-glass-card,
+  .enhanced-glass-table {
+    border: 1px solid #ccc !important;
+  }
+}

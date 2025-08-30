@@ -1,0 +1,267 @@
+/* Enhanced Glass Card Styles */
+.enhanced-glass-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha));
+  border-radius: var(--radius-card);
+  transition: all var(--duration-normal) var(--easing-standard);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  box-shadow: var(--shadow-sm);
+}
+
+/* 玻璃效果等级 */
+.enhanced-glass-card.glass-sm {
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  box-shadow: var(--shadow-sm);
+}
+
+.enhanced-glass-card.glass-md {
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  background: rgba(255, 255, 255, var(--glass-alpha-primary));
+  box-shadow: var(--shadow-md);
+}
+
+.enhanced-glass-card.glass-lg {
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+  box-shadow: var(--shadow-lg);
+}
+
+/* 渐变背景 */
+.enhanced-glass-card.glass-gradient {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, var(--glass-alpha-primary)),
+    rgba(255, 255, 255, var(--glass-alpha-secondary))
+  );
+}
+
+.enhanced-glass-card.glass-gradient.glass-sm {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, var(--glass-alpha-secondary)),
+    rgba(255, 255, 255, calc(var(--glass-alpha-secondary) * 0.8))
+  );
+}
+
+.enhanced-glass-card.glass-gradient.glass-lg {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, var(--glass-alpha-tertiary)),
+    rgba(255, 255, 255, var(--glass-alpha-primary))
+  );
+}
+
+/* 悬浮效果 */
+.enhanced-glass-card.glass-hoverable:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(255, 255, 255, calc(var(--highlight-alpha) + 0.1));
+}
+
+.enhanced-glass-card.glass-hoverable.glass-sm:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.enhanced-glass-card.glass-hoverable.glass-lg:hover {
+  box-shadow: 
+    var(--shadow-lg),
+    0 32px 64px rgba(0, 0, 0, 0.15);
+}
+
+/* 边框发光效果 */
+.enhanced-glass-card.glass-border-glow {
+  border: 1px solid rgba(var(--color-primary), 0.3);
+  box-shadow: 
+    var(--shadow-md),
+    0 0 20px rgba(var(--color-primary), 0.1);
+}
+
+.enhanced-glass-card.glass-border-glow:hover {
+  border-color: rgba(var(--color-primary), 0.5);
+  box-shadow: 
+    var(--shadow-lg),
+    0 0 30px rgba(var(--color-primary), 0.2);
+}
+
+/* 卡片头部样式 */
+.enhanced-glass-card .ant-card-head {
+  background: rgba(255, 255, 255, calc(var(--glass-alpha-secondary) * 0.8));
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.enhanced-glass-card .ant-card-head-title {
+  color: var(--neutral-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.enhanced-glass-card .ant-card-extra {
+  color: var(--neutral-text-secondary);
+}
+
+/* 卡片主体样式 */
+.enhanced-glass-card .ant-card-body {
+  background: transparent;
+  color: var(--neutral-text-primary);
+}
+
+/* 卡片操作区域 */
+.enhanced-glass-card .ant-card-actions {
+  background: rgba(255, 255, 255, calc(var(--glass-alpha-secondary) * 0.8));
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+}
+
+.enhanced-glass-card .ant-card-actions > li {
+  color: var(--neutral-text-secondary);
+  transition: color var(--duration-fast) var(--easing-standard);
+}
+
+.enhanced-glass-card .ant-card-actions > li:hover {
+  color: var(--color-primary);
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .enhanced-glass-card.glass-sm {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-card.glass-md {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-card.glass-lg {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-card.glass-gradient {
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, var(--glass-alpha-primary)),
+    rgba(0, 0, 0, var(--glass-alpha-secondary))
+  );
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-card .ant-card-head {
+  background: rgba(0, 0, 0, calc(var(--glass-alpha-secondary) * 0.8));
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-card .ant-card-actions {
+  background: rgba(0, 0, 0, calc(var(--glass-alpha-secondary) * 0.8));
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 自定义玻璃颜色 */
+.enhanced-glass-card[style*="--glass-color"] {
+  background: rgba(var(--glass-color), var(--glass-alpha-primary));
+  border-color: rgba(var(--glass-color), 0.3);
+}
+
+.enhanced-glass-card[style*="--glass-color"].glass-gradient {
+  background: linear-gradient(135deg, 
+    rgba(var(--glass-color), var(--glass-alpha-primary)),
+    rgba(var(--glass-color), var(--glass-alpha-secondary))
+  );
+}
+
+/* 浏览器兼容性降级 */
+@supports not (backdrop-filter: blur(1px)) {
+  .enhanced-glass-card:not(.glass-disabled) {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .enhanced-glass-card:not(.glass-disabled) .ant-card-head {
+    background: rgba(255, 255, 255, 0.9) !important;
+  }
+  
+  .enhanced-glass-card:not(.glass-disabled) .ant-card-actions {
+    background: rgba(255, 255, 255, 0.9) !important;
+  }
+  
+  :root[data-theme-mode="dark"] .enhanced-glass-card:not(.glass-disabled) {
+    background: rgba(0, 0, 0, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  }
+  
+  :root[data-theme-mode="dark"] .enhanced-glass-card:not(.glass-disabled) .ant-card-head {
+    background: rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  :root[data-theme-mode="dark"] .enhanced-glass-card:not(.glass-disabled) .ant-card-actions {
+    background: rgba(0, 0, 0, 0.8) !important;
+  }
+}
+
+/* 禁用玻璃效果的卡片 */
+.enhanced-glass-card.glass-disabled {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: var(--neutral-bg-primary) !important;
+  border: 1px solid var(--neutral-border) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.enhanced-glass-card.glass-disabled .ant-card-head {
+  background: var(--neutral-bg-secondary) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.enhanced-glass-card.glass-disabled .ant-card-actions {
+  background: var(--neutral-bg-secondary) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 加载状态 */
+.enhanced-glass-card.ant-card-loading .ant-card-body {
+  opacity: 0.7;
+}
+
+/* 小尺寸卡片 */
+.enhanced-glass-card.ant-card-small {
+  border-radius: var(--radius-md);
+}
+
+.enhanced-glass-card.ant-card-small .ant-card-head {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.enhanced-glass-card.ant-card-small .ant-card-actions {
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .enhanced-glass-card {
+    transition: none;
+  }
+  
+  .enhanced-glass-card.glass-hoverable:hover {
+    transform: none;
+  }
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .enhanced-glass-card {
+    border-radius: var(--radius-md);
+  }
+  
+  .enhanced-glass-card.glass-hoverable:hover {
+    transform: translateY(-2px); /* 移动端减少悬浮距离 */
+  }
+  
+  .enhanced-glass-card.glass-border-glow {
+    box

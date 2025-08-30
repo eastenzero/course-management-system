@@ -1,0 +1,284 @@
+/* UI Showcase Styles */
+.ui-showcase {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary)08, var(--color-secondary)05);
+}
+
+.showcase-header {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.showcase-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* 统计项样式 */
+.stat-item {
+  text-align: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha));
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.stat-item:hover {
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  transform: translateY(-2px);
+}
+
+/* 成就项样式 */
+.achievement-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha));
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.achievement-item:hover {
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  transform: translateX(4px);
+}
+
+.achievement-content {
+  flex: 1;
+}
+
+/* 时间线项样式 */
+.timeline-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* 主题预览样式 */
+.theme-preview {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal) var(--easing-standard);
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+}
+
+.theme-preview:hover {
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  transform: scale(1.02);
+}
+
+.theme-colors {
+  display: flex;
+  gap: 8px;
+  margin-right: 16px;
+}
+
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-info {
+  flex: 1;
+}
+
+/* Tab 样式增强 */
+.ant-tabs-tab {
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary)) !important;
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha)) !important;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all var(--duration-normal) var(--easing-standard) !important;
+}
+
+.ant-tabs-tab:hover {
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary)) !important;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active {
+  background: rgba(255, 255, 255, var(--glass-alpha-primary)) !important;
+  border-bottom-color: transparent !important;
+}
+
+.ant-tabs-content-holder {
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+  border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha));
+  backdrop-filter: blur(10px);
+  padding: 24px;
+}
+
+/* 卡片网格布局优化 */
+.ant-card {
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.ant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .showcase-content {
+    padding: 16px;
+  }
+  
+  .theme-preview {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .theme-colors {
+    margin-right: 0;
+    margin-bottom: 12px;
+    justify-content: center;
+  }
+  
+  .achievement-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .timeline-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .stat-item {
+    padding: 12px;
+  }
+  
+  .ant-tabs-content-holder {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .color-swatch {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .theme-colors {
+    gap: 6px;
+  }
+  
+  .achievement-item {
+    padding: 12px;
+  }
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .showcase-header {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+}
+
+:root[data-theme-mode="dark"] .ui-showcase {
+  background: linear-gradient(135deg, var(--color-primary)12, var(--color-secondary)08);
+}
+
+:root[data-theme-mode="dark"] .stat-item {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+:root[data-theme-mode="dark"] .stat-item:hover {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+}
+
+:root[data-theme-mode="dark"] .achievement-item {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+:root[data-theme-mode="dark"] .achievement-item:hover {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+}
+
+:root[data-theme-mode="dark"] .theme-preview {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+}
+
+:root[data-theme-mode="dark"] .theme-preview:hover {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+}
+
+:root[data-theme-mode="dark"] .ant-tabs-tab {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary)) !important;
+}
+
+:root[data-theme-mode="dark"] .ant-tabs-tab:hover {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary)) !important;
+}
+
+:root[data-theme-mode="dark"] .ant-tabs-tab.ant-tabs-tab-active {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary)) !important;
+}
+
+:root[data-theme-mode="dark"] .ant-tabs-content-holder {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .stat-item,
+  .achievement-item,
+  .theme-preview,
+  .ant-card {
+    transition: none;
+  }
+  
+  .stat-item:hover,
+  .achievement-item:hover,
+  .theme-preview:hover,
+  .ant-card:hover {
+    transform: none;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .stat-item,
+  .achievement-item,
+  .theme-preview {
+    border-width: 2px;
+    border-color: var(--neutral-text-primary);
+  }
+  
+  .color-swatch {
+    border-width: 3px;
+    border-color: var(--neutral-text-primary);
+  }
+}

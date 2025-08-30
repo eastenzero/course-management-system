@@ -1,0 +1,336 @@
+/* 主布局样式 - 基于新设计规范 */
+.main-layout {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--neutral-bg-primary) 0%, var(--neutral-bg-secondary) 100%);
+  transition: background var(--duration-normal) var(--easing-standard);
+}
+
+/* 侧边栏样式 - 玻璃拟态 */
+.layout-sider {
+  /* 背景由JavaScript动态设置，不使用!important */
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border-right: var(--glass-highlight-width) solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  transition: background var(--duration-normal) var(--easing-standard);
+}
+
+.layout-sider .ant-layout-sider-children {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: transparent;
+}
+
+/* Logo 区域 - 玻璃效果 */
+.logo {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  height: 64px;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo-icon {
+  font-size: 24px;
+  color: white;
+  margin-right: 12px;
+  min-width: 24px;
+}
+
+.logo-text {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.logo-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  line-height: 1.2;
+}
+
+.logo-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* 菜单样式 */
+.layout-menu {
+  flex: 1;
+  border-right: none;
+  overflow-y: auto;
+  background: transparent !important;
+}
+
+/* 菜单项基础样式 */
+.layout-menu .ant-menu-item {
+  height: 48px;
+  line-height: 48px;
+  margin: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-normal) var(--easing-standard);
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: transparent !important;
+}
+
+.layout-menu .ant-menu-submenu {
+  margin: 4px 8px;
+}
+
+.layout-menu .ant-menu-submenu-title {
+  height: 48px;
+  line-height: 48px;
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-normal) var(--easing-standard);
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: transparent !important;
+}
+
+/* 悬浮效果 */
+.layout-menu .ant-menu-item:hover,
+.layout-menu .ant-menu-submenu-title:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  transform: translateX(2px);
+}
+
+/* 选中状态 */
+.layout-menu .ant-menu-item-selected {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: white !important;
+}
+
+.layout-menu .ant-menu-item-selected::after {
+  display: none;
+}
+
+/* 二级菜单样式 */
+.layout-menu .ant-menu-submenu .ant-menu {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: var(--radius-sm);
+  margin: 4px 0;
+}
+
+.layout-menu .ant-menu-submenu .ant-menu-item {
+  color: rgba(255, 255, 255, 0.8) !important;
+  margin: 2px 4px;
+  padding-left: 48px !important;
+}
+
+.layout-menu .ant-menu-submenu .ant-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.layout-menu .ant-menu-submenu .ant-menu-item-selected {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* 菜单图标颜色 */
+.layout-menu .ant-menu-item .anticon,
+.layout-menu .ant-menu-submenu-title .anticon {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.layout-menu .ant-menu-item:hover .anticon,
+.layout-menu .ant-menu-submenu-title:hover .anticon,
+.layout-menu .ant-menu-item-selected .anticon {
+  color: white;
+}
+
+/* 主内容区域 */
+.layout-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 头部样式 - 玻璃拟态 */
+.layout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+  background: var(--glass-bg-primary) !important;
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border-bottom: var(--glass-highlight-width) solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  z-index: 99;
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+/* 深色模式下的头部样式 */
+[data-mode="dark"] .layout-header {
+  background: var(--glass-bg-secondary) !important;
+  border-bottom-color: var(--glass-border);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.trigger-btn {
+  font-size: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  transition: all 0.3s;
+  color: var(--neutral-text-primary);
+}
+
+.trigger-btn:hover {
+  background-color: var(--glass-bg-secondary);
+  color: var(--color-primary);
+}
+
+/* 深色模式下的按钮样式 */
+[data-mode="dark"] .trigger-btn {
+  color: var(--neutral-text-primary);
+}
+
+[data-mode="dark"] .trigger-btn:hover {
+  background-color: var(--glass-bg-tertiary);
+  color: var(--color-primary);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.user-info:hover {
+  background-color: var(--glass-bg-secondary);
+}
+
+.user-name {
+  margin-left: 8px;
+  font-size: 14px;
+  color: var(--neutral-text-primary);
+  font-weight: 500;
+}
+
+/* 深色模式下的用户信息样式 */
+[data-mode="dark"] .user-info:hover {
+  background-color: var(--glass-bg-tertiary);
+}
+
+[data-mode="dark"] .user-name {
+  color: var(--neutral-text-primary);
+}
+
+/* 内容区域 */
+.layout-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background: transparent;
+  transition: background var(--duration-normal) var(--easing-standard);
+}
+
+/* 深色模式下的内容区域 */
+[data-mode="dark"] .layout-content {
+  background: transparent;
+  color: var(--neutral-text-primary);
+}
+
+.content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 112px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .layout-header {
+    padding: 0 16px;
+  }
+
+  .layout-content {
+    padding: 16px;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  .layout-sider {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
+
+  .layout-main {
+    margin-left: 80px;
+  }
+}
+
+@media (max-width: 576px) {
+  .layout-sider {
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+
+  .layout-sider.ant-layout-sider-collapsed {
+    transform: translateX(0);
+  }
+
+  .layout-main {
+    margin-left: 0;
+  }
+}
+
+/* 暗色主题适配 */
+/* 用 CSS 变量统一处理，移除暗色硬编码 */
+
+/* 动画效果 */
+.layout-sider {
+  transition: all 0.2s;
+}
+
+.layout-menu .ant-menu-item,
+.layout-menu .ant-menu-submenu-title {
+  transition: transform var(--motion-sm) var(--ease-standard);
+}
+
+/* 滚动条样式 */
+.layout-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.layout-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.layout-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.layout-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

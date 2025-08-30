@@ -1,0 +1,231 @@
+/* Enhanced Theme Selector Styles */
+.enhanced-theme-selector-drawer .ant-drawer-content {
+  background: var(--neutral-bg-primary);
+}
+
+.enhanced-theme-selector-drawer .ant-drawer-header {
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  backdrop-filter: blur(var(--blur-sm));
+  border-bottom: 1px solid var(--neutral-border);
+}
+
+/* 主题选择器内容 */
+.theme-selector-content {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* 当前主题信息卡片 */
+.current-theme-info {
+  margin-bottom: var(--spacing-md);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* 角色推荐卡片 */
+.role-recommendation {
+  background: linear-gradient(135deg, var(--color-primary)10, var(--color-secondary)10);
+  border: 1px solid rgba(var(--color-primary), 0.2);
+  margin-bottom: var(--spacing-md);
+}
+
+/* 主题分类 */
+.theme-category {
+  margin-bottom: var(--spacing-lg);
+}
+
+.category-header {
+  margin-bottom: var(--spacing-md);
+}
+
+.category-header .ant-typography {
+  margin: 0;
+}
+
+/* 主题预览卡片 */
+.theme-preview {
+  position: relative;
+  transition: all var(--duration-normal) var(--easing-standard);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.theme-preview:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-preview.selected {
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(var(--color-primary), 0.1);
+}
+
+.theme-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.selected-icon {
+  color: var(--color-success);
+  font-weight: bold;
+}
+
+/* 色彩样本 */
+.theme-preview-colors {
+  display: flex;
+  gap: 4px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.color-swatch:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* 主题演示区域 */
+.theme-preview-demo {
+  margin-top: var(--spacing-sm);
+}
+
+.demo-card {
+  padding: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 32px;
+}
+
+.demo-button {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.demo-text-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.demo-line {
+  height: 4px;
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+.demo-line.short {
+  width: 60%;
+  opacity: 0.4;
+}
+
+/* 高级选项 */
+.advanced-options {
+  background: var(--neutral-bg-secondary);
+  border: 1px solid var(--neutral-border);
+}
+
+.option-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+}
+
+/* 主题选择器触发按钮 */
+.theme-selector-trigger {
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha));
+  transition: all var(--duration-fast) var(--easing-standard);
+}
+
+.theme-selector-trigger:hover {
+  background: rgba(255, 255, 255, calc(var(--glass-alpha-secondary) + 0.1));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .theme-preview {
+  background: var(--neutral-bg-secondary);
+  border-color: var(--neutral-border);
+}
+
+:root[data-theme-mode="dark"] .theme-selector-trigger {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+}
+
+:root[data-theme-mode="dark"] .theme-selector-trigger:hover {
+  background: rgba(0, 0, 0, calc(var(--glass-alpha-secondary) + 0.1));
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+:root[data-theme-mode="dark"] .role-recommendation {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme-mode="dark"] .advanced-options {
+  background: var(--neutral-bg-tertiary);
+  border-color: var(--neutral-border);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .enhanced-theme-selector-drawer {
+    width: 100% !important;
+  }
+  
+  .theme-preview-colors .color-swatch {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .category-header .ant-typography-h4 {
+    font-size: 16px;
+  }
+}
+
+/* 无障碍支持 */
+.theme-preview:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.theme-selector-trigger:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .theme-preview,
+  .theme-selector-trigger {
+    transition: none;
+  }
+  
+  .theme-preview:hover {
+    transform: none;
+  }
+}

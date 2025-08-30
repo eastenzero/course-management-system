@@ -1,0 +1,103 @@
+/* Comprehensive Demo Styles */
+.comprehensive-demo {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary)08, var(--color-secondary)05);
+  padding: var(--spacing-lg);
+}
+
+.demo-header {
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-card);
+}
+
+.demo-content {
+  margin-top: var(--spacing-lg);
+}
+
+/* 色彩展示 */
+.color-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-lg);
+  margin: var(--spacing-md) 0;
+}
+
+.color-item {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.color-swatch.large {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, var(--highlight-alpha));
+  box-shadow: var(--shadow-md);
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.color-swatch.large:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 增强选择框样式 */
+.enhanced-glass-select .ant-select-selector {
+  background: rgba(255, 255, 255, var(--glass-alpha-primary)) !important;
+  backdrop-filter: blur(var(--blur-md));
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha)) !important;
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.enhanced-glass-select .ant-select-selector:hover {
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary)) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .enhanced-glass-select .ant-select-selector {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary)) !important;
+  border-color: rgba(255, 255, 255, var(--highlight-alpha)) !important;
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-select .ant-select-selector:hover {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary)) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* 标签页样式增强 */
+.ant-tabs-tab {
+  backdrop-filter: blur(var(--blur-sm));
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  border-radius: var(--radius-button) var(--radius-button) 0 0;
+  margin-right: var(--spacing-sm);
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.ant-tabs-tab:hover {
+  background: rgba(255, 255, 255, var(--glass-alpha-primary));
+}
+
+.ant-tabs-tab.ant-tabs-tab-active {
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .comprehensive-demo {
+    padding: var(--spacing-md);
+  }
+  
+  .color-showcase {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .demo-header {
+    padding: var(--spacing-md);
+  }
+}

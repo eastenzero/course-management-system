@@ -1,0 +1,194 @@
+/* Modern Teacher Dashboard Styles */
+.modern-teacher-dashboard {
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, var(--color-primary)08, var(--color-secondary)05);
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  margin-bottom: var(--spacing-xl);
+  text-align: left;
+}
+
+.stats-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+/* 今日课表样式 */
+.today-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, var(--highlight-alpha));
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.schedule-item:hover {
+  background: rgba(255, 255, 255, var(--glass-alpha-primary));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.schedule-time {
+  min-width: 100px;
+  margin-right: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 12px;
+}
+
+.schedule-details {
+  flex: 1;
+}
+
+/* 快速操作区域 */
+.quick-actions {
+  padding: var(--spacing-sm) 0;
+}
+
+.quick-actions .enhanced-glass-button {
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+/* 活动时间线优化 */
+.ant-timeline-item-content {
+  margin-left: var(--spacing-md);
+}
+
+.ant-timeline-item-tail {
+  border-left: 2px solid rgba(var(--color-primary), 0.2);
+}
+
+.ant-timeline-item-head {
+  background: var(--neutral-bg-primary);
+  border: 2px solid var(--color-primary);
+}
+
+/* 统计卡片增强 */
+.ant-statistic-title {
+  color: var(--neutral-text-secondary);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-sm);
+}
+
+.ant-statistic-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* 表格样式增强 */
+.ant-table-thead > tr > th {
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+  backdrop-filter: blur(var(--blur-sm));
+  border-bottom: 1px solid var(--neutral-border);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: rgba(var(--color-primary), 0.05) !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .schedule-item {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+:root[data-theme-mode="dark"] .schedule-item:hover {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+}
+
+:root[data-theme-mode="dark"] .modern-teacher-dashboard {
+  background: linear-gradient(135deg, var(--color-primary)15, var(--color-secondary)08);
+}
+
+:root[data-theme-mode="dark"] .ant-timeline-item-head {
+  background: var(--neutral-bg-primary);
+  border-color: var(--color-primary);
+}
+
+:root[data-theme-mode="dark"] .ant-timeline-item-tail {
+  border-left-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 响应式适配 */
+@media (max-width: 1200px) {
+  .stats-section .ant-col {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-teacher-dashboard {
+    padding: var(--spacing-md);
+  }
+  
+  .schedule-item {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .schedule-time {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: var(--spacing-sm);
+    text-align: center;
+  }
+  
+  .quick-actions .enhanced-glass-button {
+    height: 50px;
+    font-size: 14px;
+  }
+  
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 576px) {
+  .stats-section {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .today-schedule {
+    gap: var(--spacing-sm);
+  }
+  
+  .schedule-item {
+    padding: var(--spacing-sm);
+  }
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .schedule-item {
+    transition: none;
+  }
+  
+  .schedule-item:hover {
+    transform: none;
+  }
+}

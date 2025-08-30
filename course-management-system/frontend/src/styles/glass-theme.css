@@ -1,0 +1,327 @@
+/* 毛玻璃主题样式 */
+@import './glass-variables.css';
+
+/* 基础毛玻璃卡片样式 */
+.glass-card {
+  background: var(--glass-bg-primary);
+  backdrop-filter: var(--glass-blur-medium);
+  -webkit-backdrop-filter: var(--glass-blur-medium);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-radius-large);
+  box-shadow: var(--glass-shadow-secondary);
+  transition: var(--glass-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 毛玻璃卡片变体 */
+.glass-card--primary {
+  background: var(--glass-bg-primary);
+  backdrop-filter: var(--glass-blur-medium);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-primary);
+}
+
+.glass-card--secondary {
+  background: var(--glass-bg-secondary);
+  backdrop-filter: var(--glass-blur-light);
+  border: 1px solid var(--glass-border-light);
+  box-shadow: var(--glass-shadow-secondary);
+}
+
+.glass-card--accent {
+  background: var(--glass-bg-accent);
+  backdrop-filter: var(--glass-blur-medium);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-secondary);
+}
+
+/* 毛玻璃效果强度 */
+.glass-effect--strong {
+  backdrop-filter: var(--glass-blur-strong);
+  -webkit-backdrop-filter: var(--glass-blur-strong);
+}
+
+.glass-effect--medium {
+  backdrop-filter: var(--glass-blur-medium);
+  -webkit-backdrop-filter: var(--glass-blur-medium);
+}
+
+.glass-effect--light {
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+}
+
+/* 悬浮效果 */
+.glass-hover {
+  cursor: pointer;
+  transition: var(--glass-transition);
+}
+
+.glass-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-hover);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 加载状态 */
+.glass-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -200px;
+  width: 200px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: glass-shimmer 2s infinite;
+}
+
+/* 页面背景 */
+.glass-page-background {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+}
+
+.glass-page-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(24, 144, 255, 0.8) 0%,
+    rgba(64, 169, 255, 0.6) 50%,
+    rgba(145, 213, 255, 0.4) 100%
+  );
+  z-index: var(--glass-z-background);
+}
+
+/* 学生仪表盘专用背景 */
+.student-dashboard-background {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%);
+  overflow: hidden;
+}
+
+.student-dashboard-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+  z-index: var(--glass-z-background);
+}
+
+/* 深色模式下的学生仪表盘背景 */
+:root[data-theme-mode="dark"] .student-dashboard-background {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+}
+
+:root[data-theme-mode="dark"] .student-dashboard-background::before {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+}
+
+.glass-content {
+  position: relative;
+  z-index: var(--glass-z-content);
+  padding: var(--glass-spacing-lg);
+}
+
+/* 网格布局 */
+.glass-grid {
+  display: grid;
+  gap: var(--glass-spacing-lg);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.glass-grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.glass-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.glass-grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* 容器 */
+.glass-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--glass-spacing-lg);
+}
+
+/* 欢迎横幅 */
+.glass-welcome-banner {
+  background: var(--glass-bg-primary);
+  backdrop-filter: var(--glass-blur-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-radius-large);
+  padding: var(--glass-spacing-xl);
+  margin-bottom: var(--glass-spacing-lg);
+  box-shadow: var(--glass-shadow-primary);
+}
+
+/* 统计卡片 */
+.glass-stat-card {
+  text-align: center;
+  padding: var(--glass-spacing-lg);
+}
+
+.glass-stat-card .ant-statistic-title {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--glass-font-size-base);
+  margin-bottom: var(--glass-spacing-sm);
+}
+
+.glass-stat-card .ant-statistic-content {
+  color: var(--glass-white);
+}
+
+.glass-stat-card .ant-statistic-content-value {
+  font-weight: 600;
+  font-size: var(--glass-font-size-xxl);
+}
+
+/* 表格样式 */
+.glass-table {
+  background: transparent;
+}
+
+.glass-table .ant-table {
+  background: transparent;
+}
+
+.glass-table .ant-table-thead > tr > th {
+  background: var(--glass-bg-secondary);
+  border-bottom: 1px solid var(--glass-border-light);
+  color: var(--glass-white);
+  font-weight: 500;
+}
+
+.glass-table .ant-table-tbody > tr > td {
+  background: transparent;
+  border-bottom: 1px solid var(--glass-border-light);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.glass-table .ant-table-tbody > tr:hover > td {
+  background: var(--glass-bg-secondary);
+}
+
+/* 按钮样式 */
+.glass-button {
+  background: var(--glass-bg-secondary);
+  border: 1px solid var(--glass-border-light);
+  color: var(--glass-white);
+  backdrop-filter: var(--glass-blur-light);
+  transition: var(--glass-transition);
+}
+
+.glass-button:hover {
+  background: var(--glass-bg-primary);
+  border-color: var(--glass-border);
+  color: var(--glass-white);
+  transform: translateY(-1px);
+}
+
+/* 输入框样式 */
+.glass-input {
+  background: var(--glass-bg-secondary);
+  border: 1px solid var(--glass-border-light);
+  color: var(--glass-white);
+  backdrop-filter: var(--glass-blur-light);
+}
+
+.glass-input:focus {
+  background: var(--glass-bg-primary);
+  border-color: var(--glass-primary);
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 响应式设计 */
+@media (max-width: 1199px) {
+  .glass-container {
+    padding: var(--glass-spacing-md);
+  }
+  
+  .glass-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .glass-grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .glass-container {
+    padding: var(--glass-spacing-sm);
+  }
+  
+  .glass-content {
+    padding: var(--glass-spacing-md);
+  }
+  
+  .glass-grid,
+  .glass-grid--2,
+  .glass-grid--3,
+  .glass-grid--4 {
+    grid-template-columns: 1fr;
+  }
+  
+  .glass-card {
+    border-radius: var(--glass-radius-medium);
+  }
+  
+  .glass-welcome-banner {
+    padding: var(--glass-spacing-lg);
+  }
+}
+
+/* 浏览器兼容性 */
+@supports not (backdrop-filter: blur(10px)) {
+  .glass-card,
+  .glass-card--primary,
+  .glass-card--secondary,
+  .glass-card--accent {
+    background: rgba(255, 255, 255, 0.9);
+  }
+  
+  [data-theme="dark"] .glass-card,
+  [data-theme="dark"] .glass-card--primary,
+  [data-theme="dark"] .glass-card--secondary,
+  [data-theme="dark"] .glass-card--accent {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}

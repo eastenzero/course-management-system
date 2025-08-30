@@ -1,0 +1,82 @@
+# 多阶段构建 - 构建阶段
+FROM python:3.9-slim as builder
+
+# 设置环境变量
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# 安装构建依赖
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        libpq-dev \
+        gcc \
+        g++ \
+        python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 创建虚拟环境
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 复制并安装Python依赖
+COPY requirements.txt /tmp/
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r /tmp/requirements.txt
+
+# 生产阶段
+FROM python:3.9-slim as production
+
+# 设置环境变量
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=course_management.settings.production
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 安装运行时依赖
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        postgresql-client \
+        gettext \
+        curl \
+        netcat \
+    && rm -rf /var/lib/apt/lists/*
+
+# 从构建阶段复制虚拟环境
+COPY --from=builder /opt/venv /opt/venv
+
+# 创建应用用户
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制项目文件
+COPY --chown=appuser:appuser . /app/
+
+# 创建必要的目录并设置权限
+RUN mkdir -p /app/static /app/media /app/logs \
+    && chown -R appuser:appuser /app
+
+# 复制启动脚本
+COPY --chown=appuser:appuser deployment/docker/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# 切换到应用用户
+USER appuser
+
+# 收集静态文件
+RUN python manage.py collectstatic --noinput
+
+# 暴露端口
+EXPOSE 8000
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/api/health/ || exit 1
+
+# 使用entrypoint脚本启动
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# 默认命令
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "gevent", "--worker-connections", "1000", "--timeout", "120", "--keep-alive", "5", "--max-requests", "1000", "--max-requests-jitter", "100", "course_management.wsgi:application"]

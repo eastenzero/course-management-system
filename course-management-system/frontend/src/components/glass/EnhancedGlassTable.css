@@ -1,0 +1,241 @@
+/* Enhanced Glass Table Styles */
+.enhanced-glass-table {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+/* 玻璃效果等级 */
+.enhanced-glass-table.glass-sm {
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+}
+
+.enhanced-glass-table.glass-md {
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  background: rgba(255, 255, 255, var(--glass-alpha-primary));
+}
+
+.enhanced-glass-table.glass-lg {
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+}
+
+/* 兼容性降级 */
+.enhanced-glass-table.glass-fallback {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+}
+
+/* 内部表格样式 */
+.enhanced-glass-table .glass-table-inner {
+  background: transparent !important;
+}
+
+.enhanced-glass-table .glass-table-inner .ant-table {
+  background: transparent;
+}
+
+.enhanced-glass-table .glass-table-inner .ant-table-container {
+  background: transparent;
+}
+
+.enhanced-glass-table .glass-table-inner .ant-table-content {
+  background: transparent;
+}
+
+/* 表头样式 */
+.enhanced-glass-table .glass-header-cell {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: var(--neutral-text-primary) !important;
+  font-weight: var(--font-weight-semibold);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  position: relative;
+}
+
+.enhanced-glass-table .glass-header-cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+/* 固定表头增强 */
+.enhanced-glass-table.sticky-header .glass-header-cell {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+}
+
+/* 表格行样式 */
+.enhanced-glass-table .glass-body-row {
+  transition: all var(--duration-fast) var(--easing-standard);
+}
+
+.enhanced-glass-table.hover-effect .glass-body-row:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.enhanced-glass-table.hover-effect .glass-body-row:hover .glass-body-cell {
+  background: transparent !important;
+}
+
+/* 表格单元格样式 */
+.enhanced-glass-table .glass-body-cell {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--neutral-text-secondary);
+  transition: all var(--duration-fast) var(--easing-standard);
+}
+
+/* 滚动性能优化 */
+.enhanced-glass-table.scrolling {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.enhanced-glass-table.scrolling .glass-header-cell,
+.enhanced-glass-table.scrolling .glass-body-cell {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.scroll-performance-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 虚拟滚动优化 */
+.enhanced-glass-table.virtual-scroll {
+  contain: layout style paint;
+}
+
+.enhanced-glass-table.virtual-scroll .glass-body-row {
+  contain: layout style paint;
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .enhanced-glass-table.glass-sm {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-table.glass-md {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-table.glass-lg {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-table .glass-header-cell {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--neutral-text-primary) !important;
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-table .glass-header-cell::before {
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.05) 0%, 
+    rgba(255, 255, 255, 0.02) 100%
+  );
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-table.hover-effect .glass-body-row:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-table .glass-body-cell {
+  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--neutral-text-secondary);
+}
+
+:root[data-theme-mode="dark"] .enhanced-glass-table.glass-fallback {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 无障碍支持 */
+.enhanced-glass-table .glass-header-cell:focus,
+.enhanced-glass-table .glass-body-cell:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .enhanced-glass-table,
+  .enhanced-glass-table .glass-body-row,
+  .enhanced-glass-table .glass-body-cell {
+    transition: none;
+  }
+  
+  .enhanced-glass-table.hover-effect .glass-body-row:hover {
+    transform: none;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .enhanced-glass-table {
+    border: 2px solid var(--neutral-border);
+  }
+  
+  .enhanced-glass-table .glass-header-cell,
+  .enhanced-glass-table .glass-body-cell {
+    border-color: var(--neutral-border) !important;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .enhanced-glass-table {
+    border-radius: var(--radius-sm);
+  }
+  
+  .enhanced-glass-table .glass-header-cell,
+  .enhanced-glass-table .glass-body-cell {
+    padding: var(--spacing-sm);
+    font-size: 14px;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .enhanced-glass-table {
+    background: white !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+  
+  .enhanced-glass-table .glass-header-cell,
+  .enhanced-glass-table .glass-body-cell {
+    background: white !important;
+    color: black !important;
+    border-color: #ccc !important;
+  }
+}

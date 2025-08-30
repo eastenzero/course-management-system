@@ -1,0 +1,276 @@
+/**
+ * Enhanced CSS Variables System
+ * 基于新Design Tokens的增强CSS变量系统
+ */
+
+/* 基础CSS变量定义 - 默认为莫奈清晨湖畔主题 */
+:root {
+  /* 主题颜色 */
+  --color-primary: #A9D6E5;
+  --color-secondary: #89C2D9;
+  --color-tertiary: #B8E0D2;
+  --color-accent: #CDB4DB;
+  --color-neutral: #E6E8EB;
+
+  /* 功能色 - 莫奈系列 */
+  --color-success: #6BAF92;
+  --color-warning: #D8A657;
+  --color-error: #B55A5A;
+  --color-info: #6F90B6;
+
+  /* 中性色 - 浅色模式 */
+  --neutral-bg-primary: #ffffff;
+  --neutral-bg-secondary: #fafafa;
+  --neutral-bg-tertiary: #f5f5f5;
+  --neutral-text-primary: #262626;
+  --neutral-text-secondary: #595959;
+  --neutral-text-tertiary: #8c8c8c;
+  --neutral-border: #e8e8e8;
+
+  /* 玻璃效果 - 浅色模式 */
+  --glass-alpha-primary: 0.60;
+  --glass-alpha-secondary: 0.55;
+  --glass-alpha-tertiary: 0.68;
+
+  /* 纹理与颗粒 */
+  --glass-noise-opacity: 0.03;
+  --glass-noise-size: 100px;
+
+  /* 模糊效果 */
+  --blur-sm: 8px;
+  --blur-md: 16px;
+  --blur-lg: 24px;
+
+  /* 阴影 */
+  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 16px 32px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
+
+  /* 高光 */
+  --highlight-alpha: 0.35;
+  --highlight-width: 1px;
+
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-xxl: 24px;
+  --radius-button: 10px;    /* 按钮 10-12 */
+  --radius-card: 16px;      /* 卡片 16 */
+  --radius-modal: 20px;     /* 弹窗 20-24 */
+  --radius-drawer: 24px;    /* 抽屉 20-24 */
+  --radius-pill: 9999px;    /* 胶囊控件全圆角 */
+
+  /* 间距 - 8pt网格 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* 动效 */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 250ms;
+  --duration-enter: 200ms;
+  --duration-exit: 150ms;
+  --easing-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --easing-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --easing-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
+
+  /* 字体 */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.8;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
+
+/* 深色模式覆盖 */
+:root[data-theme-mode="dark"] {
+  /* 中性色 - 深色模式 */
+  --neutral-bg-primary: #141414;
+  --neutral-bg-secondary: #1f1f1f;
+  --neutral-bg-tertiary: #262626;
+  --neutral-text-primary: #ffffff;
+  --neutral-text-secondary: #d9d9d9;
+  --neutral-text-tertiary: #8c8c8c;
+  --neutral-border: #424242;
+
+  /* 玻璃效果 - 深色模式 */
+  --glass-alpha-primary: 0.35;
+  --glass-alpha-secondary: 0.28;
+  --glass-alpha-tertiary: 0.40;
+
+  /* 高光 - 深色模式 */
+  --highlight-alpha: 0.30;
+
+  /* 阴影 - 深色模式增强 */
+  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 16px 32px rgba(0, 0, 0, 0.18);
+  --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.22);
+}
+
+/* 莫奈主题变体 */
+:root[data-theme-category="monet"][data-theme-key="a"] {
+  --color-primary: #A9D6E5;
+  --color-secondary: #89C2D9;
+  --color-tertiary: #B8E0D2;
+  --color-accent: #CDB4DB;
+  --color-neutral: #E6E8EB;
+}
+
+:root[data-theme-category="monet"][data-theme-key="b"] {
+  --color-primary: #FFF1B6;
+  --color-secondary: #BEE1D9;
+  --color-tertiary: #F6C7C7;
+  --color-accent: #D9C2E9;
+  --color-neutral: #F2F4F6;
+}
+
+:root[data-theme-category="monet"][data-theme-key="c"] {
+  --color-primary: #B6D0E2;
+  --color-secondary: #F5E7A1;
+  --color-tertiary: #D8CBE6;
+  --color-accent: #BFD8CC;
+  --color-neutral: #E9ECEF;
+}
+
+/* 莫兰迪主题变体 */
+:root[data-theme-category="morandi"][data-theme-key="a"] {
+  --color-primary: #A3B18A;
+  --color-secondary: #CFC9C2;
+  --color-tertiary: #CDB4BD;
+  --color-accent: #A7A9C9;
+  --color-neutral: #D8C3A5;
+  --color-success: #6E9B7F;
+  --color-warning: #C7934B;
+  --color-error: #A35555;
+  --color-info: #6E86A8;
+}
+
+:root[data-theme-category="morandi"][data-theme-key="b"] {
+  --color-primary: #D9CEC1;
+  --color-secondary: #8A8FA3;
+  --color-tertiary: #B08A8A;
+  --color-accent: #9C93A7;
+  --color-neutral: #8FA08C;
+  --color-success: #6C927A;
+  --color-warning: #C28D47;
+  --color-error: #A05C5C;
+  --color-info: #6D85A2;
+}
+
+:root[data-theme-category="morandi"][data-theme-key="c"] {
+  --color-primary: #C9C3BB;
+  --color-secondary: #A0A7B5;
+  --color-tertiary: #C6A6A6;
+  --color-accent: #AEB8A3;
+  --color-neutral: #EFEEEA;
+  --color-success: #6A927A;
+  --color-warning: #C0924A;
+  --color-error: #A05A5A;
+  --color-info: #6D86A5;
+}
+
+/* 玻璃拟态混合类 */
+.glass-surface {
+  background: rgba(255, 255, 255, var(--glass-alpha-primary));
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: var(--highlight-width) solid rgba(255, 255, 255, var(--highlight-alpha));
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-card);
+}
+
+.glass-surface-secondary {
+  background: rgba(255, 255, 255, var(--glass-alpha-secondary));
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  border: var(--highlight-width) solid rgba(255, 255, 255, var(--highlight-alpha));
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
+}
+
+.glass-surface-tertiary {
+  background: rgba(255, 255, 255, var(--glass-alpha-tertiary));
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: var(--highlight-width) solid rgba(255, 255, 255, var(--highlight-alpha));
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-lg);
+}
+
+/* 深色模式下的玻璃表面 */
+:root[data-theme-mode="dark"] .glass-surface {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+:root[data-theme-mode="dark"] .glass-surface-secondary {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+:root[data-theme-mode="dark"] .glass-surface-tertiary {
+  background: rgba(0, 0, 0, var(--glass-alpha-tertiary));
+  border-color: rgba(255, 255, 255, var(--highlight-alpha));
+}
+
+/* 浏览器兼容性降级 */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-surface,
+  .glass-surface-secondary,
+  .glass-surface-tertiary {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  :root[data-theme-mode="dark"] .glass-surface,
+  :root[data-theme-mode="dark"] .glass-surface-secondary,
+  :root[data-theme-mode="dark"] .glass-surface-tertiary {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* 动效基础类 */
+.transition-standard {
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.transition-fast {
+  transition: all var(--duration-fast) var(--easing-standard);
+}
+
+.transition-slow {
+  transition: all var(--duration-slow) var(--easing-standard);
+}
+
+/* 响应式网格 */
+@media (max-width: 576px) {
+  :root {
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    --radius-card: 12px;
+    --radius-modal: 16px;
+  }
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .transition-standard,
+  .transition-fast,
+  .transition-slow,
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

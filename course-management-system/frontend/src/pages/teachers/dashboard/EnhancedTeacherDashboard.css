@@ -1,0 +1,320 @@
+/* Enhanced Teacher Dashboard Styles */
+.enhanced-teacher-dashboard {
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* 加载状态 */
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--neutral-text-secondary);
+}
+
+/* 头部欢迎区域 */
+.dashboard-header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.welcome-card {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
+}
+
+.welcome-card .ant-card-body {
+  padding: var(--spacing-xl);
+}
+
+/* 统计卡片行 */
+.stats-row {
+  margin-bottom: var(--spacing-lg);
+}
+
+.stat-card {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card .ant-card-body {
+  padding: var(--spacing-lg);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.stat-card .ant-statistic {
+  width: 100%;
+}
+
+.stat-card .ant-statistic-title {
+  color: var(--neutral-text-secondary) !important;
+  font-size: 14px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.stat-card .ant-statistic-content {
+  color: var(--neutral-text-primary) !important;
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+}
+
+/* 主要内容区域 */
+.main-content {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* 活动时间线 */
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding: var(--spacing-sm) 0;
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-time {
+  font-size: 12px;
+  white-space: nowrap;
+  margin-left: var(--spacing-md);
+}
+
+/* 快速操作按钮 */
+.quick-action-btn {
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-normal) var(--easing-standard);
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.quick-action-btn .anticon {
+  font-size: 20px;
+}
+
+/* 课程概览 */
+.course-overview {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* 玻璃卡片增强 */
+.enhanced-teacher-dashboard .ant-card {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.enhanced-teacher-dashboard .ant-card-head {
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+}
+
+.enhanced-teacher-dashboard .ant-card-head-title {
+  color: var(--neutral-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.enhanced-teacher-dashboard .ant-card-body {
+  background: transparent;
+}
+
+/* 时间线样式增强 */
+.enhanced-teacher-dashboard .ant-timeline {
+  margin-top: var(--spacing-md);
+}
+
+.enhanced-teacher-dashboard .ant-timeline-item-content {
+  color: var(--neutral-text-secondary);
+}
+
+/* 进度条样式 */
+.enhanced-teacher-dashboard .ant-progress-bg {
+  border-radius: var(--radius-pill);
+}
+
+.enhanced-teacher-dashboard .ant-progress-inner {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-pill);
+}
+
+/* 标签样式 */
+.enhanced-teacher-dashboard .ant-tag {
+  border-radius: var(--radius-sm);
+  border: none;
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .welcome-card {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme-mode="dark"] .stat-card {
+  background: rgba(0, 0, 0, var(--glass-alpha-secondary));
+}
+
+:root[data-theme-mode="dark"] .enhanced-teacher-dashboard .ant-card-head {
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme-mode="dark"] .enhanced-teacher-dashboard .ant-progress-inner {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .stats-row .ant-col {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .enhanced-teacher-dashboard {
+    padding: 0;
+  }
+  
+  .welcome-card .ant-card-body {
+    padding: var(--spacing-lg);
+  }
+  
+  .stat-card {
+    height: 100px;
+  }
+  
+  .stat-card .ant-card-body {
+    padding: var(--spacing-md);
+  }
+  
+  .stat-card .ant-statistic-content {
+    font-size: 20px;
+  }
+  
+  .quick-action-btn {
+    height: 50px;
+  }
+  
+  .quick-action-btn .anticon {
+    font-size: 16px;
+  }
+  
+  .activity-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+  
+  .activity-time {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .stats-row {
+    margin: 0 -8px var(--spacing-lg) -8px;
+  }
+  
+  .stats-row .ant-col {
+    padding: 0 8px;
+  }
+  
+  .main-content {
+    margin: 0 -8px var(--spacing-lg) -8px;
+  }
+  
+  .main-content .ant-col {
+    padding: 0 8px;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .course-overview {
+    margin: 0 -8px var(--spacing-lg) -8px;
+  }
+  
+  .course-overview .ant-col {
+    padding: 0 8px;
+  }
+}
+
+/* 无障碍支持 */
+.stat-card:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.quick-action-btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .quick-action-btn {
+    transition: none;
+  }
+  
+  .stat-card:hover,
+  .quick-action-btn:hover {
+    transform: none;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .welcome-card,
+  .stat-card {
+    border: 2px solid var(--neutral-border);
+    background: var(--neutral-bg-primary) !important;
+  }
+  
+  .enhanced-teacher-dashboard .ant-card-head {
+    background: var(--neutral-bg-secondary) !important;
+    border-bottom-color: var(--neutral-border) !important;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .enhanced-teacher-dashboard {
+    background: white !important;
+  }
+  
+  .welcome-card,
+  .stat-card {
+    background: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .quick-action-btn {
+    display: none;
+  }
+}

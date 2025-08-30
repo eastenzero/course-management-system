@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>独立主题测试页面</title>
+    <style>
+        :root {
+            /* 默认CSS变量 */
+            --color-primary: #1890ff;
+            --color-secondary: #52c41a;
+            --color-tertiary: #faad14;
+            --color-accent: #f5222d;
+            --color-neutral: #8c8c8c;
+            --radius-md: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .theme-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .theme-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            text-align: center;
+        }
+        
+        .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .color-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .color-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+        
+        .color-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin: 0 auto 8px;
+        }
+        
+        .color-label {
+            color: white;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        
+        .test-area {
+            margin-top: 20px;
+        }
+        
+        .test-card {
+            background: var(--color-primary);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .test-card.secondary {
+            background: var(--color-secondary);
+        }
+        
+        .test-card.accent {
+            background: var(--color-accent);
+        }
+        
+        .status {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 独立主题测试页面</h1>
+        
+        <div class="section">
+            <h3>📊 当前主题状态</h3>
+            <div id="current-theme-info">
+                <p style="color: white;">类别: <span id="current-category">未知</span></p>
+                <p style="color: white;">主题键: <span id="current-key">未知</span></p>
+                <p style="color: white;">模式: <span id="current-mode">未知</span></p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🎯 莫奈主题</h3>
+            <div class="theme-buttons">
+                <button class="theme-btn" onclick="setTheme('monet', 'a')">清晨湖畔</button>
+                <button class="theme-btn" onclick="setTheme('monet', 'b')">晨曦花园</button>
+                <button class="theme-btn" onclick="setTheme('monet', 'c')">海风薰衣草</button>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🎨 莫兰迪主题</h3>
+            <div class="theme-buttons">
+                <button class="theme-btn" onclick="setTheme('morandi', 'a')">岩石与苔</button>
+                <button class="theme-btn" onclick="setTheme('morandi', 'b')">燕麦与石墨</button>
+                <button class="theme-btn" onclick="setTheme('morandi', 'c')">陶瓷与灰烬</button>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🔧 模式切换</h3>
+            <div class="theme-buttons">
+                <button class="theme-btn" onclick="toggleMode()">切换明暗模式</button>
+                <button class="theme-btn" onclick="generateRandomTheme()">随机主题</button>
+                <button class="theme-btn" onclick="clearThemeCache()">清除缓存</button>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🎨 颜色预览</h3>
+            <div class="color-display">
+                <div class="color-item">
+                    <div class="color-swatch" id="primary-swatch"></div>
+                    <div class="color-label">Primary</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" id="secondary-swatch"></div>
+                    <div class="color-label">Secondary</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" id="accent-swatch"></div>
+                    <div class="color-label">Accent</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🧪 效果测试</h3>
+            <div class="test-area">
+                <div class="test-card">主色测试卡片</div>
+                <div class="test-card secondary">辅色测试卡片</div>
+                <div class="test-card accent">强调色测试卡片</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>📝 调试信息</h3>
+            <div id="debug-status" class="status">等待操作...</div>
+        </div>
+    </div>
+
+    <script>
+        // 主题数据
+        const themes = {
+            monet: {
+                a: { name: '清晨湖畔', primary: '#A9D6E5', secondary: '#89C2D9', tertiary: '#B8E0D2', accent: '#D6EAF8', neutral: '#E9ECEF' },
+                b: { name: '晨曦花园', primary: '#E9C46A', secondary: '#F4A261', tertiary: '#E76F51', accent: '#2A9D8F', neutral: '#264653' },
+                c: { name: '海风薰衣草', primary: '#B19CD9', secondary: '#C9A9DD', tertiary: '#FFB3BA', accent: '#BFDBF7', neutral: '#E9ECEF' }
+            },
+            morandi: {
+                a: { name: '岩石与苔', primary: '#A3B18A', secondary: '#CFC9C2', tertiary: '#CDB4BD', accent: '#B7B7A4', neutral: '#E9ECEF' },
+                b: { name: '燕麦与石墨', primary: '#D4A574', secondary: '#C9ADA7', tertiary: '#A8DADC', accent: '#457B9D', neutral: '#1D3557' },
+                c: { name: '陶瓷与灰烬', primary: '#C8B8B0', secondary: '#D4C5B9', tertiary: '#B8A99A', accent: '#8D7B68', neutral: '#6B5B73' }
+            }
+        };
+        
+        let currentTheme = { category: 'monet', key: 'a', mode: 'light' };
+        
+        // 日志函数
+        function log(message) {
+            const status = document.getElementById('debug-status');
+            const timestamp = new Date().toLocaleTimeString();
+            status.innerHTML += `[${timestamp}] ${message}\n`;
+            status.scrollTop = status.scrollHeight;
+            console.log(message);
+        }
+        
+        // 应用主题
+        function applyTheme(category, key, mode = 'light') {
+            log(`应用主题: ${category} - ${key} (${mode})`);
+            
+            const theme = themes[category][key];
+            if (!theme) {
+                log(`错误: 找不到主题 ${category} - ${key}`);
+                return;
+            }
+            
+            // 设置CSS变量
+            const root = document.documentElement;
+            root.style.setProperty('--color-primary', theme.primary);
+            root.style.setProperty('--color-secondary', theme.secondary);
+            root.style.setProperty('--color-tertiary', theme.tertiary);
+            root.style.setProperty('--color-accent', theme.accent);
+            root.style.setProperty('--color-neutral', theme.neutral);
+            
+            // 设置data属性
+            root.setAttribute('data-theme-category', category);
+            root.setAttribute('data-theme-key', key);
+            root.setAttribute('data-theme-mode', mode);
+            
+            // 更新当前主题
+            currentTheme = { category, key, mode };
+            
+            // 保存到localStorage
+            try {
+                localStorage.setItem('ui-theme-v2', JSON.stringify(currentTheme));
+                log(`主题已保存到localStorage`);
+            } catch (error) {
+                log(`保存主题失败: ${error.message}`);
+            }
+            
+            // 更新UI
+            updateUI();
+            log(`主题应用成功: ${theme.name}`);
+        }
+        
+        // 设置主题
+        function setTheme(category, key) {
+            applyTheme(category, key, currentTheme.mode);
+        }
+        
+        // 切换模式
+        function toggleMode() {
+            const newMode = currentTheme.mode === 'light' ? 'dark' : 'light';
+            applyTheme(currentTheme.category, currentTheme.key, newMode);
+        }
+        
+        // 生成随机主题
+        function generateRandomTheme() {
+            const categories = ['monet', 'morandi'];
+            const keys = ['a', 'b', 'c'];
+            const modes = ['light', 'dark'];
+            
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const randomKey = keys[Math.floor(Math.random() * keys.length)];
+            const randomMode = modes[Math.floor(Math.random() * modes.length)];
+            
+            log(`生成随机主题: ${randomCategory} - ${randomKey} (${randomMode})`);
+            applyTheme(randomCategory, randomKey, randomMode);
+        }
+        
+        // 清除缓存
+        function clearThemeCache() {
+            localStorage.removeItem('ui-theme-v2');
+            log('主题缓存已清除');
+        }
+        
+        // 更新UI
+        function updateUI() {
+            // 更新主题信息
+            document.getElementById('current-category').textContent = currentTheme.category;
+            document.getElementById('current-key').textContent = currentTheme.key;
+            document.getElementById('current-mode').textContent = currentTheme.mode;
+            
+            // 更新颜色预览
+            const theme = themes[currentTheme.category][currentTheme.key];
+            document.getElementById('primary-swatch').style.backgroundColor = theme.primary;
+            document.getElementById('secondary-swatch').style.backgroundColor = theme.secondary;
+            document.getElementById('accent-swatch').style.backgroundColor = theme.accent;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+        }
+        
+        // 初始化
+        function init() {
+            log('初始化独立主题测试页面...');
+            
+            // 尝试从localStorage加载主题
+            try {
+                const saved = localStorage.getItem('ui-theme-v2');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    currentTheme = parsed;
+                    log(`从localStorage加载主题: ${JSON.stringify(parsed)}`);
+                } else {
+                    log('未找到保存的主题，使用默认主题');
+                }
+            } catch (error) {
+                log(`加载主题失败: ${error.message}`);
+            }
+            
+            // 应用当前主题
+            applyTheme(currentTheme.category, currentTheme.key, currentTheme.mode);
+        }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

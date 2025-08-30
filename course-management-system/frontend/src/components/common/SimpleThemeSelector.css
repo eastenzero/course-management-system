@@ -1,0 +1,211 @@
+/* Simple Theme Selector Styles */
+.simple-theme-selector {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  background: rgba(255, 255, 255, var(--glass-alpha-primary));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.simple-theme-selector .ant-card-head {
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+}
+
+.simple-theme-selector .ant-card-head-title {
+  color: var(--neutral-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.simple-theme-selector .ant-card-body {
+  background: transparent;
+  padding: 16px;
+}
+
+/* 模式切换区域 */
+.mode-section {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 16px;
+}
+
+/* 主题分类区域 */
+.theme-category-section {
+  margin-bottom: 20px;
+}
+
+.theme-category-section:last-child {
+  margin-bottom: 12px;
+}
+
+.category-header {
+  margin-bottom: 8px;
+}
+
+/* 主题选项 */
+.theme-option {
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  padding: 8px;
+  transition: all var(--duration-fast) var(--easing-standard);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.theme-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-option.active {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.3);
+}
+
+/* 主题预览 */
+.theme-preview {
+  width: 100%;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.active-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* 主题名称 */
+.theme-name {
+  font-size: 11px;
+  color: var(--neutral-text-secondary);
+  display: block;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 颜色点 */
+.color-dots {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.color-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 当前主题信息 */
+.current-theme-info {
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+/* 深色模式适配 */
+:root[data-theme-mode="dark"] .simple-theme-selector {
+  background: rgba(0, 0, 0, var(--glass-alpha-primary));
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme-mode="dark"] .simple-theme-selector .ant-card-head {
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme-mode="dark"] .mode-section {
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme-mode="dark"] .theme-option {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme-mode="dark"] .theme-option:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme-mode="dark"] .theme-option.active {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme-mode="dark"] .current-theme-info {
+  border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .simple-theme-selector {
+    width: 320px;
+  }
+  
+  .theme-preview {
+    height: 32px;
+  }
+  
+  .theme-name {
+    font-size: 10px;
+  }
+  
+  .color-dot {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+/* 无障碍支持 */
+.theme-option:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .theme-option {
+    transition: none;
+  }
+  
+  .theme-option:hover {
+    transform: none;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .simple-theme-selector {
+    border: 2px solid var(--neutral-border);
+    background: var(--neutral-bg-primary) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .theme-option {
+    border: 1px solid var(--neutral-border);
+    background: var(--neutral-bg-secondary) !important;
+  }
+  
+  .theme-option.active {
+    border: 2px solid var(--color-primary);
+  }
+}

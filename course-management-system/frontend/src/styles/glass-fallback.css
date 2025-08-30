@@ -1,0 +1,256 @@
+/* 玻璃效果降级样式 */
+/* 当不支持backdrop-filter或性能不足时的降级方案 */
+
+/* 基础降级检测 */
+:root {
+  --glass-fallback-enabled: 0;
+}
+
+/* 不支持backdrop-filter时的降级 */
+@supports not (backdrop-filter: blur(1px)) and not (-webkit-backdrop-filter: blur(1px)) {
+  :root {
+    --glass-fallback-enabled: 1;
+  }
+}
+
+/* 降级模式：透明 */
+:root[data-glass-fallback="transparent"] .enhanced-glass-button,
+:root[data-glass-fallback="transparent"] .enhanced-glass-card,
+:root[data-glass-fallback="transparent"] .enhanced-glass-input,
+:root[data-glass-fallback="transparent"] .enhanced-glass-table,
+:root[data-glass-fallback="transparent"] .enhanced-glass-modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 降级模式：实色 */
+:root[data-glass-fallback="solid"] .enhanced-glass-button,
+:root[data-glass-fallback="solid"] .enhanced-glass-card,
+:root[data-glass-fallback="solid"] .enhanced-glass-input,
+:root[data-glass-fallback="solid"] .enhanced-glass-table,
+:root[data-glass-fallback="solid"] .enhanced-glass-modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: var(--neutral-bg-primary) !important;
+  border: 1px solid var(--neutral-border) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 降级模式：渐变 */
+:root[data-glass-fallback="gradient"] .enhanced-glass-button,
+:root[data-glass-fallback="gradient"] .enhanced-glass-card,
+:root[data-glass-fallback="gradient"] .enhanced-glass-input,
+:root[data-glass-fallback="gradient"] .enhanced-glass-table,
+:root[data-glass-fallback="gradient"] .enhanced-glass-modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(255, 255, 255, 0.85) 100%
+  ) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 深色模式降级 */
+:root[data-theme-mode="dark"][data-glass-fallback="transparent"] .enhanced-glass-button,
+:root[data-theme-mode="dark"][data-glass-fallback="transparent"] .enhanced-glass-card,
+:root[data-theme-mode="dark"][data-glass-fallback="transparent"] .enhanced-glass-input,
+:root[data-theme-mode="dark"][data-glass-fallback="transparent"] .enhanced-glass-table,
+:root[data-theme-mode="dark"][data-glass-fallback="transparent"] .enhanced-glass-modal {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+:root[data-theme-mode="dark"][data-glass-fallback="gradient"] .enhanced-glass-button,
+:root[data-theme-mode="dark"][data-glass-fallback="gradient"] .enhanced-glass-card,
+:root[data-theme-mode="dark"][data-glass-fallback="gradient"] .enhanced-glass-input,
+:root[data-theme-mode="dark"][data-glass-fallback="gradient"] .enhanced-glass-table,
+:root[data-theme-mode="dark"][data-glass-fallback="gradient"] .enhanced-glass-modal {
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.95) 0%, 
+    rgba(0, 0, 0, 0.85) 100%
+  ) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 禁用玻璃效果时 */
+:root[data-glass-enabled="false"] .enhanced-glass-button,
+:root[data-glass-enabled="false"] .enhanced-glass-card,
+:root[data-glass-enabled="false"] .enhanced-glass-input,
+:root[data-glass-enabled="false"] .enhanced-glass-table,
+:root[data-glass-enabled="false"] .enhanced-glass-modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: var(--neutral-bg-primary) !important;
+  border: 1px solid var(--neutral-border) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 禁用噪点纹理 */
+:root[data-glass-enabled="false"] .glass-noise::before,
+:root[data-glass-noise-enabled="false"] .glass-noise::before {
+  display: none !important;
+}
+
+/* 禁用动画 */
+:root[data-glass-animations-enabled="false"] .enhanced-glass-button,
+:root[data-glass-animations-enabled="false"] .enhanced-glass-card,
+:root[data-glass-animations-enabled="false"] .enhanced-glass-input,
+:root[data-glass-animations-enabled="false"] .enhanced-glass-table,
+:root[data-glass-animations-enabled="false"] .enhanced-glass-modal {
+  transition: none !important;
+  animation: none !important;
+}
+
+:root[data-glass-animations-enabled="false"] .enhanced-glass-button:hover,
+:root[data-glass-animations-enabled="false"] .enhanced-glass-card:hover,
+:root[data-glass-animations-enabled="false"] .enhanced-glass-input:hover {
+  transform: none !important;
+}
+
+/* 模糊级别控制 */
+:root[data-glass-blur-level="none"] .enhanced-glass-button,
+:root[data-glass-blur-level="none"] .enhanced-glass-card,
+:root[data-glass-blur-level="none"] .enhanced-glass-input,
+:root[data-glass-blur-level="none"] .enhanced-glass-table,
+:root[data-glass-blur-level="none"] .enhanced-glass-modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+:root[data-glass-blur-level="low"] .enhanced-glass-button,
+:root[data-glass-blur-level="low"] .enhanced-glass-card,
+:root[data-glass-blur-level="low"] .enhanced-glass-input,
+:root[data-glass-blur-level="low"] .enhanced-glass-table,
+:root[data-glass-blur-level="low"] .enhanced-glass-modal {
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+:root[data-glass-blur-level="medium"] .enhanced-glass-button,
+:root[data-glass-blur-level="medium"] .enhanced-glass-card,
+:root[data-glass-blur-level="medium"] .enhanced-glass-input,
+:root[data-glass-blur-level="medium"] .enhanced-glass-table,
+:root[data-glass-blur-level="medium"] .enhanced-glass-modal {
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* 性能优化：减少模糊层数 */
+:root[data-glass-max-layers="1"] .enhanced-main-layout .enhanced-sidebar,
+:root[data-glass-max-layers="1"] .enhanced-main-layout .enhanced-header {
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+:root[data-glass-max-layers="1"] .enhanced-glass-card,
+:root[data-glass-max-layers="1"] .enhanced-glass-modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+:root[data-glass-max-layers="2"] .enhanced-glass-table .glass-header-cell,
+:root[data-glass-max-layers="2"] .enhanced-glass-modal .glass-modal-content {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 低端设备优化 */
+@media (max-width: 768px) {
+  .enhanced-glass-button,
+  .enhanced-glass-card,
+  .enhanced-glass-input,
+  .enhanced-glass-table,
+  .enhanced-glass-modal {
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+  }
+}
+
+/* 慢网络优化 */
+@media (prefers-reduced-data: reduce) {
+  .enhanced-glass-button,
+  .enhanced-glass-card,
+  .enhanced-glass-input,
+  .enhanced-glass-table,
+  .enhanced-glass-modal {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--neutral-bg-primary) !important;
+  }
+  
+  .glass-noise::before {
+    display: none !important;
+  }
+}
+
+/* 高对比度模式强制降级 */
+@media (prefers-contrast: high) {
+  .enhanced-glass-button,
+  .enhanced-glass-card,
+  .enhanced-glass-input,
+  .enhanced-glass-table,
+  .enhanced-glass-modal {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--neutral-bg-primary) !important;
+    border: 2px solid var(--neutral-border) !important;
+    box-shadow: none !important;
+  }
+}
+
+/* 减少动效模式 */
+@media (prefers-reduced-motion: reduce) {
+  .enhanced-glass-button,
+  .enhanced-glass-card,
+  .enhanced-glass-input,
+  .enhanced-glass-table,
+  .enhanced-glass-modal {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .enhanced-glass-button:hover,
+  .enhanced-glass-card:hover,
+  .enhanced-glass-input:hover {
+    transform: none !important;
+  }
+}
+
+/* 打印模式降级 */
+@media print {
+  .enhanced-glass-button,
+  .enhanced-glass-card,
+  .enhanced-glass-input,
+  .enhanced-glass-table,
+  .enhanced-glass-modal {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    color: black !important;
+  }
+  
+  .glass-noise::before {
+    display: none !important;
+  }
+}
+
+/* 旧版浏览器兼容 */
+.no-backdrop-filter .enhanced-glass-button,
+.no-backdrop-filter .enhanced-glass-card,
+.no-backdrop-filter .enhanced-glass-input,
+.no-backdrop-filter .enhanced-glass-table,
+.no-backdrop-filter .enhanced-glass-modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}

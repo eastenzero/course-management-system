@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题切换功能验证</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-section h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .status-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .status-label {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .success { color: #4CAF50; }
+        .warning { color: #FF9800; }
+        .error { color: #F44336; }
+        
+        .iframe-container {
+            margin-top: 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        .test-results {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 主题切换功能验证</h1>
+        
+        <div class="test-section">
+            <h3>📊 系统状态检查</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-label">前端服务</div>
+                    <div class="status-value" id="frontend-status">检查中...</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">后端API</div>
+                    <div class="status-value" id="backend-status">检查中...</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">主题持久化</div>
+                    <div class="status-value" id="storage-status">检查中...</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">浏览器支持</div>
+                    <div class="status-value" id="browser-support">检查中...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 功能测试</h3>
+            <div class="button-group">
+                <button onclick="testThemePersistence()">测试主题持久化</button>
+                <button onclick="testRandomTheme()">测试随机主题</button>
+                <button onclick="testTopBarThemeButton()">测试顶栏主题按钮</button>
+                <button onclick="clearThemeCache()">清除主题缓存</button>
+                <button onclick="checkLocalStorage()">检查本地存储</button>
+            </div>
+            <div id="test-results" class="test-results" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎯 快速访问</h3>
+            <div class="button-group">
+                <button onclick="openPage('http://localhost:8081')">主页</button>
+                <button onclick="openPage('http://localhost:8081/demo/theme-test')">主题测试页</button>
+                <button onclick="openPage('http://localhost:8081/demo/ui-redesign-showcase')">UI展示页</button>
+                <button onclick="refreshIframe()">刷新预览</button>
+            </div>
+        </div>
+        
+        <div class="iframe-container">
+            <iframe id="preview-frame" src="http://localhost:8081/demo/theme-test"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let testResults = [];
+        
+        // 添加测试结果
+        function addTestResult(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            testResults.push(`[${timestamp}] ${message}`);
+            updateTestResults();
+        }
+        
+        // 更新测试结果显示
+        function updateTestResults() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = testResults.slice(-20).join('\n');
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+        
+        // 检查系统状态
+        async function checkSystemStatus() {
+            // 检查前端服务
+            try {
+                const frontendResponse = await fetch('http://localhost:8081');
+                const status = frontendResponse.ok ? '✅ 正常运行' : '❌ 响应异常';
+                document.getElementById('frontend-status').innerHTML = status;
+                document.getElementById('frontend-status').className = frontendResponse.ok ? 'success' : 'error';
+            } catch (error) {
+                document.getElementById('frontend-status').innerHTML = '❌ 连接失败';
+                document.getElementById('frontend-status').className = 'error';
+            }
+            
+            // 检查后端API
+            try {
+                const backendResponse = await fetch('http://localhost:8000/api/health/');
+                const status = backendResponse.ok ? '✅ 正常运行' : '❌ 响应异常';
+                document.getElementById('backend-status').innerHTML = status;
+                document.getElementById('backend-status').className = backendResponse.ok ? 'success' : 'error';
+            } catch (error) {
+                document.getElementById('backend-status').innerHTML = '❌ 连接失败';
+                document.getElementById('backend-status').className = 'error';
+            }
+            
+            // 检查主题持久化
+            try {
+                const savedTheme = localStorage.getItem('ui-theme-v2');
+                if (savedTheme) {
+                    const theme = JSON.parse(savedTheme);
+                    document.getElementById('storage-status').innerHTML = `✅ ${theme.category}-${theme.themeKey} (${theme.mode})`;
+                    document.getElementById('storage-status').className = 'success';
+                } else {
+                    document.getElementById('storage-status').innerHTML = '⚠️ 无缓存数据';
+                    document.getElementById('storage-status').className = 'warning';
+                }
+            } catch (error) {
+                document.getElementById('storage-status').innerHTML = '❌ 存储错误';
+                document.getElementById('storage-status').className = 'error';
+            }
+            
+            // 检查浏览器支持
+            const supportsBackdropFilter = CSS.supports('backdrop-filter', 'blur(1px)') || 
+                                          CSS.supports('-webkit-backdrop-filter', 'blur(1px)');
+            const supportsLocalStorage = typeof(Storage) !== "undefined";
+            
+            if (supportsBackdropFilter && supportsLocalStorage) {
+                document.getElementById('browser-support').innerHTML = '✅ 完全支持';
+                document.getElementById('browser-support').className = 'success';
+            } else {
+                document.getElementById('browser-support').innerHTML = '⚠️ 部分支持';
+                document.getElementById('browser-support').className = 'warning';
+            }
+        }
+        
+        // 测试主题持久化
+        function testThemePersistence() {
+            addTestResult('开始测试主题持久化功能...');
+            
+            // 保存测试主题
+            const testTheme = {
+                category: 'monet',
+                themeKey: 'b',
+                mode: 'dark'
+            };
+            
+            try {
+                localStorage.setItem('ui-theme-v2', JSON.stringify(testTheme));
+                addTestResult('✅ 主题保存成功');
+                
+                // 验证读取
+                const saved = localStorage.getItem('ui-theme-v2');
+                const parsed = JSON.parse(saved);
+                
+                if (parsed.category === testTheme.category && 
+                    parsed.themeKey === testTheme.themeKey && 
+                    parsed.mode === testTheme.mode) {
+                    addTestResult('✅ 主题读取验证成功');
+                } else {
+                    addTestResult('❌ 主题读取验证失败');
+                }
+                
+                checkSystemStatus();
+            } catch (error) {
+                addTestResult('❌ 主题持久化测试失败: ' + error.message);
+            }
+        }
+        
+        // 测试随机主题
+        function testRandomTheme() {
+            addTestResult('测试随机主题生成...');
+            
+            // 清除现有主题
+            localStorage.removeItem('ui-theme-v2');
+            addTestResult('✅ 已清除现有主题缓存');
+            
+            // 刷新iframe以触发随机主题生成
+            const iframe = document.getElementById('preview-frame');
+            iframe.src = iframe.src;
+            addTestResult('✅ 已刷新页面，将生成随机主题');
+            
+            setTimeout(() => {
+                checkSystemStatus();
+            }, 2000);
+        }
+        
+        // 测试顶栏主题按钮
+        function testTopBarThemeButton() {
+            addTestResult('请在主页面中点击顶栏的主题设置按钮进行测试');
+            openPage('http://localhost:8081');
+        }
+        
+        // 清除主题缓存
+        function clearThemeCache() {
+            localStorage.removeItem('ui-theme-v2');
+            addTestResult('✅ 主题缓存已清除');
+            checkSystemStatus();
+        }
+        
+        // 检查本地存储
+        function checkLocalStorage() {
+            addTestResult('检查本地存储状态...');
+            
+            const keys = Object.keys(localStorage);
+            addTestResult(`本地存储中共有 ${keys.length} 个键:`);
+            
+            keys.forEach(key => {
+                if (key.includes('theme')) {
+                    const value = localStorage.getItem(key);
+                    addTestResult(`  ${key}: ${value}`);
+                }
+            });
+        }
+        
+        // 打开页面
+        function openPage(url) {
+            window.open(url, '_blank');
+        }
+        
+        // 刷新iframe
+        function refreshIframe() {
+            const iframe = document.getElementById('preview-frame');
+            iframe.src = iframe.src;
+            addTestResult('✅ 预览页面已刷新');
+        }
+        
+        // 页面加载时检查状态
+        window.addEventListener('load', () => {
+            checkSystemStatus();
+            addTestResult('验证页面已加载，开始系统检查...');
+        });
+        
+        // 每30秒检查一次状态
+        setInterval(checkSystemStatus, 30000);
+    </script>
+</body>
+</html>

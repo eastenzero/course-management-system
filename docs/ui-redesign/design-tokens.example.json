@@ -1,0 +1,182 @@
+{
+  "color": {
+    "monet": {
+      "a": {
+        "primary": "#A9D6E5",
+        "secondary": "#89C2D9", 
+        "tertiary": "#B8E0D2",
+        "accent": "#CDB4DB",
+        "neutral": "#E6E8EB"
+      },
+      "b": {
+        "primary": "#FFF1B6",
+        "secondary": "#BEE1D9",
+        "tertiary": "#F6C7C7", 
+        "accent": "#D9C2E9",
+        "neutral": "#F2F4F6"
+      },
+      "c": {
+        "primary": "#B6D0E2",
+        "secondary": "#F5E7A1",
+        "tertiary": "#D8CBE6",
+        "accent": "#BFD8CC", 
+        "neutral": "#E9ECEF"
+      }
+    },
+    "morandi": {
+      "a": {
+        "primary": "#A3B18A",
+        "secondary": "#CFC9C2",
+        "tertiary": "#CDB4BD",
+        "accent": "#A7A9C9",
+        "neutral": "#D8C3A5"
+      },
+      "b": {
+        "primary": "#D9CEC1", 
+        "secondary": "#8A8FA3",
+        "tertiary": "#B08A8A",
+        "accent": "#9C93A7",
+        "neutral": "#8FA08C"
+      },
+      "c": {
+        "primary": "#C9C3BB",
+        "secondary": "#A0A7B5", 
+        "tertiary": "#C6A6A6",
+        "accent": "#AEB8A3",
+        "neutral": "#EFEEEA"
+      }
+    },
+    "functional": {
+      "success": {
+        "monet": "#6BAF92",
+        "morandi": "#6E9B7F"
+      },
+      "warning": {
+        "monet": "#D8A657", 
+        "morandi": "#C7934B"
+      },
+      "error": {
+        "monet": "#B55A5A",
+        "morandi": "#A35555"
+      },
+      "info": {
+        "monet": "#6F90B6",
+        "morandi": "#6E86A8"
+      }
+    },
+    "neutral": {
+      "bg": {
+        "0": "var(--neutral-bg-primary)",
+        "1": "var(--neutral-bg-secondary)", 
+        "2": "var(--neutral-bg-tertiary)"
+      },
+      "text": {
+        "1": "var(--neutral-text-primary)",
+        "2": "var(--neutral-text-secondary)",
+        "3": "var(--neutral-text-tertiary)"
+      },
+      "border": "var(--neutral-border)"
+    }
+  },
+  "surface": {
+    "glass": {
+      "alpha": {
+        "light": {
+          "primary": "0.60",
+          "secondary": "0.55", 
+          "tertiary": "0.68"
+        },
+        "dark": {
+          "primary": "0.35",
+          "secondary": "0.28",
+          "tertiary": "0.40"
+        }
+      }
+    }
+  },
+  "effect": {
+    "blur": {
+      "sm": "8px",
+      "md": "16px", 
+      "lg": "24px"
+    },
+    "shadow": {
+      "sm": {
+        "y": "8px",
+        "blur": "24px",
+        "alpha": "0.08"
+      },
+      "md": {
+        "y": "16px", 
+        "blur": "32px",
+        "alpha": "0.10"
+      },
+      "lg": {
+        "y": "24px",
+        "blur": "48px", 
+        "alpha": "0.12"
+      }
+    },
+    "highlight": {
+      "alpha": {
+        "light": "0.35",
+        "dark": "0.30"
+      },
+      "width": "1px"
+    }
+  },
+  "radius": {
+    "sm": "8px",
+    "md": "12px",
+    "lg": "16px", 
+    "xl": "20px",
+    "xxl": "24px",
+    "button": "10px",
+    "card": "16px",
+    "modal": "20px",
+    "pill": "9999px"
+  },
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px", 
+    "md": "16px",
+    "lg": "24px",
+    "xl": "32px",
+    "xxl": "48px"
+  },
+  "motion": {
+    "duration": {
+      "fast": "150ms",
+      "normal": "200ms",
+      "slow": "250ms",
+      "enter": "200ms",
+      "exit": "150ms"
+    },
+    "easing": {
+      "standard": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "decelerate": "cubic-bezier(0.0, 0.0, 0.2, 1)",
+      "accelerate": "cubic-bezier(0.4, 0.0, 1, 1)"
+    }
+  },
+  "typography": {
+    "lineHeight": {
+      "tight": "1.2",
+      "normal": "1.5", 
+      "relaxed": "1.6",
+      "loose": "1.8"
+    },
+    "fontWeight": {
+      "normal": "400",
+      "medium": "500",
+      "semibold": "600",
+      "bold": "700"
+    }
+  },
+  "breakpoints": {
+    "sm": "576px",
+    "md": "768px",
+    "lg": "992px", 
+    "xl": "1200px",
+    "xxl": "1440px"
+  }
+}
