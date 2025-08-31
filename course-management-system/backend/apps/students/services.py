@@ -169,37 +169,65 @@ class StudentService:
         return conflicts
     
     def get_course_schedule(self, semester=None, week=None):
-        """获取课程表"""
+        """获取课程表 - 修复版本，正确关联Schedule模型"""
         
-        # 获取学生选课
-        enrollments = Enrollment.objects.filter(
+        # 获取学生选课的课程ID列表
+        enrolled_courses = Enrollment.objects.filter(
             student=self.user,
-            status='enrolled'
-        ).select_related('course')
+            status='enrolled',
+            is_active=True
+        ).values_list('course_id', flat=True)
         
+        # 基础查询：获取学生选课课程的实际排课数据
+        schedules = Schedule.objects.filter(
+            course_id__in=enrolled_courses,
+            status='active'
+        ).select_related(
+            'course', 'teacher', 'classroom', 'time_slot'
+        )
+        
+        # 按学期过滤
         if semester:
-            enrollments = enrollments.filter(course__semester=semester)
+            schedules = schedules.filter(semester=semester)
+        
+        # 按周次过滤
+        if week:
+            try:
+                week_num = int(week)
+                schedules = [s for s in schedules if s.is_active_in_week(week_num)]
+            except (ValueError, TypeError):
+                pass  # 忽略无效的周次参数
         
         schedule_data = []
         
-        # 这里应该根据实际的课程表模型来生成课程表数据
-        # 暂时返回基本的课程信息
-        for enrollment in enrollments:
-            course = enrollment.course
+        # 构建标准化的课程表数据
+        for schedule in schedules:
+            # 获取教师姓名
+            teacher_name = schedule.teacher.get_full_name() if hasattr(schedule.teacher, 'get_full_name') else schedule.teacher.username
+            if not teacher_name.strip():
+                teacher_name = f"{schedule.teacher.first_name} {schedule.teacher.last_name}".strip() or schedule.teacher.username
+            
             schedule_data.append({
-                'course_id': course.id,
-                'course_name': course.name,
-                'course_code': course.code,
-                'teacher_name': ', '.join([
-                    f"{t.first_name} {t.last_name}"
-                    for t in course.teachers.all()
-                ]),
-                'classroom': '待安排',  # 需要从课程表模型获取
-                'time_slot': '待安排',  # 需要从课程表模型获取
-                'day_of_week': 1,  # 需要从课程表模型获取
-                'start_time': '08:00',  # 需要从课程表模型获取
-                'end_time': '09:40',  # 需要从课程表模型获取
-                'week_range': '1-18周',  # 需要从课程表模型获取
+                'course_id': schedule.course.id,
+                'course_name': schedule.course.name,
+                'course_code': schedule.course.code,
+                'teacher_name': teacher_name,
+                'classroom': str(schedule.classroom),
+                'classroom_id': schedule.classroom.id,
+                'time_slot': schedule.time_slot.name,
+                'time_slot_id': schedule.time_slot.id,
+                'day_of_week': schedule.day_of_week,
+                'day_of_week_display': schedule.get_day_of_week_display(),
+                'start_time': schedule.time_slot.start_time.strftime('%H:%M'),
+                'end_time': schedule.time_slot.end_time.strftime('%H:%M'),
+                'week_range': schedule.week_range,
+                'semester': schedule.semester,
+                'academic_year': schedule.academic_year,
+                'status': schedule.status,
+                'notes': schedule.notes,
+                'schedule_id': schedule.id,
+                # 为前端课程表网格提供便利
+                'grid_key': f"{schedule.day_of_week}_{schedule.time_slot.id}"
             })
         
         return schedule_data
@@ -319,54 +347,55 @@ class StudentService:
         weekday = today.isoweekday()  # 1-7
         current_semester = self._get_current_semester()
 
-        # 学生本学期已选课程
-        course_ids = list(
-            Enrollment.objects.filter(
-                student=self.user,
-                status='enrolled',
-                is_active=True,
-                course__semester=current_semester,
-            ).values_list('course_id', flat=True)
-        )
-        if not course_ids:
+        # 获取学生选课的课程ID列表
+        enrolled_courses = Enrollment.objects.filter(
+            student=self.user,
+            status='enrolled',
+            is_active=True
+        ).values_list('course_id', flat=True)
+        
+        if not enrolled_courses:
             return []
 
         # 查询今日对应的排课
-        schedules = (
-            Schedule.objects.filter(
-                course_id__in=course_ids,
-                semester=current_semester,
-                status='active',
-                day_of_week=weekday,
-            )
-            .select_related('course', 'teacher', 'classroom', 'time_slot')
-            .order_by('time_slot__order')
-        )
+        schedules = Schedule.objects.filter(
+            course_id__in=enrolled_courses,
+            semester=current_semester,
+            status='active',
+            day_of_week=weekday,
+        ).select_related(
+            'course', 'teacher', 'classroom', 'time_slot'
+        ).order_by('time_slot__order')
 
-        # 如果需要按周次过滤，可计算当前周次并用 is_active_in_week 过滤
-        def _current_week_number():
-            now = timezone.now()
-            # 假设学期从9月1日开始（与现有analytics逻辑一致的近似）
-            semester_start_year = now.year if now.month >= 9 else now.year - 1
-            semester_start = datetime(semester_start_year, 9, 1, tzinfo=now.tzinfo)
-            delta_days = (now - semester_start).days
-            return max(1, min(20, delta_days // 7 + 1))
-
-        week_no = _current_week_number()
-        schedules = [s for s in schedules if s.is_active_in_week(week_no)]
+        # 计算当前周次（简化逻辑）
+        now = timezone.now()
+        # 假设学期从9月1日开始
+        semester_start_year = now.year if now.month >= 9 else now.year - 1
+        semester_start = datetime(semester_start_year, 9, 1, tzinfo=now.tzinfo)
+        delta_days = (now - semester_start).days
+        current_week = max(1, min(20, delta_days // 7 + 1))
+        
+        # 按周次过滤
+        schedules = [s for s in schedules if s.is_active_in_week(current_week)]
 
         return [
             {
                 'course_id': s.course.id,
                 'course_name': s.course.name,
                 'course_code': s.course.code,
-                'teacher_name': f"{s.teacher.first_name} {s.teacher.last_name}".strip() or s.teacher.username,
+                'teacher_name': s.teacher.get_full_name() if hasattr(s.teacher, 'get_full_name') 
+                               else f"{s.teacher.first_name} {s.teacher.last_name}".strip() or s.teacher.username,
                 'classroom': str(s.classroom),
+                'classroom_id': s.classroom.id,
                 'time_slot': s.time_slot.name,
+                'time_slot_id': s.time_slot.id,
                 'day_of_week': s.day_of_week,
                 'start_time': s.time_slot.start_time.strftime('%H:%M'),
                 'end_time': s.time_slot.end_time.strftime('%H:%M'),
                 'week_range': s.week_range,
+                'semester': s.semester,
+                'status': s.status,
+                'notes': s.notes
             }
             for s in schedules
         ]

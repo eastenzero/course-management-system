@@ -876,6 +876,36 @@ def export_schedules(request):
 
 
 @api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_time_slots(request):
+    """获取时间段列表 - 简化版本，供前端使用"""
+    try:
+        time_slots = TimeSlot.objects.filter(is_active=True).order_by('order')
+        
+        data = [{
+            'id': slot.id,
+            'name': slot.name,
+            'start_time': slot.start_time.strftime('%H:%M'),
+            'end_time': slot.end_time.strftime('%H:%M'),
+            'order': slot.order,
+            'duration_minutes': slot.duration_minutes
+        } for slot in time_slots]
+        
+        return Response({
+            'code': 200,
+            'message': '获取时间段列表成功',
+            'data': data
+        })
+    
+    except Exception as e:
+        return Response({
+            'code': 500,
+            'message': f'获取时间段列表失败: {str(e)}',
+            'data': None
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated, CanViewSchedules])
 def schedule_statistics(request):
     """获取课程表统计信息"""

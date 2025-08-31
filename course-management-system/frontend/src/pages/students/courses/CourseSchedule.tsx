@@ -22,9 +22,18 @@ import {
   DownloadOutlined
 } from '@ant-design/icons';
 import { studentAPI } from '../../../services/studentAPI';
+import { scheduleAPI } from '../../../api/schedules';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
+
+interface TimeSlot {
+  id: number;
+  name: string;
+  start_time: string;
+  end_time: string;
+  order: number;
+}
 
 interface ScheduleItem {
   course_id: number;
@@ -32,32 +41,57 @@ interface ScheduleItem {
   course_code: string;
   teacher_name: string;
   classroom: string;
+  classroom_id: number;
   time_slot: string;
+  time_slot_id: number;
   day_of_week: number;
+  day_of_week_display: string;
   start_time: string;
   end_time: string;
   week_range: string;
+  semester: string;
+  grid_key: string;
 }
 
 const CourseSchedule: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<string>('');
   const [selectedWeek, setSelectedWeek] = useState<string>('');
   const [exporting, setExporting] = useState(false);
 
   const weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-  const timeSlots = [
-    '08:00-09:40',
-    '10:00-11:40', 
-    '14:00-15:40',
-    '16:00-17:40',
-    '19:00-20:40'
-  ];
+
+  useEffect(() => {
+    fetchTimeSlots();
+  }, []);
 
   useEffect(() => {
     fetchSchedule();
   }, [selectedSemester, selectedWeek]);
+
+  const fetchTimeSlots = async () => {
+    try {
+      const response = await scheduleAPI.getTimeSlots();
+      if (response.data?.data) {
+        setTimeSlots(response.data.data);
+      } else {
+        setTimeSlots(response.data || []);
+      }
+    } catch (error: any) {
+      console.error('获取时间段失败:', error);
+      message.error('获取时间段失败');
+      // 退回到硬编码时间段
+      setTimeSlots([
+        { id: 1, name: '第1节', start_time: '08:00', end_time: '09:40', order: 1 },
+        { id: 2, name: '第2节', start_time: '10:00', end_time: '11:40', order: 2 },
+        { id: 3, name: '第3节', start_time: '14:00', end_time: '15:40', order: 3 },
+        { id: 4, name: '第4节', start_time: '16:00', end_time: '17:40', order: 4 },
+        { id: 5, name: '第5节', start_time: '19:00', end_time: '20:40', order: 5 }
+      ]);
+    }
+  };
 
   const fetchSchedule = async () => {
     try {
@@ -103,23 +137,20 @@ const CourseSchedule: React.FC = () => {
 
   // 构建课程表网格数据
   const buildScheduleGrid = () => {
-    const grid: Record<string, Record<string, ScheduleItem | null>> = {};
+    const grid: Record<number, Record<number, ScheduleItem | null>> = {};
     
     // 初始化网格
     timeSlots.forEach(timeSlot => {
-      grid[timeSlot] = {};
+      grid[timeSlot.id] = {};
       weekDays.forEach((_, dayIndex) => {
-        grid[timeSlot][dayIndex] = null;
+        grid[timeSlot.id][dayIndex + 1] = null; // day_of_week 从1开始
       });
     });
 
     // 填充课程数据
     schedule.forEach(item => {
-      const timeSlot = `${item.start_time}-${item.end_time}`;
-      const dayIndex = item.day_of_week - 1; // 转换为0-6的索引
-      
-      if (grid[timeSlot] && grid[timeSlot][dayIndex] === null) {
-        grid[timeSlot][dayIndex] = item;
+      if (grid[item.time_slot_id] && !grid[item.time_slot_id][item.day_of_week]) {
+        grid[item.time_slot_id][item.day_of_week] = item;
       }
     });
 
@@ -254,8 +285,8 @@ const CourseSchedule: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {timeSlots.map((timeSlot, timeIndex) => (
-                  <tr key={timeIndex}>
+                {timeSlots.map((timeSlot) => (
+                  <tr key={timeSlot.id}>
                     <td style={{
                       padding: '8px',
                       backgroundColor: '#fafafa',
@@ -264,7 +295,10 @@ const CourseSchedule: React.FC = () => {
                       fontSize: '12px',
                       fontWeight: 'bold'
                     }}>
-                      {timeSlot}
+                      <div>{timeSlot.name}</div>
+                      <div style={{ fontSize: '10px', color: '#999' }}>
+                        {timeSlot.start_time}-{timeSlot.end_time}
+                      </div>
                     </td>
                     {weekDays.map((_, dayIndex) => (
                       <td
@@ -275,7 +309,7 @@ const CourseSchedule: React.FC = () => {
                           verticalAlign: 'top'
                         }}
                       >
-                        {renderCourseCell(scheduleGrid[timeSlot]?.[dayIndex] || null)}
+                        {renderCourseCell(scheduleGrid[timeSlot.id]?.[dayIndex + 1] || null)}
                       </td>
                     ))}
                   </tr>

@@ -161,16 +161,6 @@ temp/
 # Generated documentation
 docs/_build/
 
-# Large data files
-*.json
-*.sql
-output/
-data-generator/output/
-course-management-system/data-generator/output/
-*.tar.gz
-*.backup
-*_backup*
-
 # PyInstaller
 *.manifest
 *.spec

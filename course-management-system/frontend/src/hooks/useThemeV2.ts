@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState, useEffect, useContext, createContext, useMemo, useCallback } from 'react';
 import { ThemeConfig } from 'antd';
 import { modernTheme, teacherTheme, studentTheme } from '../styles/theme';
 import { 
@@ -72,32 +72,55 @@ export const useThemeProvider = () => {
   };
 
   // 从localStorage加载主题，如果没有则生成随机主题
-  const loadThemeFromStorage = (): { category: UIThemeCategory; themeKey: UIThemeKey; mode: UIThemeMode } => {
+  const loadThemeFromStorage = useMemo((): { category: UIThemeCategory; themeKey: UIThemeKey; mode: UIThemeMode } => {
     try {
       const savedTheme = localStorage.getItem('ui-theme-v2');
       if (savedTheme) {
         const parsed = JSON.parse(savedTheme);
         // 验证主题数据的有效性
         if (parsed.category && parsed.themeKey && parsed.mode) {
-          console.log('从localStorage加载主题:', parsed);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('从localStorage加载主题:', parsed);
+          }
           return parsed;
         }
       }
     } catch (error) {
-      console.warn('加载主题失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('加载主题失败:', error);
+      }
     }
 
     // 如果没有保存的主题或加载失败，使用默认浅色主题
     const defaultTheme = generateDefaultTheme();
-    console.log('使用默认浅色主题:', defaultTheme);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('使用默认浅色主题:', defaultTheme);
+    }
     return defaultTheme;
-  };
+  }, []); // 空依赖数组，只在组件初始化时计算一次
 
   const [uiTheme, setUIThemeState] = useState<{
     category: UIThemeCategory;
     themeKey: UIThemeKey;
     mode: UIThemeMode;
-  }>(loadThemeFromStorage);
+  }>(() => loadThemeFromStorage); // 使用函数初始化避免每次渲染都调用
+
+  // 合并localStorage操作，减少多个useEffect
+  useEffect(() => {
+    // 从 localStorage 恢复主题
+    const savedTheme = localStorage.getItem('theme') as ThemeType;
+    const savedRole = localStorage.getItem('userRole') as UserRole;
+    
+    if (savedTheme) {
+      setCurrentTheme(savedTheme);
+    }
+    if (savedRole) {
+      setUserRole(savedRole);
+    }
+    
+    // 初始化时应用主题
+    applyThemeTokens(uiTheme.category, uiTheme.themeKey, uiTheme.mode);
+  }, []); // 只在组件挂载时执行一次
 
   // 根据用户角色自动设置主题
   useEffect(() => {
@@ -109,34 +132,10 @@ export const useThemeProvider = () => {
       setCurrentTheme('student');
       // 学生端推荐莫奈主题
       setUIThemeState(prev => ({ ...prev, category: 'monet', themeKey: 'a' }));
-    } else {
+    } else if (userRole === 'admin' || userRole === 'academic_admin') {
       setCurrentTheme('modern');
     }
   }, [userRole]);
-
-  // 从localStorage恢复主题
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as ThemeType;
-    const savedRole = localStorage.getItem('userRole') as UserRole;
-    const savedCategory = localStorage.getItem('ui-theme-category') as UIThemeCategory;
-    const savedThemeKey = localStorage.getItem('ui-theme-key') as UIThemeKey;
-    const savedMode = localStorage.getItem('ui-theme-mode') as UIThemeMode;
-
-    if (savedTheme) {
-      setCurrentTheme(savedTheme);
-    }
-    if (savedRole) {
-      setUserRole(savedRole);
-    }
-
-    if (savedCategory && savedThemeKey && savedMode) {
-      setUIThemeState({
-        category: savedCategory,
-        themeKey: savedThemeKey,
-        mode: savedMode
-      });
-    }
-  }, []);
 
   // 保存主题设置到localStorage
   useEffect(() => {
@@ -148,11 +147,6 @@ export const useThemeProvider = () => {
       localStorage.setItem('userRole', userRole);
     }
   }, [userRole]);
-
-  // 初始化时应用主题
-  useEffect(() => {
-    applyThemeTokens(uiTheme.category, uiTheme.themeKey, uiTheme.mode);
-  }, []); // 只在组件挂载时执行一次
 
   const getAntdTheme = (): ThemeConfig => {
     // 使用新的增强主题系统
@@ -216,9 +210,13 @@ export const useThemeProvider = () => {
     // 保存主题到localStorage
     try {
       localStorage.setItem('ui-theme-v2', JSON.stringify(newTheme));
-      console.log('主题已保存到localStorage:', newTheme);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('主题已保存到localStorage:', newTheme);
+      }
     } catch (error) {
-      console.warn('保存主题失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('保存主题失败:', error);
+      }
     }
   };
 
@@ -227,9 +225,9 @@ export const useThemeProvider = () => {
     setUITheme(uiTheme.category, uiTheme.themeKey, newMode);
   };
 
-  const getCurrentThemeColors = () => {
+  const getCurrentThemeColors = useMemo(() => {
     return getThemeColors(uiTheme.category, uiTheme.themeKey);
-  };
+  }, [uiTheme.category, uiTheme.themeKey]); // 仅在主题变化时重新计算
 
   // 应用主题到DOM
   const applyCurrentTheme = () => {
@@ -245,7 +243,7 @@ export const useThemeProvider = () => {
     uiTheme,
     setUITheme,
     toggleMode,
-    getThemeColors: getCurrentThemeColors,
+    getThemeColors: () => getCurrentThemeColors,
     applyCurrentTheme,
     designTokens,
     monetThemes,

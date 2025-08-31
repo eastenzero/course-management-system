@@ -1,0 +1,99 @@
+# file: data-generator/mega_scale_config.yml
+# 百万级数据生成系统配置文件
+
+# 基本配置
+generation:
+  scale: "huge"                    # 数据规模: huge, large, medium, small
+  target_records: 1000000          # 目标记录数
+  output_dir: "mega_output"        # 输出目录
+  conflict_difficulty: "mixed"     # 冲突难度: simple, medium, complex, mixed
+
+# 批处理配置
+batch_processing:
+  batch_size: 50000               # 每批记录数
+  max_memory_mb: 2048             # 最大内存限制(MB)
+  max_workers: 8                  # 最大工作进程数
+  checkpoint_interval: 100000     # 检查点间隔
+  gc_threshold: 0.8               # 垃圾回收阈值
+
+# 内存优化配置
+memory_optimization:
+  enable_object_pool: true        # 启用对象池
+  enable_streaming: true          # 启用流式处理
+  enable_compression: true        # 启用压缩存储
+  buffer_size_kb: 64             # 写入缓冲区大小(KB)
+  compression_level: 6            # 压缩级别(1-9)
+
+# 并行计算配置
+parallel_computing:
+  process_workers: 4              # 进程工作线程数
+  thread_workers: 4               # 线程工作线程数
+  task_timeout_seconds: 3600      # 任务超时时间
+  enable_load_balancing: true     # 启用负载均衡
+
+# 进度监控配置
+progress_monitoring:
+  enable_progress_bar: true       # 启用进度条
+  update_interval_seconds: 1      # 更新间隔
+  enable_system_monitoring: true  # 启用系统监控
+  enable_error_tracking: true     # 启用错误跟踪
+
+# 输出配置
+output:
+  formats: ["json"]               # 输出格式: json, sql
+  compression: "gzip"             # 压缩方式: none, gzip, bzip2
+  split_files: true               # 分割大文件
+  max_file_size_mb: 500          # 单文件最大大小(MB)
+  encoding: "utf-8"              # 文件编码
+
+# 质量控制配置
+quality_control:
+  enable_validation: true         # 启用数据验证
+  sampling_rate: 0.01            # 质量评估采样率(1%)
+  error_threshold: 0.001         # 错误率阈值(0.1%)
+  enable_quality_report: true    # 生成质量报告
+
+# 日志配置
+logging:
+  level: "INFO"                  # 日志级别: DEBUG, INFO, WARNING, ERROR
+  enable_file_logging: true      # 启用文件日志
+  log_file: "mega_generation.log" # 日志文件名
+  max_log_size_mb: 100           # 最大日志文件大小
+  backup_count: 5                # 日志备份数量
+
+# 错误处理配置
+error_handling:
+  max_errors: 1000               # 最大错误数
+  enable_auto_recovery: true     # 启用自动恢复
+  retry_attempts: 3              # 重试次数
+  retry_delay_seconds: 5         # 重试延迟
+
+# 检查点配置
+checkpoints:
+  enable_checkpoints: true       # 启用检查点
+  checkpoint_dir: "checkpoints"  # 检查点目录
+  auto_cleanup: true             # 自动清理旧检查点
+  max_checkpoints: 10            # 最大检查点数量
+
+# 性能调优配置
+performance_tuning:
+  enable_prefetch: true          # 启用预取
+  enable_caching: true           # 启用缓存
+  cache_size_mb: 256             # 缓存大小(MB)
+  enable_async_io: true          # 启用异步IO
+  io_queue_size: 1000            # IO队列大小
+
+# 监控告警配置
+monitoring_alerts:
+  enable_alerts: true            # 启用告警
+  memory_threshold: 90           # 内存使用率告警阈值(%)
+  cpu_threshold: 90              # CPU使用率告警阈值(%)
+  disk_threshold: 90             # 磁盘使用率告警阈值(%)
+  error_rate_threshold: 5        # 错误率告警阈值(错误/分钟)
+
+# 扩展配置
+extensions:
+  enable_plugins: false          # 启用插件系统
+  plugin_dir: "plugins"          # 插件目录
+  custom_generators: []          # 自定义生成器
+  custom_validators: []          # 自定义验证器

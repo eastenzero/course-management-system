@@ -64,10 +64,10 @@ def create_students(students_data, majors_data, dept_names):
     from django.contrib.auth.hashers import make_password
     default_password_hash = make_password('student123')
 
-    total_students = min(5000, len(students_data))
+    total_students = len(students_data)
     print(f"   📊 计划创建 {total_students} 个学生用户...")
 
-    for i, student_data in enumerate(students_data[:5000]):  # 增加为前5000个学生
+    for i, student_data in enumerate(students_data):  # 导入全部学生
         try:
             # 显示进度
             if (i + 1) % 500 == 0:
@@ -129,12 +129,13 @@ def create_teachers(teachers_data, dept_names):
     updated_count = 0
     
     # 预计算密码哈希以提高性能
+    from django.contrib.auth.hashers import make_password
     teacher_password_hash = make_password('teacher123')
 
-    total_teachers = min(500, len(teachers_data))
+    total_teachers = len(teachers_data)
     print(f"   📊 计划创建 {total_teachers} 个教师用户...")
 
-    for i, teacher_data in enumerate(teachers_data[:500]):  # 增加为前500个教师
+    for i, teacher_data in enumerate(teachers_data):  # 导入全部教师
         try:
             # 显示进度
             if (i + 1) % 100 == 0:
@@ -195,10 +196,10 @@ def create_courses(courses_data, dept_names):
     # 获取可用的教师
     teachers = list(User.objects.filter(user_type='teacher')[:100])
     
-    total_courses = min(1000, len(courses_data))
+    total_courses = len(courses_data)
     print(f"   📊 计划创建 {total_courses} 门课程...")
 
-    for i, course_data in enumerate(courses_data[:1000]):  # 增加为前1000门课程
+    for i, course_data in enumerate(courses_data):  # 导入全部课程
         try:
             # 显示进度
             if (i + 1) % 200 == 0:
@@ -263,7 +264,7 @@ def create_enrollments(enrollments_data):
         return 0
     
     # 为每个学生随机分配一些课程
-    for student in students[:500]:  # 限制学生数量
+    for student in students:  # 为所有学生创建选课记录
         try:
             # 每个学生选择3-8门课程
             num_courses = random.randint(3, 8)

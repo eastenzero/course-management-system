@@ -7,6 +7,7 @@ urlpatterns = [
     # 时间段管理
     path('timeslots/', views.TimeSlotListCreateView.as_view(), name='timeslot_list_create'),
     path('timeslots/<int:pk>/', views.TimeSlotDetailView.as_view(), name='timeslot_detail'),
+    path('timeslots/simple/', views.get_time_slots, name='simple_timeslots'),  # 简化版本
     
     # 课程安排管理
     path('', views.ScheduleListCreateView.as_view(), name='schedule_list_create'),

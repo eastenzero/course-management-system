@@ -73,6 +73,7 @@ import './styles/modern.css';
 import './styles/enhanced-css-variables.css';
 import './styles/glass-fallback.css';
 import './styles/accessibility.css';
+import './styles/forced-colors-polyfill.css'; // 现代强制颜色模式支持
 
 // 应用启动时初始化
 const initializeApp = async () => {

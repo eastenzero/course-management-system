@@ -7,10 +7,66 @@ from typing import List, Dict, Any, Optional, Set
 from datetime import datetime, date
 from pathlib import Path
 from faker import Faker
+import time
+import math
 
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import OUTPUT_CONFIG, VALIDATION_CONFIG
+
+class ProgressBar:
+    """简易进度条类"""
+    
+    def __init__(self, total: int, description: str = "处理中", width: int = 50):
+        self.total = total
+        self.current = 0
+        self.description = description
+        self.width = width
+        self.start_time = time.time()
+        
+    def update(self, increment: int = 1):
+        """更新进度"""
+        self.current = min(self.current + increment, self.total)
+        self._display()
+        
+    def set_current(self, current: int):
+        """设置当前进度"""
+        self.current = min(current, self.total)
+        self._display()
+        
+    def _display(self):
+        """显示进度条"""
+        if self.total == 0:
+            return
+            
+        progress = self.current / self.total
+        filled_length = int(self.width * progress)
+        bar = '█' * filled_length + '-' * (self.width - filled_length)
+        
+        # 计算速度和预估时间
+        elapsed_time = time.time() - self.start_time
+        if elapsed_time > 0 and self.current > 0:
+            speed = self.current / elapsed_time
+            eta = (self.total - self.current) / speed if speed > 0 else 0
+            eta_str = f", ETA: {int(eta)}s" if eta > 0 else ""
+        else:
+            speed = 0
+            eta_str = ""
+        
+        percent = progress * 100
+        
+        # 使用\r回到行首覆盖之前的输出
+        print(f'\r   {self.description}: |{bar}| {percent:.1f}% ({self.current:,}/{self.total:,}){eta_str}', end='', flush=True)
+        
+        # 完成时换行
+        if self.current >= self.total:
+            print()
+    
+    def finish(self, message: str = "完成"):
+        """完成进度条"""
+        self.current = self.total
+        elapsed_time = time.time() - self.start_time
+        print(f'\r   {self.description}: |{"█" * self.width}| 100.0% ({self.total:,}/{self.total:,}) - {message} (耗时 {elapsed_time:.2f}s)')
 
 
 class DataExporter:
@@ -131,17 +187,95 @@ class DataExporter:
         
         filepath = self.json_dir / filename
         
+        # 计算总记录数用于进度显示
+        total_records = 0
+        for key, value in data_dict.items():
+            if isinstance(value, list):
+                total_records += len(value)
+        
+        print(f"\n💾 开始导出JSON数据...") 
+        print(f"   📁 文件路径: {filepath}")
+        print(f"   📈 数据规模: {total_records:,} 条记录")
+        
+        # 创建进度条
+        progress = ProgressBar(total_records, "导出JSON数据")
+        
         # 处理日期时间序列化
         def json_serializer(obj):
             if isinstance(obj, (datetime, date)):
                 return obj.isoformat()
             raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
         
-        with open(filepath, 'w', encoding=OUTPUT_CONFIG['encoding']) as f:
-            json.dump(data_dict, f, ensure_ascii=False, 
-                     indent=OUTPUT_CONFIG['indent'], default=json_serializer)
+        # 使用流式写入大文件
+        start_time = time.time()
         
-        print(f"JSON数据已导出到: {filepath}")
+        with open(filepath, 'w', encoding=OUTPUT_CONFIG['encoding']) as f:
+            f.write('{\n')
+            
+            # 写入各个数据表
+            keys = list(data_dict.keys())
+            processed_records = 0
+            
+            for i, key in enumerate(keys):
+                f.write(f'  "{key}": ')
+                
+                value = data_dict[key]
+                if isinstance(value, list):
+                    # 对于大列表，分批处理
+                    if len(value) > 10000:  # 大于1万条记录才显示进度
+                        f.write('[\n')
+                        batch_size = 1000
+                        for j in range(0, len(value), batch_size):
+                            batch = value[j:j + batch_size]
+                            for k, item in enumerate(batch):
+                                json_str = json.dumps(item, ensure_ascii=False, default=json_serializer)
+                                f.write(f'    {json_str}')
+                                
+                                # 不是最后一个元素就加逗号
+                                if j + k < len(value) - 1:
+                                    f.write(',')
+                                f.write('\n')
+                                
+                                # 更新进度
+                                processed_records += 1
+                                if processed_records % 100 == 0 or processed_records == total_records:
+                                    progress.set_current(processed_records)
+                        
+                        f.write('  ]')
+                    else:
+                        # 小列表直接序列化
+                        json_str = json.dumps(value, ensure_ascii=False, 
+                                            indent=2, default=json_serializer)
+                        f.write(json_str)
+                        processed_records += len(value)
+                        progress.set_current(processed_records)
+                else:
+                    # 非列表数据直接序列化
+                    json_str = json.dumps(value, ensure_ascii=False, 
+                                        indent=2, default=json_serializer)
+                    f.write(json_str)
+                
+                # 不是最后一个key就加逗号
+                if i < len(keys) - 1:
+                    f.write(',')
+                f.write('\n')
+            
+            f.write('}')
+        
+        # 完成进度条
+        export_time = time.time() - start_time
+        progress.finish(f"导出完成")
+        
+        # 计算文件大小
+        file_size = os.path.getsize(filepath)
+        file_size_mb = file_size / (1024 * 1024)
+        
+        print(f"   ✅ JSON数据已导出到: {filepath}")
+        print(f"   📊 文件大小: {file_size_mb:.2f} MB")
+        print(f"   ⏱️  导出耗时: {export_time:.2f} 秒")
+        if export_time > 0:
+            print(f"   🚀 导出速度: {total_records/export_time:.0f} 条/秒")
+        
         return str(filepath)
     
     def export_to_sql(self, data_dict: Dict[str, Any], filename: str = None) -> str:
@@ -160,6 +294,21 @@ class DataExporter:
         
         filepath = self.sql_dir / filename
         
+        # 计算总记录数
+        total_records = 0
+        for key, value in data_dict.items():
+            if isinstance(value, list):
+                total_records += len(value)
+        
+        print(f"\n💾 开始导出SQL数据...") 
+        print(f"   📁 文件路径: {filepath}")
+        print(f"   📈 数据规模: {total_records:,} 条记录")
+        
+        # 创建进度条
+        progress = ProgressBar(total_records, "导出SQL数据")
+        processed_records = 0
+        start_time = time.time()
+        
         with open(filepath, 'w', encoding=OUTPUT_CONFIG['encoding']) as f:
             f.write("-- 校园课程表管理系统测试数据\n")
             f.write(f"-- 生成时间: {datetime.now()}\n")
@@ -176,13 +325,34 @@ class DataExporter:
             
             for table_name in table_order:
                 if table_name in data_dict and data_dict[table_name]:
-                    f.write(f"-- {table_name} 表数据\n")
-                    self._write_insert_statements(f, table_name, data_dict[table_name])
+                    records = data_dict[table_name]
+                    record_count = len(records)
+                    
+                    f.write(f"-- {table_name} 表数据 ({record_count:,} 条记录)\n")
+                    
+                    # 使用更细致的进度显示写入SQL语句
+                    processed_in_table = self._write_insert_statements_with_progress(
+                        f, table_name, records, progress, processed_records
+                    )
+                    processed_records += processed_in_table
                     f.write("\n")
             
             f.write("SET FOREIGN_KEY_CHECKS = 1;\n")
         
-        print(f"SQL数据已导出到: {filepath}")
+        # 完成进度条
+        export_time = time.time() - start_time
+        progress.finish("导出完成")
+        
+        # 计算文件大小
+        file_size = os.path.getsize(filepath)
+        file_size_mb = file_size / (1024 * 1024)
+        
+        print(f"   ✅ SQL数据已导出到: {filepath}")
+        print(f"   📊 文件大小: {file_size_mb:.2f} MB")
+        print(f"   ⏱️  导出耗时: {export_time:.2f} 秒")
+        if export_time > 0:
+            print(f"   🚀 导出速度: {total_records/export_time:.0f} 条/秒")
+        
         return str(filepath)
     
     def validate_data_integrity(self, data_dict: Dict[str, Any]) -> Dict[str, List[str]]:
@@ -319,6 +489,63 @@ class DataExporter:
                     file.write(",\n")
                 else:
                     file.write(";\n\n")
+
+    def _write_insert_statements_with_progress(self, file, table_name: str, records: List[Dict[str, Any]], 
+                                              progress: ProgressBar, base_count: int) -> int:
+        """带进度显示的SQL插入语句写入"""
+        if not records:
+            return 0
+
+        # 获取表结构
+        columns = self.table_schemas.get(table_name, list(records[0].keys()))
+
+        # 分批插入，每批500条记录（为了更频繁的进度更新）
+        batch_size = 500
+        processed_count = 0
+        
+        for i in range(0, len(records), batch_size):
+            batch = records[i:i + batch_size]
+
+            file.write(f"INSERT INTO `{table_name}` (")
+            file.write(", ".join([f"`{col}`" for col in columns]))
+            file.write(") VALUES\n")
+
+            for j, record in enumerate(batch):
+                values = []
+                for col in columns:
+                    value = record.get(col)
+                    if value is None:
+                        values.append("NULL")
+                    elif isinstance(value, str):
+                        # 转义单引号
+                        escaped_value = value.replace("'", "''")
+                        values.append(f"'{escaped_value}'")
+                    elif isinstance(value, (datetime, date)):
+                        values.append(f"'{value.isoformat()}'")
+                    elif isinstance(value, bool):
+                        values.append("1" if value else "0")
+                    elif isinstance(value, (list, dict)):
+                        # 将复杂对象转换为JSON字符串
+                        json_str = json.dumps(value, ensure_ascii=False, default=str)
+                        escaped_json = json_str.replace("'", "''")
+                        values.append(f"'{escaped_json}'")
+                    else:
+                        values.append(str(value))
+
+                file.write(f"({', '.join(values)})")
+                if j < len(batch) - 1:
+                    file.write(",\n")
+                else:
+                    file.write(";\n\n")
+                
+                # 更新进度
+                processed_count += 1
+                if processed_count % 50 == 0:  # 每50条记录更新一次进度
+                    progress.set_current(base_count + processed_count)
+        
+        # 最终更新进度
+        progress.set_current(base_count + processed_count)
+        return processed_count
 
     def _validate_required_fields(self, data_dict: Dict[str, Any]) -> Dict[str, List[str]]:
         """验证必需字段"""

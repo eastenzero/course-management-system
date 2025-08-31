@@ -211,32 +211,60 @@ class TeacherService:
             raise ValueError('课程不存在或无权限访问')
     
     def get_teaching_schedule(self, semester=None, week=None):
-        """获取教学安排"""
+        """获取教学安排 - 修复版本，正确关联Schedule模型"""
         
-        my_courses = Course.objects.filter(
-            teachers=self.user,
-            is_active=True
+        # 获取教师的所有课程安排
+        schedules = Schedule.objects.filter(
+            teacher=self.user,
+            status='active'
+        ).select_related(
+            'course', 'classroom', 'time_slot'
         )
         
+        # 按学期过滤
         if semester:
-            my_courses = my_courses.filter(semester=semester)
+            schedules = schedules.filter(semester=semester)
+        
+        # 按周次过滤
+        if week:
+            try:
+                week_num = int(week)
+                schedules = [s for s in schedules if s.is_active_in_week(week_num)]
+            except (ValueError, TypeError):
+                pass  # 忽略无效的周次参数
         
         schedule_data = []
         
-        # 这里应该根据实际的课程表模型来生成教学安排数据
-        # 暂时返回基本的课程信息
-        for course in my_courses:
+        # 构建标准化的教学安排数据
+        for schedule in schedules:
+            # 获取课程的学生数量
+            student_count = schedule.course.current_enrollment if hasattr(schedule.course, 'current_enrollment') else 0
+            
             schedule_data.append({
-                'course_id': course.id,
-                'course_name': course.name,
-                'course_code': course.code,
-                'student_count': course.current_enrollment,
-                'classroom': '待安排',  # 需要从课程表模型获取
-                'time_slot': '待安排',  # 需要从课程表模型获取
-                'day_of_week': 1,  # 需要从课程表模型获取
-                'start_time': '08:00',  # 需要从课程表模型获取
-                'end_time': '09:40',  # 需要从课程表模型获取
-                'week_range': '1-18周',  # 需要从课程表模型获取
+                'schedule_id': schedule.id,
+                'course_id': schedule.course.id,
+                'course_name': schedule.course.name,
+                'course_code': schedule.course.code,
+                'student_count': student_count,
+                'classroom': str(schedule.classroom),
+                'classroom_id': schedule.classroom.id,
+                'time_slot': schedule.time_slot.name,
+                'time_slot_id': schedule.time_slot.id,
+                'day_of_week': schedule.day_of_week,
+                'day_of_week_display': schedule.get_day_of_week_display(),
+                'start_time': schedule.time_slot.start_time.strftime('%H:%M'),
+                'end_time': schedule.time_slot.end_time.strftime('%H:%M'),
+                'week_range': schedule.week_range,
+                'semester': schedule.semester,
+                'academic_year': schedule.academic_year,
+                'status': schedule.status,
+                'notes': schedule.notes,
+                # 为前端课程表网格提供便利
+                'grid_key': f"{schedule.day_of_week}_{schedule.time_slot.id}",
+                # 教师特有信息
+                'course_type': schedule.course.course_type if hasattr(schedule.course, 'course_type') else '',
+                'course_credits': schedule.course.credits if hasattr(schedule.course, 'credits') else 0,
+                'max_students': schedule.course.max_students if hasattr(schedule.course, 'max_students') else 0
             })
         
         return schedule_data
@@ -285,6 +313,48 @@ class TeacherService:
         today = timezone.localdate()
         weekday = today.isoweekday()  # 1-7
         current_semester = self._get_current_semester()
+        
+        # 查询今日的教学安排
+        schedules = Schedule.objects.filter(
+            teacher=self.user,
+            semester=current_semester,
+            status='active',
+            day_of_week=weekday,
+        ).select_related(
+            'course', 'classroom', 'time_slot'
+        ).order_by('time_slot__order')
+        
+        # 计算当前周次（简化逻辑）
+        now = timezone.now()
+        # 假设学期从9月1日开始
+        semester_start_year = now.year if now.month >= 9 else now.year - 1
+        semester_start = datetime(semester_start_year, 9, 1, tzinfo=now.tzinfo)
+        delta_days = (now - semester_start).days
+        current_week = max(1, min(20, delta_days // 7 + 1))
+        
+        # 按周次过滤
+        schedules = [s for s in schedules if s.is_active_in_week(current_week)]
+        
+        return [
+            {
+                'course_id': s.course.id,
+                'course_name': s.course.name,
+                'course_code': s.course.code,
+                'student_count': s.course.current_enrollment if hasattr(s.course, 'current_enrollment') else 0,
+                'classroom': str(s.classroom),
+                'classroom_id': s.classroom.id,
+                'time_slot': s.time_slot.name,
+                'time_slot_id': s.time_slot.id,
+                'day_of_week': s.day_of_week,
+                'start_time': s.time_slot.start_time.strftime('%H:%M'),
+                'end_time': s.time_slot.end_time.strftime('%H:%M'),
+                'week_range': s.week_range,
+                'semester': s.semester,
+                'status': s.status,
+                'notes': s.notes
+            }
+            for s in schedules
+        ]
 
         schedules = (
             Schedule.objects.filter(

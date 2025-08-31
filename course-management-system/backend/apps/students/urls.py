@@ -21,8 +21,10 @@ urlpatterns = [
     
     # 课程表
     path('schedule/', views.course_schedule, name='schedule'),
+    path('schedule/export/', views.export_schedule, name='export-schedule'),
     
     # 成绩相关
     path('grades/', views.grades_list, name='grades'),
+    path('grades/export/', views.export_grades, name='export-grades'),
     path('gpa/', views.gpa_statistics, name='gpa'),
 ]

@@ -1,0 +1,106 @@
+{
+  "monitoring_info": {
+    "start_time": 1756532455.459849,
+    "end_time": 1756532459.5928469,
+    "total_snapshots": 2,
+    "update_interval": 2.0
+  },
+  "baseline_snapshot": {
+    "timestamp": 1756532455.5284128,
+    "cpu_percent": 7.0,
+    "memory_percent": 55.7,
+    "memory_used_mb": 18106.6875,
+    "disk_io_read_mb": 33580.4423828125,
+    "disk_io_write_mb": 97489.11669921875,
+    "network_io_sent_mb": 1698.7555952072144,
+    "network_io_recv_mb": 11369.352929115295,
+    "active_threads": 1,
+    "generation_speed": 0.0,
+    "processed_records": 0,
+    "error_count": 0
+  },
+  "performance_stats": {
+    "current_snapshot": {
+      "timestamp": 1756532457.591543,
+      "cpu_percent": 8.4,
+      "memory_percent": 55.7,
+      "memory_used_mb": 18109.4296875,
+      "disk_io_read_mb": 33591.0341796875,
+      "disk_io_write_mb": 97529.12841796875,
+      "network_io_sent_mb": 1698.7590236663818,
+      "network_io_recv_mb": 11369.366318702698,
+      "active_threads": 5,
+      "generation_speed": 0.0,
+      "processed_records": 0,
+      "error_count": 0
+    },
+    "peak_cpu": 8.4,
+    "peak_memory": 55.7,
+    "total_errors": 0,
+    "elapsed_time": 4.132997751235962,
+    "avg_cpu": 4.2,
+    "avg_memory": 55.7,
+    "avg_generation_speed": 0.0,
+    "snapshot_count": 2
+  },
+  "trends": {
+    "timestamps": [
+      1756532455.5619397,
+      1756532457.591543
+    ],
+    "cpu_percent": [
+      0.0,
+      8.4
+    ],
+    "memory_percent": [
+      55.7,
+      55.7
+    ],
+    "memory_used_mb": [
+      18111.3671875,
+      18109.4296875
+    ],
+    "generation_speed": [
+      0.0,
+      0.0
+    ],
+    "processed_records": [
+      0,
+      0
+    ],
+    "active_threads": [
+      2,
+      5
+    ]
+  },
+  "snapshots": [
+    {
+      "timestamp": 1756532455.5619397,
+      "cpu_percent": 0.0,
+      "memory_percent": 55.7,
+      "memory_used_mb": 18111.3671875,
+      "disk_io_read_mb": 33580.5048828125,
+      "disk_io_write_mb": 97489.88232421875,
+      "network_io_sent_mb": 1698.7555952072144,
+      "network_io_recv_mb": 11369.352929115295,
+      "active_threads": 2,
+      "generation_speed": 0.0,
+      "processed_records": 0,
+      "error_count": 0
+    },
+    {
+      "timestamp": 1756532457.591543,
+      "cpu_percent": 8.4,
+      "memory_percent": 55.7,
+      "memory_used_mb": 18109.4296875,
+      "disk_io_read_mb": 33591.0341796875,
+      "disk_io_write_mb": 97529.12841796875,
+      "network_io_sent_mb": 1698.7590236663818,
+      "network_io_recv_mb": 11369.366318702698,
+      "active_threads": 5,
+      "generation_speed": 0.0,
+      "processed_records": 0,
+      "error_count": 0
+    }
+  ]
+}

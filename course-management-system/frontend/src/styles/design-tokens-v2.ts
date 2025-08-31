@@ -239,22 +239,37 @@ export const designTokens = {
   breakpoints: breakpointTokens
 } as const;
 
-// 工具函数：获取主题颜色
+// 工具函数：获取主题颜色 - 添加缓存优化
+const themeCache = new Map<string, any>();
+
 export function getThemeColors(category: UIThemeCategory, themeKey: UIThemeKey) {
-  console.log('获取主题颜色 - 输入参数:', { category, themeKey, categoryType: typeof category, themeKeyType: typeof themeKey });
+  // 创建缓存键
+  const cacheKey = `${category}-${themeKey}`;
+  
+  // 检查缓存
+  if (themeCache.has(cacheKey)) {
+    return themeCache.get(cacheKey);
+  }
 
   const themes = category === 'monet' ? monetThemes : morandiThemes;
-  console.log('选择的主题集合:', { themes, availableKeys: Object.keys(themes) });
-
+  
   // 确保 themeKey 是有效的
   const validKeys = Object.keys(themes);
   if (!validKeys.includes(themeKey)) {
-    console.warn('无效的主题键:', { themeKey, validKeys });
-    return themes[validKeys[0] as keyof typeof themes]; // 返回第一个有效主题
+    // 仅在开发环境输出警告
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('无效的主题键:', { themeKey, validKeys });
+    }
+    const fallbackResult = themes[validKeys[0] as keyof typeof themes];
+    themeCache.set(cacheKey, fallbackResult);
+    return fallbackResult;
   }
 
   const result = themes[themeKey as keyof typeof themes];
-  console.log('获取主题颜色结果:', { category, themeKey, result });
+  
+  // 存储到缓存
+  themeCache.set(cacheKey, result);
+  
   return result;
 }
 
@@ -370,26 +385,38 @@ export function generateCSSVariables(
   return variables;
 }
 
-// 应用主题到DOM
+// 应用主题到DOM - 添加防抖优化
+let applyThemeTimeout: NodeJS.Timeout | null = null;
+
 export function applyThemeTokens(
   category: UIThemeCategory,
   themeKey: UIThemeKey,
   mode: UIThemeMode = 'light'
 ) {
-  const variables = generateCSSVariables(category, themeKey, mode);
-  const root = document.documentElement;
+  // 防抖处理，避免频繁应用主题
+  if (applyThemeTimeout) {
+    clearTimeout(applyThemeTimeout);
+  }
+  
+  applyThemeTimeout = setTimeout(() => {
+    const variables = generateCSSVariables(category, themeKey, mode);
+    const root = document.documentElement;
 
-  // 设置data属性
-  root.setAttribute('data-theme-category', category);
-  root.setAttribute('data-theme-key', themeKey);
-  root.setAttribute('data-theme-mode', mode);
+    // 设置data属性
+    root.setAttribute('data-theme-category', category);
+    root.setAttribute('data-theme-key', themeKey);
+    root.setAttribute('data-theme-mode', mode);
 
-  // 应用CSS变量
-  Object.entries(variables).forEach(([key, value]) => {
-    root.style.setProperty(key, value);
-  });
+    // 应用CSS变量
+    Object.entries(variables).forEach(([key, value]) => {
+      root.style.setProperty(key, value);
+    });
 
-  console.log('应用主题:', { category, themeKey, mode, variables });
+    // 仅在开发环境输出日志
+    if (process.env.NODE_ENV === 'development') {
+      console.log('应用主题:', { category, themeKey, mode });
+    }
+  }, 16); // 16ms防抖
 }
 
 // 默认导出

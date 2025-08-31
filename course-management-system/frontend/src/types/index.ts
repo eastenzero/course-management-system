@@ -22,7 +22,7 @@ export interface User extends BaseEntity {
   display_id?: string;
 }
 
-export type UserRole = 'admin' | 'teacher' | 'student';
+export type UserRole = 'admin' | 'academic_admin' | 'teacher' | 'student';
 
 export interface LoginForm {
   username: string;

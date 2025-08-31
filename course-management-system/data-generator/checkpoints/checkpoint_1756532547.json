@@ -1,0 +1,17 @@
+{
+  "checkpoint_id": "checkpoint_1756532547",
+  "timestamp": 1756532547.4319239,
+  "processed_records": 0,
+  "data_summary": {
+    "total_records": 1000,
+    "processed_records": 0,
+    "failed_records": 0,
+    "progress_percent": 0.0
+  },
+  "system_state": {
+    "memory_usage_mb": 18433.46875,
+    "cpu_percent": 7.6,
+    "active_threads": 9,
+    "processing_speed": 0.0
+  }
+}

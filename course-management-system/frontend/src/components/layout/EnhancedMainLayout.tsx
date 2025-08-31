@@ -69,7 +69,7 @@ const EnhancedMainLayout: React.FC<EnhancedMainLayoutProps> = ({ children }) => 
       },
     ];
 
-    if (user?.role === 'teacher') {
+    if (user?.user_type === 'teacher') {
       baseItems.push(
         {
           key: '/courses',
@@ -93,7 +93,7 @@ const EnhancedMainLayout: React.FC<EnhancedMainLayoutProps> = ({ children }) => 
           roles: ['teacher'],
         }
       );
-    } else if (user?.role === 'student') {
+    } else if (user?.user_type === 'student') {
       baseItems.push(
         {
           key: '/my-courses',
@@ -117,7 +117,7 @@ const EnhancedMainLayout: React.FC<EnhancedMainLayoutProps> = ({ children }) => 
           roles: ['student'],
         }
       );
-    } else if (user?.role === 'admin' || user?.role === 'academic_admin') {
+    } else if (user?.user_type === 'admin' || user?.user_type === 'academic_admin') {
       baseItems.push(
         {
           key: '/users',
@@ -144,9 +144,9 @@ const EnhancedMainLayout: React.FC<EnhancedMainLayoutProps> = ({ children }) => 
     }
 
     return baseItems.filter(item => 
-      !item.roles || item.roles.includes(user?.role as UserRole)
+      !item.roles || item.roles.includes(user?.user_type as UserRole)
     );
-  }, [user?.role]);
+  }, [user?.user_type]);
 
   // 处理菜单点击
   const handleMenuClick = (key: string) => {
@@ -217,8 +217,8 @@ const EnhancedMainLayout: React.FC<EnhancedMainLayoutProps> = ({ children }) => 
               <div className="logo-text">
                 <Text strong className="logo-title">课程管理系统</Text>
                 <Text type="secondary" className="logo-subtitle">
-                  {user?.role === 'teacher' ? '教师端' : 
-                   user?.role === 'student' ? '学生端' : '管理端'}
+                  {user?.user_type === 'teacher' ? '教师端' : 
+                   user?.user_type === 'student' ? '学生端' : '管理端'}
                 </Text>
               </div>
             )}
@@ -257,8 +257,8 @@ const EnhancedMainLayout: React.FC<EnhancedMainLayoutProps> = ({ children }) => 
                   <Text strong className="user-name">{user?.username}</Text>
                   <br />
                   <Text type="secondary" className="user-role">
-                    {user?.role === 'teacher' ? '教师' : 
-                     user?.role === 'student' ? '学生' : '管理员'}
+                    {user?.user_type === 'teacher' ? '教师' : 
+                     user?.user_type === 'student' ? '学生' : '管理员'}
                   </Text>
                 </div>
               </Space>

@@ -1,6 +1,37 @@
 /* 无障碍与可用性样式 */
 /* 确保所有用户都能正常使用界面 */
 
+/* 现代强制颜色模式支持 - 替换过时的 -ms-high-contrast */
+@media (forced-colors: active) {
+  /* 使用系统高对比度颜色 */
+  .enhanced-glass-button,
+  .enhanced-glass-card,
+  .enhanced-glass-input,
+  .enhanced-glass-table,
+  .enhanced-glass-modal {
+    background: Canvas !important;
+    border: 2px solid CanvasText !important;
+    color: CanvasText !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* 确保焦点可见 */
+  :focus {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px !important;
+  }
+  
+  /* 链接和按钮颜色 */
+  a, button, .ant-btn {
+    color: LinkText !important;
+  }
+  
+  a:visited {
+    color: VisitedText !important;
+  }
+}
+
 /* 焦点可见性增强 */
 :focus {
   outline: 2px solid var(--color-primary) !important;

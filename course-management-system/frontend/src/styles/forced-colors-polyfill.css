@@ -1,0 +1,142 @@
+/* 
+ * Forced Colors Mode Polyfill
+ * 替换已废弃的 -ms-high-contrast 属性为现代标准
+ */
+
+/* 使用现代 Forced Colors Mode 媒体查询 */
+@media (forced-colors: active) {
+  /* 
+   * 使用系统颜色关键字确保在高对比度模式下的可访问性
+   * 这是Microsoft推荐的现代替代方案
+   */
+  
+  /* 基础元素 */
+  * {
+    color: CanvasText !important;
+    background-color: Canvas !important;
+  }
+  
+  /* 边框和分割线 */
+  .ant-divider,
+  .ant-table-bordered .ant-table-tbody > tr > td,
+  .ant-table-bordered .ant-table-thead > tr > th {
+    border-color: CanvasText !important;
+  }
+  
+  /* 按钮和交互元素 */
+  .ant-btn,
+  .ant-input,
+  .ant-select-selector {
+    background-color: ButtonFace !important;
+    color: ButtonText !important;
+    border-color: ButtonText !important;
+  }
+  
+  .ant-btn:hover,
+  .ant-btn:focus {
+    background-color: Highlight !important;
+    color: HighlightText !important;
+  }
+  
+  /* 链接 */
+  a {
+    color: LinkText !important;
+  }
+  
+  a:visited {
+    color: VisitedText !important;
+  }
+  
+  /* 焦点指示器 */
+  :focus {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px !important;
+  }
+  
+  /* 选中状态 */
+  ::selection {
+    background-color: Highlight !important;
+    color: HighlightText !important;
+  }
+  
+  /* 禁用状态 */
+  :disabled,
+  .ant-btn[disabled] {
+    color: GrayText !important;
+    background-color: Canvas !important;
+  }
+  
+  /* 表格 */
+  .ant-table-thead > tr > th {
+    background-color: Canvas !important;
+    color: CanvasText !important;
+  }
+  
+  .ant-table-tbody > tr:hover > td {
+    background-color: Highlight !important;
+    color: HighlightText !important;
+  }
+  
+  /* 下拉菜单 */
+  .ant-dropdown-menu {
+    background-color: Canvas !important;
+    border-color: CanvasText !important;
+  }
+  
+  .ant-dropdown-menu-item:hover {
+    background-color: Highlight !important;
+    color: HighlightText !important;
+  }
+  
+  /* 模态框 */
+  .ant-modal-content {
+    background-color: Canvas !important;
+    border-color: CanvasText !important;
+  }
+  
+  .ant-modal-header {
+    background-color: Canvas !important;
+    border-color: CanvasText !important;
+  }
+  
+  /* 输入框 */
+  .ant-input:focus,
+  .ant-input-focused {
+    border-color: Highlight !important;
+    box-shadow: 0 0 0 2px Highlight !important;
+  }
+  
+  /* 图标和装饰元素 */
+  .anticon {
+    color: CanvasText !important;
+  }
+  
+  /* 禁用透明度和特效 */
+  .enhanced-glass-button,
+  .enhanced-glass-card,
+  .enhanced-glass-input,
+  .enhanced-glass-table,
+  .enhanced-glass-modal {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: Canvas !important;
+    border: 1px solid CanvasText !important;
+  }
+}
+
+/* 
+ * 对于仍在使用旧式 -ms-high-contrast 的第三方库
+ * 虽然我们无法直接修改，但可以通过以下方式减少影响：
+ */
+
+/* 确保我们的自定义组件使用现代标准 */
+@supports (forced-colors: active) {
+  /* 当浏览器支持现代标准时，优先使用它 */
+  @media (forced-colors: active) {
+    .legacy-high-contrast-override {
+      /* 重写任何可能的旧式样式 */
+      background: Canvas !important;
+      color: CanvasText !important;
+    }
+  }
+}
