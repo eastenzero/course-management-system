@@ -216,3 +216,27 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Large data files
+*.json
+*.sql
+*.csv
+*.xlsx
+*.xls
+output/
+data-generator/output/
+course-management-system/data-generator/output/
+course-management-system/data-generator/data_output/
+course-management-system/data-generator/data_output_medium/
+course-management-system/data-generator/data_output_large/
+course-management-system/data-generator/conservative_large_output/
+course-management-system/data-generator/optimized_large_output/
+course-management-system/data-generator/mega_scale/
+conservative_large_output/
+temp_env/
+*.tar.gz
+*.backup
+*_backup*
+*.md5
+*.sha1
+*.sha256
