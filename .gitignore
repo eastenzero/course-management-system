@@ -265,3 +265,40 @@ temp_env/
 
 # 注意：这些文件已配置为LFS跟踪，可以安全同�?
 
+
+# ===== Additional ignore rules after cleanup =====
+# Prevent regenerating large files
+**/data_output*/
+**/conservative_large_output/
+**/optimized_large_output/
+**/enhanced_huge_output/
+**/temp-backup/
+**/temp_env/
+*_venv/
+**/*venv*/
+
+# Temporary and cache files
+*.tmp
+*.temp
+.cache/
+__pycache__/
+*.pyc
+*.pyo
+
+
+# ===== Prevent huge file generation =====
+# Block any files larger than 100MB
+*.json
+*.sql
+*.csv
+*.backup
+*.dump
+
+# Specific data output directories
+**/data-generator/*/json/
+**/data-generator/*/sql/
+**/data_output*/
+**/conservative_large_output/
+**/optimized_large_output/
+**/enhanced_huge_output/
+
