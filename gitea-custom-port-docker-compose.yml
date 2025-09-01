@@ -1,0 +1,30 @@
+version: "3"
+
+networks:
+  gitea:
+    external: false
+
+volumes:
+  gitea:
+    driver: local
+
+services:
+  server:
+    image: docker.gitea.com/gitea:1.24.5
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      # 可选：设置邮件配置
+      - GITEA__server__DOMAIN=localhost
+      - GITEA__server__ROOT_URL=http://localhost:8080/
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8080:3000"    # Web界面访问端口 (自定义)
+      - "2222:22"      # SSH访问端口 (避免冲突)
