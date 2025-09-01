@@ -1,0 +1,16 @@
+数据验证和质量检查报告
+============================================================
+生成时间: 2025-08-31 21:28:02
+
+🎯 专业百万级数据生成脚本确认:
+   脚本名称: generate_real_million_data_simplified.py
+   脚本特点: 内存优化、批处理、真实数据生成、错误处理
+   目标规模: 800,000学生 + 50,000教师 + 30,000课程 + 200,000选课记录
+   预期总量: 1,080,000+ 条记录
+
+📊 当前数据状态:
+   tables: {'auth_group_permissions': 0, 'auth_permission': 124, 'auth_group': 0, 'users_user': 8, 'users_user_groups': 0, 'users_user_user_permissions': 0, 'courses_course': 8, 'courses_course_prerequisites': 0, 'courses_course_teachers': 8, 'courses_enrollment': 0, 'classrooms_building': 2, 'classrooms_classroom': 10, 'analytics_teacher_workload': 0, 'analytics_system_report': 0, 'analytics_course_statistics': 0, 'analytics_classroom_utilization': 0, 'courses_evaluation': 0, 'courses_grade': 0, 'courses_grade_component': 0, 'uploaded_files': 0, 'file_shares': 0, 'file_access_logs': 0, 'notification_templates': 0, 'notification_preferences': 0, 'notifications': 0, 'schedules_timeslot': 0, 'schedules_schedule': 0, 'students_profile': 0, 'students_course_progress': 0, 'teachers_profile': 0, 'teachers_notice': 0, 'teachers_course_assignment': 0, 'user_preferences': 0}
+
+💡 建议的迁移方式:
+   使用专业脚本 generate_real_million_data_simplified.py
+   该脚本是项目中经过各种考量的专业百万级数据生成方案
