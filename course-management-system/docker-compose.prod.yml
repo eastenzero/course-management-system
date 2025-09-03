@@ -168,6 +168,35 @@ services:
           cpus: '0.25'
           memory: 256M
 
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: course_management_frontend_prod
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - course_management_network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   # Nginx负载均衡器
   nginx:
     image: nginx:alpine
@@ -184,6 +213,7 @@ services:
       - logs_volume_prod:/var/log/nginx
     depends_on:
       - backend
+      - frontend
     networks:
       - course_management_network
     deploy:

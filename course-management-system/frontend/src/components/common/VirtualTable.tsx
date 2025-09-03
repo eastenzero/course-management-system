@@ -1,5 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, CSSProperties } from 'react';
 import { Table, TableProps } from 'antd';
+import { FixedSizeList as List } from 'react-window';
+import type { ListChildComponentProps } from 'react-window';
 
 export interface VirtualTableProps<T = any> extends TableProps<T> {
   /** 虚拟滚动高度 */
@@ -12,12 +14,37 @@ export interface VirtualTableProps<T = any> extends TableProps<T> {
   virtualThreshold?: number;
 }
 
+// 虚拟滚动行组件
+const VirtualTableRow = <T extends Record<string, any>>({
+  data,
+  index,
+  style,
+}: ListChildComponentProps & { data: { columns: any[]; dataSource: T[] } }) => {
+  const { dataSource } = data;
+  const item = dataSource[index];
+  
+  return (
+    <tr style={style}>
+      {data.columns.map((column, columnIndex) => {
+        const key = column.dataIndex || column.key || columnIndex;
+        const value = column.render ? column.render(item[key], item, index) : item[key];
+        return (
+          <td key={key} style={{ ...(column.width ? { width: column.width } : {}) }}>
+            {value}
+          </td>
+        );
+      })}
+    </tr>
+  );
+};
+
 const VirtualTable = <T extends Record<string, any>>({
   height = 400,
   itemHeight = 54,
   virtual = true,
   virtualThreshold = 100,
   dataSource = [],
+  columns = [],
   ...props
 }: VirtualTableProps<T>) => {
   // 判断是否需要启用虚拟滚动
@@ -25,13 +52,41 @@ const VirtualTable = <T extends Record<string, any>>({
     return virtual && dataSource.length > virtualThreshold;
   }, [virtual, dataSource.length, virtualThreshold]);
 
-  // 简化版虚拟滚动（暂时使用普通表格，等react-window安装完成后再启用）
-  const shouldUseVirtualScrolling = false; // 暂时禁用虚拟滚动
+  // 使用虚拟滚动渲染
+  if (shouldUseVirtual) {
+    const itemData = useMemo(() => ({ columns, dataSource }), [columns, dataSource]);
+    
+    return (
+      <Table
+        {...props}
+        columns={columns}
+        dataSource={[]}
+        pagination={false}
+        scroll={{ y: height }}
+        components={{
+          body: {
+            wrapper: ({ className, style, ...restProps }) => (
+              <List
+                height={height}
+                itemCount={dataSource.length}
+                itemSize={itemHeight}
+                itemData={itemData}
+                style={{ ...style, overflow: 'auto' } as CSSProperties}
+              >
+                {VirtualTableRow}
+              </List>
+            ),
+          },
+        }}
+      />
+    );
+  }
 
-  // 暂时使用普通表格，等react-window安装完成后再启用虚拟滚动
+  // 使用普通表格渲染
   return (
     <Table
       {...props}
+      columns={columns}
       dataSource={dataSource}
       scroll={{ y: height }}
     />

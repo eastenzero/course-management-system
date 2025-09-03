@@ -1,41 +1,28 @@
-#!/usr/bin/env python
-"""
-综合数据验证器 - 验证生成的数据是否满足排课算法约束
-检查硬约束和软约束的满足情况，生成详细的验证报告
-"""
-
 import os
-import sys
 import json
 from datetime import datetime
-from typing import List, Dict, Any, Set, Tuple
-from collections import defaultdict
-
-# 添加backend目录到Python路径
-backend_path = os.path.join(os.path.dirname(__file__), 'backend')
-sys.path.append(backend_path)
-
-# 设置Django环境
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'course_management.settings')
-
-try:
-    import django
-    django.setup()
-except Exception as e:
-    print(f"警告: Django初始化问题: {e}")
-    print("尝试继续运行...")
-
-try:
-    from django.contrib.auth import get_user_model
-    from apps.courses.models import Course, Enrollment
-    from apps.classrooms.models import Building, Classroom
-    from apps.schedules.models import Schedule, TimeSlot
-    from django.db.models import Count, Q, Avg, Max, Min
-except Exception as e:
-    print(f"模型导入错误: {e}")
-    sys.exit(1)
+from django.core.management.base import BaseCommand
+from django.contrib.auth import get_user_model
+from apps.courses.models import Course, Enrollment
+from apps.classrooms.models import Building, Classroom
+from apps.schedules.models import Schedule, TimeSlot
+from django.db.models import Count, Avg, Max, Min
 
 User = get_user_model()
+
+class Command(BaseCommand):
+    help = '验证数据库数据的合理性'
+
+    def handle(self, *args, **options):
+        self.stdout.write("🔍 开始综合数据验证...")
+        self.stdout.write("=" * 60)
+        
+        # 创建验证器实例并运行
+        validator = ComprehensiveDataValidator()
+        validator.run_validation()
+        
+        self.stdout.write(self.style.SUCCESS('数据验证完成！'))
+
 
 class ComprehensiveDataValidator:
     """综合数据验证器"""
@@ -106,8 +93,8 @@ class ComprehensiveDataValidator:
         stats['course_analysis'] = {
             'by_type': dict(Course.objects.values('course_type').annotate(count=Count('id'))),
             'by_department': dict(Course.objects.values('department').annotate(count=Count('id'))),
-            'avg_credits': Course.objects.aggregate(avg=Avg('credits'))['avg'],
-            'avg_hours': Course.objects.aggregate(avg=Avg('hours'))['avg']
+            'avg_credits': Course.objects.aggregate(avg=Avg('credits'))['avg'] or 0,
+            'avg_hours': Course.objects.aggregate(avg=Avg('hours'))['avg'] or 0
         }
         
         stats['enrollment_analysis'] = {
@@ -164,7 +151,7 @@ class ComprehensiveDataValidator:
         
         print(f"✅ 硬约束验证完成，发现 {self.report['hard_constraints']['total_violations']} 个违例")
     
-    def _check_teacher_time_conflicts(self) -> List[Dict]:
+    def _check_teacher_time_conflicts(self):
         """检查教师时间冲突"""
         conflicts = []
         
@@ -197,7 +184,7 @@ class ComprehensiveDataValidator:
         
         return conflicts
     
-    def _check_classroom_time_conflicts(self) -> List[Dict]:
+    def _check_classroom_time_conflicts(self):
         """检查教室时间冲突"""
         conflicts = []
         
@@ -230,7 +217,7 @@ class ComprehensiveDataValidator:
         
         return conflicts
     
-    def _check_classroom_capacity(self) -> List[Dict]:
+    def _check_classroom_capacity(self):
         """检查教室容量约束"""
         violations = []
         
@@ -259,7 +246,7 @@ class ComprehensiveDataValidator:
         
         return violations
     
-    def _check_data_integrity(self) -> Dict:
+    def _check_data_integrity(self):
         """检查数据完整性"""
         issues = {}
         
@@ -317,7 +304,7 @@ class ComprehensiveDataValidator:
         self.report['soft_constraints'] = metrics
         print("✅ 软约束评估完成")
     
-    def _analyze_teacher_workload(self) -> Dict:
+    def _analyze_teacher_workload(self):
         """分析教师工作量"""
         workload_stats = Schedule.objects.filter(
             status='active'
@@ -353,7 +340,7 @@ class ComprehensiveDataValidator:
             'distribution': workload_distribution
         }
     
-    def _analyze_classroom_utilization(self) -> Dict:
+    def _analyze_classroom_utilization(self):
         """分析教室利用率"""
         total_classrooms = Classroom.objects.filter(is_available=True).count()
         used_classrooms = Schedule.objects.filter(
@@ -390,7 +377,7 @@ class ComprehensiveDataValidator:
             'by_type': utilization_by_type
         }
     
-    def _analyze_time_distribution(self) -> Dict:
+    def _analyze_time_distribution(self):
         """分析时间分布"""
         # 按星期分布
         weekly_distribution = dict(
@@ -411,7 +398,7 @@ class ComprehensiveDataValidator:
             'timeslot': timeslot_distribution
         }
     
-    def _analyze_enrollment_distribution(self) -> Dict:
+    def _analyze_enrollment_distribution(self):
         """分析选课分布"""
         # 按课程类型分布
         by_course_type = dict(
@@ -475,7 +462,7 @@ class ComprehensiveDataValidator:
         self.report['data_quality'] = quality_metrics
         print(f"✅ 数据质量检查完成，总体评分: {overall_score:.1f}/100")
     
-    def _assess_data_completeness(self) -> Dict:
+    def _assess_data_completeness(self):
         """评估数据完整性"""
         score = 100
         issues = []
@@ -502,7 +489,7 @@ class ComprehensiveDataValidator:
             'issues': issues
         }
     
-    def _assess_data_consistency(self) -> Dict:
+    def _assess_data_consistency(self):
         """评估数据一致性"""
         score = 100
         issues = []
@@ -519,7 +506,7 @@ class ComprehensiveDataValidator:
             'issues': issues
         }
     
-    def _assess_data_reasonableness(self) -> Dict:
+    def _assess_data_reasonableness(self):
         """评估数据合理性"""
         score = 100
         issues = []
@@ -542,7 +529,7 @@ class ComprehensiveDataValidator:
             'issues': issues
         }
     
-    def _calculate_compliance_rate(self, violations: Dict) -> float:
+    def _calculate_compliance_rate(self, violations):
         """计算约束遵守率"""
         total_schedules = self.report['data_statistics']['academic']['active_schedules']
         if total_schedules == 0:
@@ -666,16 +653,3 @@ class ComprehensiveDataValidator:
         
         print(f"\n💾 详细报告已保存至: {report_filename}")
         print("=" * 60)
-
-def main():
-    """主函数"""
-    print("🔍 综合数据验证器启动")
-    print("=" * 60)
-    
-    validator = ComprehensiveDataValidator()
-    validator.run_validation()
-    
-    print("\n🎉 数据验证完成！")
-
-if __name__ == '__main__':
-    main()

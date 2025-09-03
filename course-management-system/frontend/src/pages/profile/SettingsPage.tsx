@@ -92,8 +92,8 @@ const SettingsPage: React.FC = () => {
         form.setFieldsValue(userSettings);
       } catch (error) {
         console.error('获取设置失败:', error);
-        message.error('获取设置失败');
-
+        message.error('获取设置失败，请检查网络连接或联系管理员');
+        
         // 使用默认设置
         const defaultSettings: UserSettings = {
           emailNotifications: true,

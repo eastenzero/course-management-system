@@ -3,11 +3,6 @@ import type { Schedule, TimeSlot, Conflict } from '../types/index';
 
 // 课程表相关API
 export const scheduleAPI = {
-  // 获取时间段列表
-  getTimeSlots: (): Promise<{ data: TimeSlot[] }> => {
-    return api.get('/schedules/timeslots/simple/');
-  },
-
   // 获取课程表列表
   getSchedules: (
     params: {

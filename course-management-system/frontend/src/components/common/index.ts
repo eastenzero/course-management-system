@@ -38,6 +38,22 @@ export type { OptimizedFormProps } from './OptimizedForm';
 
 export { default as PerformanceMonitor } from './PerformanceMonitor';
 
+// 新增的数据处理组件
+export { default as DateRangePicker } from './DateRangePicker';
+export type { DateRangePickerProps } from './DateRangePicker';
+
+export { default as ExportButton } from './ExportButton';
+export type { ExportButtonProps } from './ExportButton';
+
+export { default as ImportButton } from './ImportButton';
+export type { ImportButtonProps } from './ImportButton';
+
+export { default as PaginationTable } from './PaginationTable';
+export type { PaginationTableProps } from './PaginationTable';
+
+// 错误处理组件
+export { default as ErrorBoundary } from './ErrorBoundary';
+
 // 动态背景
 export { default as DynamicBackground } from './DynamicBackground';
 

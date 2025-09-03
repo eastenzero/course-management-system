@@ -91,13 +91,8 @@ const GradeEntry: React.FC = () => {
       setCourses(response.data);
     } catch (error) {
       console.error('获取课程列表失败:', error);
-      // 使用模拟数据
-      const mockCourses: Course[] = [
-        { id: 1, name: '计算机科学导论', code: 'CS101', semester: '2024-2025-1' },
-        { id: 2, name: '数据结构与算法', code: 'CS201', semester: '2024-2025-1' }
-      ];
-      setCourses(mockCourses);
-      message.info('正在使用模拟数据，请启动后端服务获取真实数据');
+      message.error('获取课程列表失败，请检查网络连接或联系管理员');
+      setCourses([]); // 设置为空数组，显示"暂无课程"
     } finally {
       setLoading(false);
     }
@@ -112,45 +107,8 @@ const GradeEntry: React.FC = () => {
       setGradeRecords(response.data);
     } catch (error) {
       console.error('获取成绩记录失败:', error);
-      // 使用模拟数据
-      const mockGradeRecords: GradeRecord[] = [
-        {
-          id: 1,
-          student: {
-            id: 1,
-            student_id: 'S2023001',
-            name: '张三',
-            email: 'zhangsan@example.com',
-            class_name: '计科一班'
-          },
-          course_id: selectedCourse,
-          assignment_score: 85,
-          midterm_score: 78,
-          final_score: 92,
-          total_score: 85,
-          grade: 'B',
-          status: 'draft'
-        },
-        {
-          id: 2,
-          student: {
-            id: 2,
-            student_id: 'S2023002',
-            name: '李四',
-            email: 'lisi@example.com',
-            class_name: '计科一班'
-          },
-          course_id: selectedCourse,
-          assignment_score: 92,
-          midterm_score: 88,
-          final_score: 95,
-          total_score: 92,
-          grade: 'A',
-          status: 'draft'
-        }
-      ];
-      setGradeRecords(mockGradeRecords);
-      message.info('正在使用模拟数据，请启动后端服务获取真实数据');
+      message.error('获取成绩记录失败，请检查网络连接或联系管理员');
+      setGradeRecords([]); // 设置为空数组
     } finally {
       setLoading(false);
     }
