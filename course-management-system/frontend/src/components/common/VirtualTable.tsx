@@ -1,6 +1,6 @@
 import React, { useMemo, CSSProperties } from 'react';
 import { Table, TableProps } from 'antd';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 import type { ListChildComponentProps } from 'react-window';
 
 export interface VirtualTableProps<T = any> extends TableProps<T> {

@@ -62,14 +62,14 @@ export const scheduleAPI = {
 
   // 获取时间段列表
   getTimeSlots: (): Promise<{ data: TimeSlot[] }> => {
-    return api.get('/time-slots/');
+    return api.get('/schedules/timeslots/');
   },
 
   // 创建时间段
   createTimeSlot: (
     timeSlotData: Partial<TimeSlot>
   ): Promise<{ data: TimeSlot }> => {
-    return api.post('/time-slots/', timeSlotData);
+    return api.post('/schedules/timeslots/', timeSlotData);
   },
 
   // 更新时间段
@@ -77,12 +77,12 @@ export const scheduleAPI = {
     id: string | number,
     timeSlotData: Partial<TimeSlot>
   ): Promise<{ data: TimeSlot }> => {
-    return api.patch(`/time-slots/${id}/`, timeSlotData);
+    return api.patch(`/schedules/timeslots/${id}/`, timeSlotData);
   },
 
   // 删除时间段
   deleteTimeSlot: (id: string | number): Promise<{ data: any }> => {
-    return api.delete(`/time-slots/${id}/`);
+    return api.delete(`/schedules/timeslots/${id}/`);
   },
 
   // 检测冲突

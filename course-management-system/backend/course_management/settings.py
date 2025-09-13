@@ -91,18 +91,23 @@ import os
 # 检测是否在Docker环境中运行
 IN_DOCKER = os.environ.get('IN_DOCKER', False)
 
-if IN_DOCKER or os.environ.get('DATABASE_URL'):
-    # Docker环境或明确指定DATABASE_URL时使用PostgreSQL
-    DATABASES = {
-        'default': dj_database_url.config(
-            default='postgresql://postgres:postgres123@db:5432/course_management'
-        )
+# 使用PostgreSQL作为主要数据库
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'course_management'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'postgres123'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
-else:
-    # 本地开发环境使用SQLite
+}
+
+# 备用配置：如果设置了DATABASE_URL，则使用它
+if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(
-            default=f'sqlite:///{os.path.join(BASE_DIR, "db.sqlite3")}'
+            default=os.environ.get('DATABASE_URL')
         )
     }
 

@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import { Table, TableProps, Spin } from 'antd';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 import { ColumnsType } from 'antd/es/table';
 
 interface OptimizedTableProps<T> extends Omit<TableProps<T>, 'scroll'> {
