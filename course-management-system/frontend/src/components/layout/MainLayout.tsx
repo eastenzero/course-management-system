@@ -309,32 +309,45 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const antdMenuItems = convertToAntdMenuItems(filteredMenuItems);
 
   // 用户下拉菜单
-  const userMenuItems = [
-    {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: '个人资料',
-      onClick: () => navigate('/profile'),
-    },
-    {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: '系统设置',
-      onClick: () => navigate('/settings'),
-    },
-    {
-      type: 'divider' as const,
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: '退出登录',
-      onClick: () => {
-        // dispatch(logout());
-        navigate('/login');
+  const userMenuItems = useMemo(() => {
+    if (!user) {
+      return [
+        {
+          key: 'login',
+          icon: <UserOutlined />,
+          label: '请登录',
+          onClick: () => navigate('/login'),
+        },
+      ];
+    }
+
+    return [
+      {
+        key: 'profile',
+        icon: <UserOutlined />,
+        label: '个人资料',
+        onClick: () => navigate('/profile'),
       },
-    },
-  ];
+      {
+        key: 'settings',
+        icon: <SettingOutlined />,
+        label: '系统设置',
+        onClick: () => navigate('/settings'),
+      },
+      {
+        type: 'divider' as const,
+      },
+      {
+        key: 'logout',
+        icon: <LogoutOutlined />,
+        label: '退出登录',
+        onClick: () => {
+          // dispatch(logout());
+          navigate('/login');
+        },
+      },
+    ];
+  }, [user, navigate]);
 
   const unreadNotifications = notifications.filter(n => !n.read).length;
 
@@ -445,19 +458,118 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 />
               </Badge>
 
+              {/* 头像按钮 */}
               <Dropdown
                 menu={{ items: userMenuItems }}
                 placement="bottomRight"
-                arrow
+                trigger={['click']}
+                disabled={!user}
               >
-                <div className="user-info">
+                <div 
+                  className="user-info"
+                  style={{ 
+                    cursor: user ? 'pointer' : 'default', 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    transition: 'background-color 0.2s',
+                    userSelect: 'none',
+                    opacity: user ? 1 : 0.6,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (user) {
+                      e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                  onClick={(e) => {
+                    if (!user) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      if (!user) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }
+                  }}
+                >
                   <Avatar
                     size="small"
                     src={user?.avatar}
                     icon={<UserOutlined />}
+                    alt={user?.first_name || '用户头像'}
                   />
                   <span className="user-name">
-                    {user?.first_name} {user?.last_name}
+                    {user?.first_name || '用户'} {user?.last_name || ''}
+                  </span>
+                </div>
+              </Dropdown>
+
+              <Dropdown
+                menu={{ items: userMenuItems }}
+                placement="bottomRight"
+                trigger={['click']}
+                disabled={!user}
+                onOpenChange={(open) => {
+                  console.log('[MainLayout] Dropdown open state:', open, 'User:', user);
+                }}
+              >
+                <div 
+                  className="user-info"
+                  style={{ 
+                    cursor: user ? 'pointer' : 'default', 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    transition: 'background-color 0.2s',
+                    userSelect: 'none',
+                    opacity: user ? 1 : 0.6,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (user) {
+                      e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                  onClick={(e) => {
+                    console.log('[MainLayout] User info clicked, user:', user);
+                    if (!user) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('[MainLayout] No user, preventing dropdown');
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      if (!user) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }
+                  }}
+                >
+                  <Avatar
+                    size="small"
+                    src={user?.avatar}
+                    icon={<UserOutlined />}
+                    alt={user?.first_name || '用户头像'}
+                  />
+                  <span className="user-name">
+                    {user?.first_name || '用户'} {user?.last_name || ''}
                   </span>
                 </div>
               </Dropdown>

@@ -163,35 +163,48 @@ const EnhancedMainLayout: React.FC<EnhancedMainLayoutProps> = ({ children }) => 
   };
 
   // 用户下拉菜单
-  const userMenuItems = [
-    {
-      key: 'profile',
-      label: '个人信息',
-      icon: <UserOutlined />,
-      onClick: () => navigate('/profile'),
-    },
-    {
-      key: 'settings',
-      label: '设置',
-      icon: <SettingOutlined />,
-      onClick: () => navigate('/settings'),
-    },
-    {
-      key: 'theme',
-      label: '主题设置',
-      icon: <BgColorsOutlined />,
-      onClick: () => setShowThemeSelector(true),
-    },
-    {
-      type: 'divider' as const,
-    },
-    {
-      key: 'logout',
-      label: '退出登录',
-      icon: <LogoutOutlined />,
-      onClick: handleLogout,
-    },
-  ];
+  const userMenuItems = useMemo(() => {
+    if (!user) {
+      return [
+        {
+          key: 'login',
+          label: '请登录',
+          icon: <UserOutlined />,
+          onClick: () => navigate('/login'),
+        },
+      ];
+    }
+
+    return [
+      {
+        key: 'profile',
+        label: '个人信息',
+        icon: <UserOutlined />,
+        onClick: () => navigate('/profile'),
+      },
+      {
+        key: 'settings',
+        label: '设置',
+        icon: <SettingOutlined />,
+        onClick: () => navigate('/settings'),
+      },
+      {
+        key: 'theme',
+        label: '主题设置',
+        icon: <BgColorsOutlined />,
+        onClick: () => setShowThemeSelector(true),
+      },
+      {
+        type: 'divider' as const,
+      },
+      {
+        key: 'logout',
+        label: '退出登录',
+        icon: <LogoutOutlined />,
+        onClick: handleLogout,
+      },
+    ];
+  }, [user, navigate, handleLogout]);
 
   // 获取当前主题颜色
   const themeColors = getThemeColors();
@@ -322,7 +335,32 @@ const EnhancedMainLayout: React.FC<EnhancedMainLayoutProps> = ({ children }) => 
                 placement="bottomRight"
                 trigger={['click']}
               >
-                <div className="user-avatar-wrapper">
+                <div 
+                  className="user-avatar-wrapper"
+                  onClick={(e) => {
+                    console.log('[EnhancedMainLayout] User avatar clicked, user:', user);
+                    if (!user) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('[EnhancedMainLayout] No user, preventing dropdown');
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      if (!user) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }
+                  }}
+                  style={{ 
+                    cursor: user ? 'pointer' : 'default',
+                    userSelect: 'none',
+                    opacity: user ? 1 : 0.6,
+                  }}
+                >
                   <Avatar 
                     icon={<UserOutlined />}
                     style={{ backgroundColor: themeColors?.primary }}

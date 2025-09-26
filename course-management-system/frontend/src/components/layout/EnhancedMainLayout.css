@@ -197,11 +197,14 @@
 .user-avatar-wrapper {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all var(--duration-fast) var(--easing-standard);
+  position: relative;
+  z-index: 10;
+  user-select: none;
 }
 
 .user-avatar-wrapper:hover {
@@ -345,4 +348,27 @@
   .theme-selector-panel {
     animation: none;
   }
+}
+
+/* 下拉菜单样式修复 */
+.ant-dropdown {
+  z-index: 1050 !important;
+}
+
+.ant-dropdown-menu {
+  background: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid #f0f0f0 !important;
+  padding: 4px !important;
+}
+
+.ant-dropdown-menu-item {
+  border-radius: 6px !important;
+  margin: 2px !important;
+  padding: 8px 12px !important;
+}
+
+.ant-dropdown-menu-item:hover {
+  background-color: #f5f5f5 !important;
 }
