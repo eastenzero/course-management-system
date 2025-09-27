@@ -30,4 +30,7 @@ urlpatterns = [
     # 导入导出
     path('import/', views.import_schedules, name='import_schedules'),
     path('export/', views.export_schedules, name='export_schedules'),
+    
+    # 教师课程表
+    path('teacher/', views.get_teacher_schedules, name='teacher_schedules'),
 ]

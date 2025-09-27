@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排课API调试工具</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .code { background: #f5f5f5; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; background: #1890ff; color: white; cursor: pointer; }
+        button:hover { background: #40a9ff; }
+    </style>
+</head>
+<body>
+    <h1>🔧 排课API调试工具</h1>
+    
+    <div class="debug-section">
+        <h2>1. 模拟API调用测试</h2>
+        <button onclick="testMockAPI()">测试 Mock Schedule API</button>
+        <div id="mock-api-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>2. 直接数据访问测试</h2>
+        <button onclick="testDirectData()">测试直接数据访问</button>
+        <div id="direct-data-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>3. 数据格式验证</h2>
+        <button onclick="validateDataFormat()">验证数据格式</button>
+        <div id="format-validation-result"></div>
+    </div>
+
+    <script type="module">
+        // 模拟 mockScheduleAPI 的行为
+        const mockScheduleAPI = {
+            getSchedules: async (params = {}) => {
+                console.log('🚀 调用 mockScheduleAPI.getSchedules:', params);
+                
+                try {
+                    // 模拟我们的实际API调用
+                    const response = await fetch('http://localhost:8080/data/schedules.json');
+                    if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
+                    
+                    const data = await response.json();
+                    console.log('📊 原始数据:', data);
+                    
+                    let schedules = data.schedules || [];
+                    console.log('📋 总记录数:', schedules.length);
+                    
+                    // 应用过滤
+                    if (params.semester) {
+                        schedules = schedules.filter(s => s.semester === params.semester);
+                    }
+                    if (params.teacher) {
+                        schedules = schedules.filter(s => s.teacher.includes(params.teacher));
+                    }
+                    if (params.classroom) {
+                        schedules = schedules.filter(s => s.classroom.includes(params.classroom));
+                    }
+                    
+                    // 模拟分页
+                    const page = params.page || 1;
+                    const pageSize = params.page_size || 10;
+                    const start = (page - 1) * pageSize;
+                    const end = start + pageSize;
+                    
+                    const paginatedSchedules = schedules.slice(start, end);
+                    
+                    console.log('📄 分页结果:', {
+                        page, pageSize, start, end,
+                        paginatedCount: paginatedSchedules.length
+                    });
+                    
+                    return {
+                        data: {
+                            count: schedules.length,
+                            next: end < schedules.length ? `?page=${page + 1}` : null,
+                            previous: page > 1 ? `?page=${page - 1}` : null,
+                            results: paginatedSchedules
+                        }
+                    };
+                    
+                } catch (error) {
+                    console.error('❌ API调用失败:', error);
+                    throw error;
+                }
+            }
+        };
+
+        // 测试函数
+        window.testMockAPI = async () => {
+            const resultEl = document.getElementById('mock-api-result');
+            resultEl.innerHTML = '测试中...';
+            
+            try {
+                const response = await mockScheduleAPI.getSchedules({
+                    semester: '2024春',
+                    page: 1,
+                    page_size: 5
+                });
+                
+                const data = response.data;
+                let html = '<span class="success">✅ Mock API 调用成功</span>';
+                html += `<p>📊 总记录数: ${data.count}</p>`;
+                html += `<p>📄 当前页记录数: ${data.results.length}</p>`;
+                html += `<p>🔗 分页: ${data.previous || '无'} | ${data.next || '无'}</p>`;
+                
+                if (data.results.length > 0) {
+                    html += '<h4>样例数据:</h4>';
+                    data.results.slice(0, 2).forEach(schedule => {
+                        html += `
+                            <div style="background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                                <strong>${schedule.courseName}</strong><br>
+                                👨‍🏫 ${schedule.teacher} | 🏫 ${schedule.classroom}<br>
+                                ⏰ 周${schedule.dayOfWeek} ${schedule.startTime}-${schedule.endTime}
+                            </div>
+                        `;
+                    });
+                }
+                
+                resultEl.innerHTML = html;
+                
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ Mock API 调用失败: ${error.message}</span>`;
+                console.error('Mock API测试失败:', error);
+            }
+        };
+
+        window.testDirectData = async () => {
+            const resultEl = document.getElementById('direct-data-result');
+            resultEl.innerHTML = '测试中...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/data/schedules.json');
+                const data = await response.json();
+                
+                let html = '<span class="success">✅ 直接数据访问成功</span>';
+                html += `<p>📊 总课程数: ${data.schedules.length}</p>`;
+                html += `<p>📅 学期: ${data.semester}</p>`;
+                html += `<p>⏰ 生成时间: ${data.generated_at}</p>`;
+                
+                resultEl.innerHTML = html;
+                
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ 直接数据访问失败: ${error.message}</span>`;
+            }
+        };
+
+        window.validateDataFormat = async () => {
+            const resultEl = document.getElementById('format-validation-result');
+            resultEl.innerHTML = '验证中...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/data/schedules.json');
+                const data = await response.json();
+                
+                let html = '<h4>数据格式验证结果:</h4>';
+                let hasErrors = false;
+                
+                // 检查顶层结构
+                if (!data.schedules || !Array.isArray(data.schedules)) {
+                    html += '<span class="error">❌ schedules字段缺失或不是数组</span><br>';
+                    hasErrors = true;
+                } else {
+                    html += '<span class="success">✅ schedules字段存在且是数组</span><br>';
+                }
+                
+                if (!data.total) {
+                    html += '<span class="warning">⚠️ total字段缺失</span><br>';
+                } else {
+                    html += '<span class="success">✅ total字段存在</span><br>';
+                }
+                
+                if (!data.semester) {
+                    html += '<span class="warning">⚠️ semester字段缺失</span><br>';
+                } else {
+                    html += '<span class="success">✅ semester字段存在</span><br>';
+                }
+                
+                // 检查单个课程记录的格式
+                if (data.schedules && data.schedules.length > 0) {
+                    const firstSchedule = data.schedules[0];
+                    const requiredFields = ['id', 'courseCode', 'courseName', 'teacher', 'classroom', 'dayOfWeek', 'startTime', 'endTime', 'semester'];
+                    
+                    html += '<h5>必需字段检查:</h5>';
+                    requiredFields.forEach(field => {
+                        if (firstSchedule.hasOwnProperty(field)) {
+                            html += `<span class="success">✅ ${field}</span><br>`;
+                        } else {
+                            html += `<span class="error">❌ ${field}</span><br>`;
+                            hasErrors = true;
+                        }
+                    });
+                }
+                
+                if (!hasErrors) {
+                    html += '<br><span class="success"><strong>✅ 数据格式验证通过！</strong></span>';
+                } else {
+                    html += '<br><span class="error"><strong>❌ 数据格式存在错误</strong></span>';
+                }
+                
+                resultEl.innerHTML = html;
+                
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ 数据格式验证失败: ${error.message}</span>`;
+            }
+        };
+        
+        // 页面加载完成后自动运行测试
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔧 调试工具已加载');
+            testDirectData(); // 自动运行基础测试
+        });
+    </script>
+</body>
+</html>

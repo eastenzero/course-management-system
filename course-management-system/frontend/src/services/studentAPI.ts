@@ -168,7 +168,7 @@ export const studentAPI = {
     semester?: string;
     week?: string;
   }) =>
-    apiClient.get<CourseSchedule[]>('/students/schedule/', { params }),
+    apiClient.get('/schedules/table/', { params }),
 
   // 获取成绩列表
   getGrades: (params?: {

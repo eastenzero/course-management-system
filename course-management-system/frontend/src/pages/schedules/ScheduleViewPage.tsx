@@ -21,6 +21,7 @@ import {
   DownloadOutlined,
 } from '@ant-design/icons';
 import { scheduleAPI } from '../../services/api';
+import { simpleScheduleAPI } from '../../services/simpleScheduleAPI';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -41,75 +42,37 @@ interface Schedule {
 
 const ScheduleViewPage: React.FC = () => {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [selectedSemester, setSelectedSemester] = useState('2024-1');
+  const [selectedSemester, setSelectedSemester] = useState('2024春');
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  // 模拟数据
+  // 获取真实的排课数据
   useEffect(() => {
-    const mockSchedules: Schedule[] = [
-      {
-        id: '1',
-        courseCode: 'MATH101',
-        courseName: '高等数学',
-        teacher: '张教授',
-        classroom: 'A101',
-        dayOfWeek: 1,
-        startTime: '08:00',
-        endTime: '09:40',
-        weeks: '1-16',
-        semester: '2024-1',
-      },
-      {
-        id: '2',
-        courseCode: 'CS201',
-        courseName: '数据结构',
-        teacher: '李教授',
-        classroom: 'B205',
-        dayOfWeek: 2,
-        startTime: '10:00',
-        endTime: '11:40',
-        weeks: '1-16',
-        semester: '2024-1',
-      },
-      {
-        id: '3',
-        courseCode: 'ENG101',
-        courseName: '大学英语',
-        teacher: '王老师',
-        classroom: 'C301',
-        dayOfWeek: 3,
-        startTime: '14:00',
-        endTime: '15:40',
-        weeks: '1-16',
-        semester: '2024-1',
-      },
-      {
-        id: '4',
-        courseCode: 'PHY101',
-        courseName: '大学物理',
-        teacher: '赵教授',
-        classroom: 'D102',
-        dayOfWeek: 4,
-        startTime: '16:00',
-        endTime: '17:40',
-        weeks: '1-16',
-        semester: '2024-1',
-      },
-      {
-        id: '5',
-        courseCode: 'CHEM101',
-        courseName: '无机化学',
-        teacher: '孙老师',
-        classroom: 'E203',
-        dayOfWeek: 5,
-        startTime: '19:00',
-        endTime: '20:40',
-        weeks: '1-16',
-        semester: '2024-1',
-      },
-    ];
-    setSchedules(mockSchedules);
-  }, []);
+    const fetchSchedules = async () => {
+      try {
+        setLoading(true);
+        const response = await simpleScheduleAPI.getSchedules({
+        semester: selectedSemester,
+        page: currentPage,
+        page_size: pageSize,
+      });
+        
+        if (response.data && response.data.results) {
+          // 直接使用mockScheduleAPI返回的数据格式
+          const scheduleData = response.data.results || [];
+          setSchedules(scheduleData);
+        }
+      } catch (error) {
+        console.error('获取排课数据失败:', error);
+        message.error('获取排课数据失败，请稍后重试');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSchedules();
+  }, [selectedSemester]);
 
   const weekDays = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
   const timeSlots = [

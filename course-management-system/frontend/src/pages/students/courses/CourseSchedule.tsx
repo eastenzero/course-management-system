@@ -23,6 +23,7 @@ import {
 } from '@ant-design/icons';
 import { studentAPI } from '../../../services/studentAPI';
 import { scheduleAPI } from '../../../api/schedules';
+import { useAppSelector } from '../../../store';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -54,10 +55,11 @@ interface ScheduleItem {
 }
 
 const CourseSchedule: React.FC = () => {
+  const { user } = useAppSelector(state => state.auth);
   const [loading, setLoading] = useState(false);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-  const [selectedSemester, setSelectedSemester] = useState<string>('');
+  const [selectedSemester, setSelectedSemester] = useState<string>('2024春');
   const [selectedWeek, setSelectedWeek] = useState<string>('');
   const [exporting, setExporting] = useState(false);
 
@@ -68,8 +70,10 @@ const CourseSchedule: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchSchedule();
-  }, [selectedSemester, selectedWeek]);
+    if (user?.id) {
+      fetchSchedule();
+    }
+  }, [selectedSemester, selectedWeek, user?.id]);
 
   const fetchTimeSlots = async () => {
     try {
@@ -96,12 +100,60 @@ const CourseSchedule: React.FC = () => {
   const fetchSchedule = async () => {
     try {
       setLoading(true);
-      const params: any = {};
+      const params: any = {
+        user_type: 'student',
+        user_id: user?.id || ''
+      };
       if (selectedSemester) params.semester = selectedSemester;
       if (selectedWeek) params.week = selectedWeek;
       
       const response = await studentAPI.getSchedule(params);
-      setSchedule(response.data);
+      
+      // 转换后端数据格式为前端需要的格式
+      if (response.data?.data?.schedule_table) {
+        const scheduleTable = response.data.data.schedule_table;
+        const timeSlotsData = response.data.data.time_slots || timeSlots;
+        
+        // 将表格数据转换为课程列表
+        const scheduleItems: ScheduleItem[] = [];
+        
+        // 遍历每一天（1-7表示周一到周日）
+        for (let day = 1; day <= 7; day++) {
+          const daySchedule = scheduleTable[day];
+          if (daySchedule) {
+            // 遍历每个时间段
+            for (const timeSlotId in daySchedule) {
+              const courseData = daySchedule[timeSlotId];
+              if (courseData) {
+                const timeSlot = timeSlotsData.find((ts: any) => ts.id === parseInt(timeSlotId));
+                
+                scheduleItems.push({
+                  course_id: courseData.id,
+                  course_name: courseData.course_name,
+                  course_code: courseData.course_code,
+                  teacher_name: courseData.teacher_name,
+                  classroom: courseData.classroom,
+                  classroom_id: 0, // 默认值，后端没有返回这个字段
+                  time_slot: timeSlot?.name || `第${timeSlotId}节`,
+                  time_slot_id: parseInt(timeSlotId),
+                  day_of_week: day,
+                  day_of_week_display: weekDays[day - 1],
+                  start_time: timeSlot?.start_time || '',
+                  end_time: timeSlot?.end_time || '',
+                  week_range: courseData.week_range,
+                  semester: selectedSemester,
+                  grid_key: `${day}-${timeSlotId}`
+                });
+              }
+            }
+          }
+        }
+        
+        setSchedule(scheduleItems);
+      } else {
+        // 如果已经是数组格式，直接使用
+        setSchedule(response.data || []);
+      }
     } catch (error: any) {
       message.error(error.response?.data?.error || '获取课程表失败');
     } finally {
@@ -220,8 +272,9 @@ const CourseSchedule: React.FC = () => {
             onChange={setSelectedSemester}
             allowClear
           >
-            <Option value="2024-2025-1">2024-2025学年第一学期</Option>
-            <Option value="2024-2025-2">2024-2025学年第二学期</Option>
+            <Option value="2024春">2024春季学期</Option>
+            <Option value="2024秋">2024秋季学期</Option>
+            <Option value="2025春">2025春季学期</Option>
           </Select>
           <Select
             placeholder="选择周次"

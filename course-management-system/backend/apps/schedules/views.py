@@ -20,6 +20,7 @@ from .services import ScheduleImportExportService
 from apps.users.permissions import CanManageSchedules, CanViewSchedules
 from apps.courses.models import Course
 from apps.classrooms.models import Classroom
+from django.contrib.auth import get_user_model
 
 
 class TimeSlotListCreateView(generics.ListCreateAPIView):
@@ -981,3 +982,60 @@ def schedule_statistics(request):
             'message': f'获取统计信息失败: {str(e)}',
             'data': None
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_teacher_schedules(request):
+    """获取当前登录教师的课程安排"""
+    semester = request.query_params.get('semester')
+    course_id = request.query_params.get('course_id')
+    
+    if not semester:
+        return Response({
+            'code': 400,
+            'message': '缺少学期参数',
+            'data': None
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # 获取当前教师的课程安排
+    schedules = Schedule.objects.filter(
+        teacher=request.user,
+        semester=semester,
+        status='active'
+    ).select_related('course', 'classroom', 'time_slot')
+    
+    if course_id:
+        schedules = schedules.filter(course_id=course_id)
+    
+    # 序列化数据
+    data = []
+    for schedule in schedules:
+        data.append({
+            'id': schedule.id,
+            'course': {
+                'id': schedule.course.id,
+                'name': schedule.course.name,
+                'code': schedule.course.code,
+                'credits': schedule.course.credits
+            },
+            'classroom': {
+                'id': schedule.classroom.id,
+                'name': schedule.classroom.room_number,
+                'building': schedule.classroom.building.name if schedule.classroom.building else '',
+                'capacity': schedule.classroom.capacity
+            },
+            'day_of_week': schedule.day_of_week,
+            'start_time': schedule.time_slot.start_time.strftime('%H:%M'),
+            'end_time': schedule.time_slot.end_time.strftime('%H:%M'),
+            'weeks': schedule.week_range,
+            'semester': schedule.semester,
+            'status': schedule.status,
+            'created_at': schedule.created_at.isoformat()
+        })
+    
+    return Response({
+        'code': 200,
+        'message': '获取教师课程表成功',
+        'data': data
+    })

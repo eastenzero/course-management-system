@@ -24,6 +24,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { scheduleAPI } from '../../services/api';
+import { simpleScheduleAPI } from '../../services/simpleScheduleAPI';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -68,7 +69,7 @@ const ScheduleManagePage: React.FC = () => {
         params.semester = semester;
       }
 
-      const response = await scheduleAPI.getSchedules(params);
+      const response = await simpleScheduleAPI.getSchedules(params);
 
       if (response.data && response.data.results) {
         setSchedules(response.data.results.data || []);

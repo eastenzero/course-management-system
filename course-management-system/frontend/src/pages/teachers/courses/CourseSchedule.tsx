@@ -69,7 +69,7 @@ const CourseSchedule: React.FC = () => {
   const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
-  const [selectedSemester, setSelectedSemester] = useState('2024-2025-1');
+  const [selectedSemester, setSelectedSemester] = useState('2024春');
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [detailVisible, setDetailVisible] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleItem | null>(null);
@@ -347,12 +347,13 @@ const CourseSchedule: React.FC = () => {
           <Col xs={24} sm={8} md={6}>
             <Select
               placeholder="选择学期"
-              style={{ width: '100%' }}
+              style={{ width: 200 }}
               value={selectedSemester}
               onChange={setSelectedSemester}
             >
-              <Option value="2024-2025-1">2024-2025学年第一学期</Option>
-              <Option value="2024-2025-2">2024-2025学年第二学期</Option>
+              <Option value="2024春">2024春季学期</Option>
+              <Option value="2024秋">2024秋季学期</Option>
+              <Option value="2025春">2025春季学期</Option>
             </Select>
           </Col>
           
