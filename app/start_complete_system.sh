@@ -14,10 +14,13 @@ check_port() {
     fi
 }
 
+# 计算脚本所在目录，便于跨平台路径（Linux/Mac）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # 1. 启动数据服务
 echo "📊 启动数据服务..."
 check_port 8080
-cd /root/code/course-management-system/course-management-system/frontend/public
+cd "$SCRIPT_DIR/frontend/public"
 python3 -m http.server 8080 --bind 0.0.0.0 > /dev/null 2>&1 &
 DATA_PID=$!
 echo "✅ 数据服务已启动 (PID: $DATA_PID, 端口: 8080)"
@@ -37,7 +40,7 @@ fi
 # 4. 启动前端开发服务器
 echo "🌐 启动前端开发服务器..."
 check_port 3001
-cd /root/code/course-management-system/course-management-system/frontend
+cd "$SCRIPT_DIR/frontend"
 
 # 设置环境变量，确保使用模拟API
 export VITE_USE_MOCK_API=true

@@ -7,15 +7,23 @@
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 
 def convert_schedule_data():
     """转换排课数据为前端可用格式"""
     print("开始转换排课数据...")
     
     try:
+        # 基于脚本位置构建路径，提升跨平台兼容性
+        backend_dir = Path(__file__).resolve().parent
+        app_root = backend_dir.parent
+        algorithms_result = app_root / 'algorithms' / 'genetic_scheduling_result.json'
+        frontend_public_data = app_root / 'frontend' / 'public' / 'data' / 'schedules.json'
+        backup_path = backend_dir / 'schedule_data.json'
+
         # 加载算法生成的排课结果
         try:
-            with open('/root/code/course-management-system/course-management-system/algorithms/genetic_scheduling_result.json', 'r', encoding='utf-8') as f:
+            with open(algorithms_result, 'r', encoding='utf-8') as f:
                 result_data = json.load(f)
         except FileNotFoundError:
             print("未找到算法排课结果文件")
@@ -89,7 +97,7 @@ def convert_schedule_data():
         }
         
         # 保存到前端可访问的位置
-        output_path = '/root/code/course-management-system/course-management-system/frontend/public/data/schedules.json'
+        output_path = str(frontend_public_data)
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -99,7 +107,6 @@ def convert_schedule_data():
         print(f"📁 数据已保存到: {output_path}")
         
         # 同时保存一个备份
-        backup_path = '/root/code/course-management-system/course-management-system/backend/schedule_data.json'
         with open(backup_path, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, ensure_ascii=False, indent=2)
         

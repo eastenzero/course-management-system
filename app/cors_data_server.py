@@ -10,6 +10,12 @@ import json
 import os
 from urllib.parse import urlparse
 
+# 基于脚本位置的路径，提升跨平台兼容性
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+APP_ROOT = BASE_DIR
+FRONTEND_PUBLIC_DIR = os.path.join(APP_ROOT, 'frontend', 'public')
+SCHEDULES_JSON = os.path.join(FRONTEND_PUBLIC_DIR, 'data', 'schedules.json')
+
 class CORSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         # 添加CORS头
@@ -33,7 +39,7 @@ class CORSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         # 特殊处理数据文件请求
         if path == '/data/schedules.json':
             try:
-                file_path = '/root/code/course-management-system/course-management-system/frontend/public/data/schedules.json'
+                file_path = SCHEDULES_JSON
                 if os.path.exists(file_path):
                     with open(file_path, 'r', encoding='utf-8') as f:
                         data = json.load(f)
@@ -55,7 +61,7 @@ class CORSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 def start_cors_server():
     """启动支持CORS的HTTP服务器"""
     port = 8080
-    directory = '/root/code/course-management-system/course-management-system/frontend/public'
+    directory = FRONTEND_PUBLIC_DIR
     
     # 切换到数据目录
     os.chdir(directory)
