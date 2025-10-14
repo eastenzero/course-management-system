@@ -7,9 +7,12 @@ import os
 import sys
 import django
 import json
+from pathlib import Path
 
-# 设置Django环境
-sys.path.insert(0, '/root/code/course-management-system/course-management-system/backend')
+# 设置Django环境（基于脚本位置，提升跨平台兼容性）
+BASE_DIR = Path(__file__).resolve().parent  # app/backend
+APP_ROOT = BASE_DIR.parent                  # app
+sys.path.insert(0, str(BASE_DIR))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'course_management.settings')
 django.setup()
 
@@ -25,9 +28,10 @@ def import_schedule_simple():
         
         User = get_user_model()
         
-        # 加载算法生成的排课结果
+        # 加载算法生成的排课结果（相对路径）
         try:
-            with open('/root/code/course-management-system/course-management-system/algorithms/genetic_scheduling_result.json', 'r', encoding='utf-8') as f:
+            algorithms_result = APP_ROOT / 'algorithms' / 'genetic_scheduling_result.json'
+            with open(algorithms_result, 'r', encoding='utf-8') as f:
                 result_data = json.load(f)
         except FileNotFoundError:
             print("未找到算法排课结果文件")

@@ -9,9 +9,11 @@ import sys
 import random
 import django
 from datetime import time
+from pathlib import Path
 
-# 添加项目路径
-sys.path.append('/root/code/course-management-system/course-management-system/backend')
+# 添加项目路径（基于脚本位置，提升跨平台兼容性）
+BASE_DIR = Path(__file__).resolve().parent  # app/backend
+sys.path.insert(0, str(BASE_DIR))
 
 # 配置Django环境
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'course_management.settings')

@@ -12,8 +12,10 @@ import json
 from datetime import datetime
 from typing import Dict, List, Tuple
 
-# 添加项目路径
-sys.path.append('/root/code/course-management-system/course-management-system/backend')
+# 添加项目路径（基于脚本位置，提升跨平台兼容性）
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent  # app/backend
+sys.path.insert(0, str(BASE_DIR))
 
 # 配置Django环境
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'course_management.settings')

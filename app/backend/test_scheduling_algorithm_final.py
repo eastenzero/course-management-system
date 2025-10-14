@@ -11,8 +11,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Set, Tuple
 import random
 
-# 添加项目路径
-sys.path.append('/root/code/course-management-system/course-management-system/backend')
+# 本脚本为独立算法测试，不依赖后端路径
 
 # 模拟Django模型
 class MockUser:

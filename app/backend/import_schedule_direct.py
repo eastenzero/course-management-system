@@ -6,9 +6,11 @@
 import os
 import sys
 import django
+from pathlib import Path
 
-# 设置Django环境
-sys.path.insert(0, '/root/code/course-management-system/course-management-system/backend')
+# 设置Django环境（基于脚本位置，提升跨平台兼容性）
+BASE_DIR = Path(__file__).resolve().parent  # app/backend
+sys.path.insert(0, str(BASE_DIR))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'course_management.settings')
 django.setup()
 
