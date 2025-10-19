@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS修复测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .code { background: #f5f5f5; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; background: #1890ff; color: white; cursor: pointer; }
+        button:hover { background: #40a9ff; }
+    </style>
+</head>
+<body>
+    <h1>🌐 CORS跨域修复测试</h1>
+    
+    <div class="test-section">
+        <h2>1. 直接数据访问测试</h2>
+        <button onclick="testDirectAccess()">测试直接访问数据服务</button>
+        <div id="direct-access-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. 代理数据访问测试</h2>
+        <button onclick="testProxyAccess()">测试通过前端代理访问</button>
+        <div id="proxy-access-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. 模拟前端组件测试</h2>
+        <button onclick="testFrontendComponent()">测试模拟前端组件数据加载</button>
+        <div id="frontend-component-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. CORS头验证</h2>
+        <button onclick="testCORSHeaders()">验证CORS头信息</button>
+        <div id="cors-headers-result"></div>
+    </div>
+
+    <script>
+        // 测试1: 直接数据访问
+        window.testDirectAccess = async () => {
+            const resultEl = document.getElementById('direct-access-result');
+            resultEl.innerHTML = '测试中...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/data/schedules.json');
+                if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
+                
+                const data = await response.json();
+                resultEl.innerHTML = '<span class="success">✅ 直接数据访问成功</span>';
+                
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ 直接数据访问失败: ${error.message}</span>`;
+            }
+        };
+
+        // 测试2: 通过代理访问
+        window.testProxyAccess = async () => {
+            const resultEl = document.getElementById('proxy-access-result');
+            resultEl.innerHTML = '测试中...';
+            
+            try {
+                const response = await fetch('/data/schedules.json');
+                if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
+                
+                const data = await response.json();
+                resultEl.innerHTML = '<span class="success">✅ 代理数据访问成功</span>';
+                
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ 代理数据访问失败: ${error.message}</span>`;
+            }
+        };
+
+        // 测试3: 模拟前端组件
+        window.testFrontendComponent = async () => {
+            const resultEl = document.getElementById('frontend-component-result');
+            resultEl.innerHTML = '测试中...';
+            
+            try {
+                // 模拟simpleScheduleAPI的行为
+                const response = await fetch('/data/schedules.json');
+                if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
+                
+                const data = await response.json();
+                
+                // 模拟分页和过滤
+                const page = 1;
+                const pageSize = 5;
+                const start = (page - 1) * pageSize;
+                const end = start + pageSize;
+                
+                const schedules = data.schedules || [];
+                const paginatedSchedules = schedules.slice(start, end);
+                
+                const result = {
+                    count: schedules.length,
+                    next: end < schedules.length ? `?page=${page + 1}` : null,
+                    previous: page > 1 ? `?page=${page - 1}` : null,
+                    results: paginatedSchedules
+                };
+                
+                let html = '<span class="success">✅ 前端组件模拟成功</span>';
+                html += `<p>📊 总记录数: ${result.count}</p>`;
+                html += `<p>📄 当前页记录数: ${result.results.length}</p>`;
+                html += `<p>🔗 分页: ${result.previous || '无'} | ${result.next || '无'}</p>`;
+                
+                if (result.results.length > 0) {
+                    html += '<h4>样例数据:</h4>';
+                    result.results.slice(0, 2).forEach(schedule => {
+                        html += `
+                            <div style="background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                                <strong>${schedule.courseName}</strong> (${schedule.courseCode})<br>
+                                👨‍🏫 ${schedule.teacher} | 🏫 ${schedule.classroom}<br>
+                                ⏰ 周${schedule.dayOfWeek} ${schedule.startTime}-${schedule.endTime}
+                            </div>
+                        `;
+                    });
+                }
+                
+                resultEl.innerHTML = html;
+                
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ 前端组件模拟失败: ${error.message}</span>`;
+            }
+        };
+
+        // 测试4: CORS头验证
+        window.testCORSHeaders = async () => {
+            const resultEl = document.getElementById('cors-headers-result');
+            resultEl.innerHTML = '验证中...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/data/schedules.json');
+                const headers = response.headers;
+                
+                let html = '<h4>响应头信息:</h4>';
+                html += `<p>Access-Control-Allow-Origin: ${headers.get('Access-Control-Allow-Origin') || '未设置'}</p>`;
+                html += `<p>Access-Control-Allow-Methods: ${headers.get('Access-Control-Allow-Methods') || '未设置'}</p>`;
+                html += `<p>Access-Control-Allow-Headers: ${headers.get('Access-Control-Allow-Headers') || '未设置'}</p>`;
+                html += `<p>Content-Type: ${headers.get('Content-Type') || '未设置'}</p>`;
+                
+                const hasCORS = headers.get('Access-Control-Allow-Origin') !== null;
+                html += `<br>${hasCORS ? '<span class="success">✅ CORS头已正确配置</span>' : '<span class="error">❌ CORS头未配置</span>'}`;
+                
+                resultEl.innerHTML = html;
+                
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ CORS头验证失败: ${error.message}</span>`;
+            }
+        };
+        
+        // 页面加载完成后自动运行基础测试
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 CORS测试工具已加载');
+            testProxyAccess(); // 自动运行代理测试
+        });
+    </script>
+</body>
+</html>

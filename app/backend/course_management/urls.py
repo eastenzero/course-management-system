@@ -1,0 +1,56 @@
+"""
+URL configuration for course_management project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.http import JsonResponse
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+def health_check(request):
+    """健康检查端点"""
+    return JsonResponse({'status': 'ok', 'message': 'Backend is running'})
+
+urlpatterns = [
+    # 健康检查
+    path('api/health/', health_check, name='health'),
+
+    # 管理后台
+    path('admin/', admin.site.urls),
+
+    # API文档
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
+    # API路由
+    path('api/v1/auth/', include(('apps.users.urls', 'auth'), namespace='auth')),  # 认证相关
+    path('api/v1/users/', include('apps.users.urls')),
+    path('api/v1/courses/', include('apps.courses.urls')),
+    path('api/v1/classrooms/', include('apps.classrooms.urls')),
+    path('api/v1/schedules/', include('apps.schedules.urls')),
+    # path('api/v1/algorithms/', include('apps.algorithms.urls')),  # 暂时注释掉，模块不存在
+    path('api/v1/analytics/', include('apps.analytics.urls')),
+    path('api/v1/students/', include('apps.students.urls')),
+    path('api/v1/teachers/', include('apps.teachers.urls')),
+    path('api/v1/notifications/', include('apps.notifications.urls')),
+    path('api/v1/files/', include('apps.files.urls')),
+]
+
+# 开发环境下提供媒体文件服务
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据流测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .data-container { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .schedule-item { background: white; margin: 5px 0; padding: 10px; border-left: 3px solid #1890ff; }
+    </style>
+</head>
+<body>
+    <h1>🧪 课程管理系统数据流测试</h1>
+    
+    <div class="section">
+        <h2>1. 数据服务测试</h2>
+        <div id="data-service-test">测试中...</div>
+    </div>
+    
+    <div class="section">
+        <h2>2. 前端API测试</h2>
+        <div id="frontend-api-test">测试中...</div>
+    </div>
+    
+    <div class="section">
+        <h2>3. 数据内容验证</h2>
+        <div id="data-content-test">测试中...</div>
+    </div>
+
+    <script>
+        async function testDataFlow() {
+            // 测试1: 数据服务
+            const dataServiceEl = document.getElementById('data-service-test');
+            try {
+                const response = await fetch('http://localhost:8080/data/schedules.json');
+                if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
+                
+                const data = await response.json();
+                dataServiceEl.innerHTML = '<span class="success">✅ 数据服务正常</span>';
+                
+                // 测试2: 前端API格式
+                const frontendApiEl = document.getElementById('frontend-api-test');
+                if (data.schedules && Array.isArray(data.schedules)) {
+                    frontendApiEl.innerHTML = '<span class="success">✅ 数据格式正确</span>';
+                    
+                    // 测试3: 数据内容
+                    const contentEl = document.getElementById('data-content-test');
+                    let html = `<p>📊 找到 ${data.schedules.length} 条课程记录</p>`;
+                    
+                    if (data.schedules.length > 0) {
+                        html += '<h4>课程示例:</h4>';
+                        data.schedules.slice(0, 3).forEach(schedule => {
+                            html += `
+                                <div class="schedule-item">
+                                    <strong>${schedule.courseName}</strong> (${schedule.courseCode})<br>
+                                    👨‍🏫 ${schedule.teacher} | 🏫 ${schedule.classroom}<br>
+                                    ⏰ 周${schedule.dayOfWeek} ${schedule.startTime}-${schedule.endTime}
+                                </div>
+                            `;
+                        });
+                        
+                        if (data.schedules.length > 3) {
+                            html += `<p>... 还有 ${data.schedules.length - 3} 条记录</p>`;
+                        }
+                    }
+                    
+                    contentEl.innerHTML = html;
+                } else {
+                    frontendApiEl.innerHTML = '<span class="error">❌ 数据格式错误</span>';
+                }
+                
+            } catch (error) {
+                dataServiceEl.innerHTML = `<span class="error">❌ 数据服务错误: ${error.message}</span>`;
+                console.error('数据服务测试失败:', error);
+            }
+        }
+        
+        // 页面加载完成后执行测试
+        document.addEventListener('DOMContentLoaded', testDataFlow);
+    </script>
+</body>
+</html>

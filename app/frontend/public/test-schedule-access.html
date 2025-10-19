@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程表数据访问测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .data-container { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .schedule-item { background: white; margin: 5px 0; padding: 10px; border-left: 3px solid #1890ff; }
+    </style>
+</head>
+<body>
+    <h1>课程表数据访问测试</h1>
+    <div id="status">正在加载数据...</div>
+    <div id="result"></div>
+
+    <script>
+        async function testScheduleAccess() {
+            const statusEl = document.getElementById('status');
+            const resultEl = document.getElementById('result');
+            
+            try {
+                console.log('正在尝试访问 /data/schedules.json...');
+                const response = await fetch('/data/schedules.json');
+                console.log('响应状态:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('成功获取数据:', data);
+                
+                statusEl.innerHTML = '<span class="success">✅ 成功访问课程表数据！</span>';
+                
+                let html = `<h3>数据概览</h3>`;
+                html += `<p>总课程数: ${data.total || 0}</p>`;
+                html += `<p>学期: ${data.semester || '未知'}</p>`;
+                html += `<p>生成时间: ${data.generated_at || '未知'}</p>`;
+                
+                if (data.schedules && data.schedules.length > 0) {
+                    html += `<h3>课程列表</h3>`;
+                    data.schedules.forEach(schedule => {
+                        html += `
+                            <div class="schedule-item">
+                                <strong>${schedule.courseName}</strong> (${schedule.courseCode})<br>
+                                教师: ${schedule.teacher} | 教室: ${schedule.classroom}<br>
+                                时间: 周${schedule.dayOfWeek} ${schedule.startTime}-${schedule.endTime}<br>
+                                周次: ${schedule.weeks} | 学期: ${schedule.semester}
+                            </div>
+                        `;
+                    });
+                }
+                
+                resultEl.innerHTML = html;
+                
+            } catch (error) {
+                console.error('访问失败:', error);
+                statusEl.innerHTML = `<span class="error">❌ 访问失败: ${error.message}</span>`;
+                resultEl.innerHTML = `
+                    <div class="error">
+                        <h3>错误详情</h3>
+                        <p>${error.message}</p>
+                        <p>请检查:</p>
+                        <ul>
+                            <li>前端服务是否正常运行</li>
+                            <li>数据文件是否存在</li>
+                            <li>网络连接是否正常</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+        
+        // 页面加载完成后执行测试
+        document.addEventListener('DOMContentLoaded', testScheduleAccess);
+    </script>
+</body>
+</html>
