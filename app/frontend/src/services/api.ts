@@ -127,6 +127,15 @@ export const scheduleAPI = {
   getSchedules: (params?: any) =>
     api.get('/schedules/', { params }),
   
+  getScheduleTable: (params?: any) =>
+    api.get('/schedules/table/', { params }),
+  
+  getTimeSlots: (params?: any) =>
+    api.get('/schedules/timeslots/', { params }),
+  
+  getTimeSlotsSimple: () =>
+    api.get('/schedules/timeslots/simple/'),
+  
   getSchedule: (id: number) =>
     api.get(`/schedules/${id}/`),
   

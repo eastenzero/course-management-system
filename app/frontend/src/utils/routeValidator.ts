@@ -225,7 +225,8 @@ export const generateRouteReport = (): string => {
  * 在开发环境下打印路由报告
  */
 export const printRouteReport = (): void => {
-  if (process.env.NODE_ENV === 'development') {
+  const env = (import.meta as any).env || {};
+  if (env.MODE === 'development' && env.VITE_VERBOSE_LOGS === 'true') {
     console.group('🛣️ 路由配置报告');
     console.log(generateRouteReport());
     console.groupEnd();

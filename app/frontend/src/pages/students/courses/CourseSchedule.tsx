@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Card,
-  Table,
   Select,
   Button,
   Space,
   Typography,
   Tag,
-  Tooltip,
   Empty,
   Spin,
   message,
@@ -21,8 +19,10 @@ import {
   UserOutlined,
   DownloadOutlined
 } from '@ant-design/icons';
+import ScheduleGrid, { type ScheduleItem as GridScheduleItem } from '../../../components/education/ScheduleGrid';
 import { studentAPI } from '../../../services/studentAPI';
-import { scheduleAPI } from '../../../api/schedules';
+import { normalizeSemester } from '../../../utils/semester';
+import { scheduleAPI } from '../../../services/api';
 import { useAppSelector } from '../../../store';
 
 const { Option } = Select;
@@ -59,9 +59,11 @@ const CourseSchedule: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-  const [selectedSemester, setSelectedSemester] = useState<string>('2024春');
-  const [selectedWeek, setSelectedWeek] = useState<string>('');
+  const [selectedSemester, setSelectedSemester] = useState<string>('2024秋');
+  const [currentWeek, setCurrentWeek] = useState<number>(1);
   const [exporting, setExporting] = useState(false);
+
+  const MAX_WEEKS = 20;
 
   const weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
@@ -70,18 +72,38 @@ const CourseSchedule: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (user?.id) {
+    // 学生/教师需要 user.id 以附带筛选参数；管理员/未知类型不需要
+    if (user?.user_type === 'student' || user?.user_type === 'teacher') {
+      if (user?.id) fetchSchedule();
+    } else {
       fetchSchedule();
     }
-  }, [selectedSemester, selectedWeek, user?.id]);
+  }, [selectedSemester, currentWeek, user?.id, user?.user_type]);
 
   const fetchTimeSlots = async () => {
     try {
+      const verbose = (import.meta as any).env?.VITE_VERBOSE_LOGS === 'true';
+      // 优先使用 simple 接口，结构更稳定
+      try {
+        const simple = await scheduleAPI.getTimeSlotsSimple();
+        const payload = simple.data?.data ?? simple.data;
+        if (Array.isArray(payload)) {
+          setTimeSlots(payload);
+          if (verbose) console.log('[CourseSchedule] timeSlots(simple):', payload.length);
+          return;
+        }
+      } catch (e) {
+        if (verbose) console.warn('[CourseSchedule] simple timeslots not available, fallback.');
+      }
+
       const response = await scheduleAPI.getTimeSlots();
-      if (response.data?.data) {
-        setTimeSlots(response.data.data);
+      const payload = response.data?.data ?? response.data;
+      if (Array.isArray(payload)) {
+        setTimeSlots(payload);
+      } else if (Array.isArray(payload?.results)) {
+        setTimeSlots(payload.results);
       } else {
-        setTimeSlots(response.data || []);
+        setTimeSlots([]);
       }
     } catch (error: any) {
       console.error('获取时间段失败:', error);
@@ -97,22 +119,59 @@ const CourseSchedule: React.FC = () => {
     }
   };
 
+  // 仅显示本周有课的时间段，并按顺序排序，避免表格过长与乱序
+  const displayTimeSlots = useMemo(() => {
+    const sortFn = (a: TimeSlot, b: TimeSlot) => {
+      const ao = (a.order ?? 0) - (b.order ?? 0);
+      if (ao !== 0) return ao;
+      return String(a.start_time).localeCompare(String(b.start_time));
+    };
+    if (!timeSlots?.length) return [] as TimeSlot[];
+    if (!schedule?.length) return [...timeSlots].sort(sortFn);
+    const used = new Set<number>(schedule.map(s => s.time_slot_id));
+    const filtered = timeSlots.filter(ts => used.has(ts.id));
+    const base = filtered.length > 0 ? filtered : timeSlots;
+    return [...base].sort(sortFn);
+  }, [timeSlots, schedule]);
+
   const fetchSchedule = async () => {
     try {
       setLoading(true);
-      const params: any = {
-        user_type: 'student',
-        user_id: user?.id || ''
-      };
-      if (selectedSemester) params.semester = selectedSemester;
-      if (selectedWeek) params.week = selectedWeek;
+      const params: any = {};
+      // 仅在用户角色匹配时传递筛选参数
+      if (user?.user_type === 'student') {
+        params.user_type = 'student';
+        params.user_id = user.id;
+      } else if (user?.user_type === 'teacher') {
+        params.user_type = 'teacher';
+        params.user_id = user.id;
+      }
+      // 始终传递规范化的学期，防止后端 400（缺少学期参数）
+      const semParam = selectedSemester ? normalizeSemester(selectedSemester) : normalizeSemester('2024-1');
+      params.semester = semParam;
+      params.week = String(currentWeek);
       
-      const response = await studentAPI.getSchedule(params);
+      const verbose = (import.meta as any).env?.VITE_VERBOSE_LOGS === 'true';
+      if (verbose) {
+        console.log('[CourseSchedule] fetch params:', params);
+      }
+
+      let response = await studentAPI.getSchedule(params);
+
+      // 兼容后端返回包装或直接返回
+      let payload = response?.data?.data ?? response?.data;
+
+      // 如果拿不到schedule_table，尝试直接调用 scheduleAPI 作为后备
+      if (!payload?.schedule_table) {
+        if (verbose) console.warn('[CourseSchedule] primary resp missing schedule_table, trying fallback ...');
+        const fb = await scheduleAPI.getScheduleTable(params);
+        payload = fb?.data?.data ?? fb?.data;
+      }
       
       // 转换后端数据格式为前端需要的格式
-      if (response.data?.data?.schedule_table) {
-        const scheduleTable = response.data.data.schedule_table;
-        const timeSlotsData = response.data.data.time_slots || timeSlots;
+      if (payload?.schedule_table) {
+        const scheduleTable = payload.schedule_table;
+        const timeSlotsData = payload.time_slots || timeSlots;
         
         // 将表格数据转换为课程列表
         const scheduleItems: ScheduleItem[] = [];
@@ -141,7 +200,7 @@ const CourseSchedule: React.FC = () => {
                   start_time: timeSlot?.start_time || '',
                   end_time: timeSlot?.end_time || '',
                   week_range: courseData.week_range,
-                  semester: selectedSemester,
+                  semester: semParam,
                   grid_key: `${day}-${timeSlotId}`
                 });
               }
@@ -149,10 +208,18 @@ const CourseSchedule: React.FC = () => {
           }
         }
         
+        if (verbose) {
+          console.log('[CourseSchedule] parsed items:', scheduleItems.length);
+        }
         setSchedule(scheduleItems);
       } else {
         // 如果已经是数组格式，直接使用
-        setSchedule(response.data || []);
+        if (Array.isArray(payload)) {
+          setSchedule(payload);
+        } else {
+          if (verbose) console.warn('[CourseSchedule] no schedule_table and payload not array:', payload);
+          setSchedule([]);
+        }
       }
     } catch (error: any) {
       message.error(error.response?.data?.error || '获取课程表失败');
@@ -164,8 +231,10 @@ const CourseSchedule: React.FC = () => {
   const handleExportSchedule = async () => {
     try {
       setExporting(true);
-      const params: any = {};
-      if (selectedSemester) params.semester = selectedSemester;
+      const params: any = {
+        semester: selectedSemester ? normalizeSemester(selectedSemester) : normalizeSemester('2024-1'),
+        format: 'excel'
+      };
       
       const response = await studentAPI.exportSchedule(params);
       
@@ -173,7 +242,7 @@ const CourseSchedule: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `课程表_${selectedSemester || '全部'}.pdf`);
+      link.setAttribute('download', `课程表_${selectedSemester || '全部'}.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -187,90 +256,50 @@ const CourseSchedule: React.FC = () => {
     }
   };
 
-  // 构建课程表网格数据
-  const buildScheduleGrid = () => {
-    const grid: Record<number, Record<number, ScheduleItem | null>> = {};
-    
-    // 初始化网格
-    timeSlots.forEach(timeSlot => {
-      grid[timeSlot.id] = {};
-      weekDays.forEach((_, dayIndex) => {
-        grid[timeSlot.id][dayIndex + 1] = null; // day_of_week 从1开始
-      });
-    });
+  // 供 ScheduleGrid 使用的数据
+  const gridTimeSlots = useMemo(() => (
+    (displayTimeSlots || []).map(ts => `${ts.start_time}-${ts.end_time}`)
+  ), [displayTimeSlots]);
 
-    // 填充课程数据
-    schedule.forEach(item => {
-      if (grid[item.time_slot_id] && !grid[item.time_slot_id][item.day_of_week]) {
-        grid[item.time_slot_id][item.day_of_week] = item;
-      }
-    });
-
-    return grid;
-  };
-
-  const scheduleGrid = buildScheduleGrid();
-
-  const renderCourseCell = (course: ScheduleItem | null) => {
-    if (!course) {
-      return <div style={{ height: '80px', padding: '8px' }}></div>;
-    }
-
-    return (
-      <div
-        style={{
-          height: '80px',
-          padding: '8px',
-          backgroundColor: '#e6f7ff',
-          border: '1px solid #91d5ff',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        <Tooltip
-          title={
-            <div>
-              <div><strong>{course.course_name}</strong></div>
-              <div>课程代码：{course.course_code}</div>
-              <div>授课教师：{course.teacher_name}</div>
-              <div>教室：{course.classroom}</div>
-              <div>周次：{course.week_range}</div>
-            </div>
-          }
-        >
-          <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '4px' }}>
-            {course.course_name}
-          </div>
-          <div style={{ fontSize: '10px', color: '#666' }}>
-            <EnvironmentOutlined /> {course.classroom}
-          </div>
-          <div style={{ fontSize: '10px', color: '#666' }}>
-            <UserOutlined /> {course.teacher_name}
-          </div>
-        </Tooltip>
-      </div>
-    );
-  };
+  const gridData: GridScheduleItem[] = useMemo(() => (
+    (schedule || []).map((s, idx) => ({
+      id: `${s.course_id}-${s.day_of_week}-${s.time_slot_id}-${idx}`,
+      course_id: s.course_id,
+      course_name: s.course_name,
+      course_code: s.course_code,
+      teacher_name: s.teacher_name,
+      classroom: s.classroom,
+      time_slot: s.time_slot,
+      day_of_week: s.day_of_week,
+      start_time: s.start_time,
+      end_time: s.end_time,
+      week_range: s.week_range
+    }))
+  ), [schedule]);
 
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}>
-        <Spin size="large" tip="加载中..." />
+        <Spin size="large" tip="加载中...">
+          <div style={{ width: 200, height: 80 }} />
+        </Spin>
       </div>
     );
   }
 
   return (
     <div style={{ padding: '24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', position: 'relative', zIndex: 1 }}>
         <Title level={2}>课程表</Title>
         <Space>
           <Select
             placeholder="选择学期"
             style={{ width: 200 }}
             value={selectedSemester}
-            onChange={setSelectedSemester}
-            allowClear
+            onChange={(val) => { setSelectedSemester(val); setCurrentWeek(1); }}
+            getPopupContainer={() => document.body}
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ zIndex: 4000 }}
           >
             <Option value="2024春">2024春季学期</Option>
             <Option value="2024秋">2024秋季学期</Option>
@@ -279,14 +308,29 @@ const CourseSchedule: React.FC = () => {
           <Select
             placeholder="选择周次"
             style={{ width: 120 }}
-            value={selectedWeek}
-            onChange={setSelectedWeek}
-            allowClear
+            value={currentWeek}
+            onChange={(w) => { setCurrentWeek(Number(w)); message.success(`已切换到第${w}周`); }}
+            getPopupContainer={() => document.body}
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ zIndex: 4000 }}
           >
-            {Array.from({ length: 20 }, (_, i) => (
-              <Option key={i + 1} value={`${i + 1}`}>第{i + 1}周</Option>
+            {Array.from({ length: MAX_WEEKS }, (_, i) => (
+              <Option key={i + 1} value={i + 1}>第{i + 1}周</Option>
             ))}
           </Select>
+          <Button
+            disabled={currentWeek <= 1}
+            onClick={() => setCurrentWeek((w) => { const n = Math.max(1, w - 1); message.success(`已切换到第${n}周`); return n; })}
+          >
+            上一周
+          </Button>
+          <Button
+            disabled={currentWeek >= MAX_WEEKS}
+            onClick={() => setCurrentWeek((w) => { const n = Math.min(MAX_WEEKS, w + 1); message.success(`已切换到第${n}周`); return n; })}
+          >
+            下一周
+          </Button>
+          <Tag color="blue">第{currentWeek}周</Tag>
           <Button
             type="primary"
             icon={<DownloadOutlined />}
@@ -300,78 +344,17 @@ const CourseSchedule: React.FC = () => {
 
       {schedule.length === 0 ? (
         <Card>
-          <Empty
-            description="暂无课程安排"
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-          />
+          <Empty description="暂无课程安排" image={Empty.PRESENTED_IMAGE_SIMPLE} />
         </Card>
       ) : (
-        <Card>
-          {/* 课程表网格 */}
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={{ 
-                    width: '100px', 
-                    padding: '12px', 
-                    backgroundColor: '#fafafa', 
-                    border: '1px solid #d9d9d9',
-                    textAlign: 'center'
-                  }}>
-                    时间
-                  </th>
-                  {weekDays.map((day, index) => (
-                    <th
-                      key={index}
-                      style={{
-                        padding: '12px',
-                        backgroundColor: '#fafafa',
-                        border: '1px solid #d9d9d9',
-                        textAlign: 'center',
-                        minWidth: '120px'
-                      }}
-                    >
-                      {day}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {timeSlots.map((timeSlot) => (
-                  <tr key={timeSlot.id}>
-                    <td style={{
-                      padding: '8px',
-                      backgroundColor: '#fafafa',
-                      border: '1px solid #d9d9d9',
-                      textAlign: 'center',
-                      fontSize: '12px',
-                      fontWeight: 'bold'
-                    }}>
-                      <div>{timeSlot.name}</div>
-                      <div style={{ fontSize: '10px', color: '#999' }}>
-                        {timeSlot.start_time}-{timeSlot.end_time}
-                      </div>
-                    </td>
-                    {weekDays.map((_, dayIndex) => (
-                      <td
-                        key={dayIndex}
-                        style={{
-                          padding: '4px',
-                          border: '1px solid #d9d9d9',
-                          verticalAlign: 'top'
-                        }}
-                      >
-                        {renderCourseCell(scheduleGrid[timeSlot.id]?.[dayIndex + 1] || null)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <>
+          <ScheduleGrid
+            scheduleData={gridData}
+            timeSlots={gridTimeSlots}
+            weekDays={weekDays}
+            showWeekend={true}
+          />
 
-          {/* 课程列表视图 */}
           <div style={{ marginTop: '24px' }}>
             <Title level={4}>课程列表</Title>
             <Row gutter={[16, 16]}>
@@ -404,7 +387,7 @@ const CourseSchedule: React.FC = () => {
               ))}
             </Row>
           </div>
-        </Card>
+        </>
       )}
     </div>
   );

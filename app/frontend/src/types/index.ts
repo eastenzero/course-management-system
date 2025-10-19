@@ -84,7 +84,8 @@ export interface TimeSlot extends BaseEntity {
   name: string;
   start_time: string;
   end_time: string;
-  duration: number;
+  duration_minutes?: number;
+  duration?: number;
   order: number;
 }
 
@@ -93,8 +94,9 @@ export interface Schedule extends BaseEntity {
   course: Course;
   classroom: Classroom;
   time_slot: TimeSlot;
-  day_of_week: number; // 0-6, 0为周日
-  week_number: number;
+  day_of_week: number; // 1-7, 周一=1
+  week_number?: number;
+  week_range?: string;
   semester: string;
   academic_year: string;
   teacher: User;
@@ -107,6 +109,10 @@ export enum ScheduleStatus {
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
+  // Backend statuses
+  ACTIVE = 'active',
+  RESCHEDULED = 'rescheduled',
+  SUSPENDED = 'suspended',
 }
 
 // 冲突检测类型

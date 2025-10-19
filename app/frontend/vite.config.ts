@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,7 +28,7 @@ export default defineConfig({
     host: '0.0.0.0', // 允许局域网访问
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:18000',
         changeOrigin: true,
         secure: false,
       },
@@ -43,10 +47,5 @@ export default defineConfig({
         },
       },
     },
-  },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
   },
 });

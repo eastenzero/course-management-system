@@ -16,7 +16,7 @@ import {
 // import { DndProvider, useDrag, useDrop } from 'react-dnd';
 // import { HTML5Backend } from 'react-dnd-html5-backend';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 const { Option } = Select;
 
 export interface ScheduleItem {
@@ -172,7 +172,7 @@ const DroppableCell: React.FC<{
   cellHeight: number;
   onDrop: (item: any, dayIndex: number, timeSlotIndex: number) => void;
   children?: React.ReactNode;
-}> = ({ dayIndex, timeSlotIndex, cellHeight, onDrop, children }) => {
+}> = ({ dayIndex: _dayIndex, timeSlotIndex: _timeSlotIndex, cellHeight, onDrop: _onDrop, children }) => {
   // const [{ isOver }, drop] = useDrop({
   //   accept: 'course',
   //   drop: (item: any) => onDrop(item, dayIndex, timeSlotIndex),
@@ -202,11 +202,11 @@ const DroppableCell: React.FC<{
 const EnhancedScheduleGrid: React.FC<EnhancedScheduleGridProps> = ({
   scheduleData,
   timeSlots = [
-    '08:00-09:40',
-    '10:00-11:40',
-    '14:00-15:40',
-    '16:00-17:40',
-    '19:00-20:40'
+    '08:00-10:00',
+    '10:10-12:10',
+    '14:00-16:00',
+    '16:10-18:10',
+    '19:00-21:00'
   ],
   weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
   onCellClick,

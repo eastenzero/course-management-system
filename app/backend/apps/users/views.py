@@ -71,14 +71,21 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         user = serializer.validated_data['user']
         refresh = RefreshToken.for_user(user)
 
+        # 为兼容旧前端，除 data 内外，额外在顶层回显 access/refresh/user 字段
+        access_token = str(refresh.access_token)
+        user_data = UserProfileSerializer(user).data
+
         return Response({
             'code': 200,
             'message': '登录成功',
             'data': {
-                'access': str(refresh.access_token),
+                'access': access_token,
                 'refresh': str(refresh),
-                'user': UserProfileSerializer(user).data
-            }
+                'user': user_data
+            },
+            'access': access_token,
+            'refresh': str(refresh),
+            'user': user_data
         })
 
 

@@ -73,16 +73,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'course_management.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'course_management'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'postgres123'),
-        'HOST': os.environ.get('DB_HOST', 'db'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+USE_SQLITE = os.environ.get('USE_SQLITE', '0') in ['1', 'true', 'True']
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': str(BASE_DIR / 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME', 'course_management'),
+            'USER': os.environ.get('DB_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'postgres123'),
+            'HOST': os.environ.get('DB_HOST', 'db'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -144,7 +153,30 @@ CACHES = {
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+SCHEDULE_CONFIG = {
+    'TERM_WEEKS': int(os.environ.get('TERM_WEEKS', 18)),
+    'SESSION_DURATION_HOURS': float(os.environ.get('SESSION_DURATION_HOURS', 2)),
+    'sessions_per_week_cap': int(os.environ.get('SCHEDULE_SESSIONS_PER_WEEK_CAP', 2)),
+    'teacher_same_day_penalty': float(os.environ.get('SCHEDULE_TEACHER_SAME_DAY_PENALTY', 8)),
+    'time_slot_usage_penalty': float(os.environ.get('SCHEDULE_TIME_SLOT_USAGE_PENALTY', 2.0)),
+    'teacher_day_load_limit': int(os.environ.get('SCHEDULE_TEACHER_DAY_LOAD_LIMIT', 3)),
+    'avoid_noon_default': os.environ.get('SCHEDULE_AVOID_NOON_DEFAULT', '0') in ['1', 'true', 'True'],
+    'preferred_classroom_bonus': float(os.environ.get('SCHEDULE_PREFERRED_CLASSROOM_BONUS', 20)),
+    'preferred_time_slot_bonus': float(os.environ.get('SCHEDULE_PREFERRED_TIME_SLOT_BONUS', 15)),
+    'preferred_day_bonus': float(os.environ.get('SCHEDULE_PREFERRED_DAY_BONUS', 10)),
+    'priority_weight': float(os.environ.get('SCHEDULE_PRIORITY_WEIGHT', 10)),
+    'noon_penalty': float(os.environ.get('SCHEDULE_NOON_PENALTY', 30)),
+    'good_time_slot_order_min': int(os.environ.get('SCHEDULE_GOOD_TS_ORDER_MIN', 2)),
+    'good_time_slot_order_max': int(os.environ.get('SCHEDULE_GOOD_TS_ORDER_MAX', 6)),
+    'good_time_slot_bonus': float(os.environ.get('SCHEDULE_GOOD_TS_BONUS', 5)),
+    'two_hour_minutes_min': int(os.environ.get('SCHEDULE_TWO_HOUR_MIN', 115)),
+    'two_hour_minutes_max': int(os.environ.get('SCHEDULE_TWO_HOUR_MAX', 125)),
+    'max_daily_sessions_per_course': int(os.environ.get('SCHEDULE_MAX_DAILY_SESSIONS_PER_COURSE', 1)),
+}

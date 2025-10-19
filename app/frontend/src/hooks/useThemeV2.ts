@@ -79,21 +79,21 @@ export const useThemeProvider = () => {
         const parsed = JSON.parse(savedTheme);
         // 验证主题数据的有效性
         if (parsed.category && parsed.themeKey && parsed.mode) {
-          if (process.env.NODE_ENV === 'development') {
+          if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
             console.log('从localStorage加载主题:', parsed);
           }
           return parsed;
         }
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
         console.warn('加载主题失败:', error);
       }
     }
 
     // 如果没有保存的主题或加载失败，使用默认浅色主题
     const defaultTheme = generateDefaultTheme();
-    if (process.env.NODE_ENV === 'development') {
+    if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
       console.log('使用默认浅色主题:', defaultTheme);
     }
     return defaultTheme;
@@ -210,11 +210,11 @@ export const useThemeProvider = () => {
     // 保存主题到localStorage
     try {
       localStorage.setItem('ui-theme-v2', JSON.stringify(newTheme));
-      if (process.env.NODE_ENV === 'development') {
+      if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
         console.log('主题已保存到localStorage:', newTheme);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
         console.warn('保存主题失败:', error);
       }
     }

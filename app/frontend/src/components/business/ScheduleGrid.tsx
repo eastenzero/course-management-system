@@ -62,6 +62,12 @@ const ScheduleCell: React.FC<ScheduleCellProps> = ({
         return '#8c8c8c';
       case 'cancelled':
         return '#f5222d';
+      case 'active':
+        return '#1890ff';
+      case 'rescheduled':
+        return '#faad14';
+      case 'suspended':
+        return '#722ed1';
       default:
         return '#d9d9d9';
     }
@@ -149,9 +155,42 @@ const ScheduleGrid: React.FC<ScheduleGridProps> = ({
   showClassroom = true,
   compact = false,
 }) => {
-  // 根据周次过滤课程表
   const filteredSchedules = useMemo(() => {
-    return schedules.filter(schedule => schedule.week_number === selectedWeek);
+    const parseWeekRange = (range?: string): number[] => {
+      if (!range) return [];
+      const cleaned = range.replace(/周/g, '').trim();
+      const parts = cleaned.split(',');
+      const weeksSet = new Set<number>();
+      for (const partRaw of parts) {
+        const part = partRaw.trim();
+        if (!part) continue;
+        if (part.includes('-')) {
+          const [aStr, bStr] = part.split('-');
+          const a = Number(aStr);
+          const b = Number(bStr);
+          if (!Number.isNaN(a) && !Number.isNaN(b)) {
+            const start = Math.min(a, b);
+            const end = Math.max(a, b);
+            for (let w = start; w <= end; w++) weeksSet.add(w);
+          }
+        } else {
+          const n = Number(part);
+          if (!Number.isNaN(n)) weeksSet.add(n);
+        }
+      }
+      return Array.from(weeksSet);
+    };
+
+    const isActiveInWeek = (sch: Schedule, week: number): boolean => {
+      if (typeof sch.week_number === 'number') return sch.week_number === week;
+      if (sch.week_range) {
+        const weeks = parseWeekRange(sch.week_range);
+        return weeks.includes(week);
+      }
+      return true;
+    };
+
+    return schedules.filter(s => isActiveInWeek(s, selectedWeek));
   }, [schedules, selectedWeek]);
 
   // 创建课程表矩阵

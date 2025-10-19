@@ -22,7 +22,7 @@ import { glassOptimizer } from './utils/glassEffectOptimizer';
 dayjs.locale('zh-cn');
 
 // 性能监控（仅在必要时开启）
-if (process.env.NODE_ENV === 'development' && false) { // 默认禁用详细性能监控
+if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true' && false) { // 默认禁用详细性能监控
   // 监控性能指标
   if ('PerformanceObserver' in window) {
     const observer = new PerformanceObserver((list) => {
@@ -41,11 +41,13 @@ if (process.env.NODE_ENV === 'development' && false) { // 默认禁用详细性�
 const initializeCache = async () => {
   try {
     // 只预热不需要认证的数据，认证相关的数据在用户登录后预热
-    if (process.env.NODE_ENV === 'development') {
+    if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
       console.log('[Cache] Initial cache warming completed');
     }
   } catch (error) {
-    console.warn('[Cache] Cache warming failed:', error);
+    if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
+      console.warn('[Cache] Cache warming failed:', error);
+    }
   }
 };
 
@@ -57,12 +59,14 @@ const initializeRoutePreloading = async () => {
     if (userInfo) {
       const user = JSON.parse(userInfo);
       await RoutePreloader.preloadByUserRole(user.user_type);
-      if (process.env.NODE_ENV === 'development') {
+      if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
         console.log('[Routes] Route preloading completed for role:', user.user_type);
       }
     }
   } catch (error) {
-    console.warn('[Routes] Route preloading failed:', error);
+    if ((import.meta as any).env?.VITE_VERBOSE_LOGS === 'true') {
+      console.warn('[Routes] Route preloading failed:', error);
+    }
   }
 };
 

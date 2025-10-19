@@ -26,9 +26,11 @@ const { Title, Text } = Typography;
 
 const LoginPage: React.FC = () => {
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
   // 生成随机字符串防止浏览器记住表单
   const randomSuffix = React.useMemo(() => Math.random().toString(36).substring(7), []);
   const [loading, setLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -59,11 +61,18 @@ const LoginPage: React.FC = () => {
     }, 100);
   }, [form]);
 
+  useEffect(() => {
+    if (loginSuccess) {
+      messageApi.success('登录成功');
+      setLoginSuccess(false);
+    }
+  }, [loginSuccess, messageApi]);
+
   const onFinish = async (values: LoginForm) => {
     setLoading(true);
     try {
       const result = await dispatch(login(values)).unwrap();
-      message.success('登录成功');
+      setLoginSuccess(true);
 
       // 登录成功后立即跳转
       const from = (location.state as any)?.from?.pathname;
@@ -88,7 +97,7 @@ const LoginPage: React.FC = () => {
       // message.info('后端服务暂时不可用，自动切换至演示模式');
       // await handleMockLogin(values);
       
-      message.error(error?.response?.data?.message || error?.message || '登录失败，请检查用户名和密码');
+      messageApi.error(error?.response?.data?.message || error?.message || '登录失败，请检查用户名和密码');
     } finally {
       setLoading(false);
     }
@@ -159,11 +168,12 @@ const LoginPage: React.FC = () => {
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
-    message.error('请填写完整的登录信息');
+    messageApi.error('请填写完整的登录信息');
   };
 
   return (
     <div className="login-container">
+      {contextHolder}
       {/* 隐藏的假输入框，用来欺骗浏览器自动填充 */}
       <div style={{ position: 'absolute', left: '-9999px', opacity: 0 }}>
         <input type="text" name="fake-username" autoComplete="username" />

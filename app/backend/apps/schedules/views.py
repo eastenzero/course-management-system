@@ -1,4 +1,6 @@
 from rest_framework import generics, status, permissions
+import re
+import logging
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.utils.decorators import method_decorator
@@ -21,6 +23,39 @@ from apps.users.permissions import CanManageSchedules, CanViewSchedules
 from apps.courses.models import Course
 from apps.classrooms.models import Classroom
 from django.contrib.auth import get_user_model
+User = get_user_model()
+
+logger = logging.getLogger(__name__)
+
+def normalize_semester(sem: str) -> str:
+    """将学期别名规范化为 YYYY-YYYY-<1|2> 格式。
+    支持示例：
+    - 2025-2026-1 (已规范)
+    - 2025-1 => 2025-2026-1
+    - 2025-2 => 2024-2025-2
+    - 2024春 / 2024年春季学期 => 2023-2024-2
+    - 2024秋 / 2024年秋季学期 => 2024-2025-1
+    """
+    if not sem:
+        return sem
+    s = str(sem).strip()
+    # 已规范
+    if re.fullmatch(r"\d{4}-\d{4}-(1|2)", s):
+        return s
+    # 形如 YYYY-1 / YYYY-2
+    m = re.fullmatch(r"(\d{4})-(1|2)", s)
+    if m:
+        y = int(m.group(1))
+        term = m.group(2)
+        return f"{y}-{y+1}-1" if term == '1' else f"{y-1}-{y}-2"
+    # 春/秋 表达
+    s_no_space = re.sub(r"\s+", "", s)
+    m2 = re.search(r"(\d{4}).*(春|秋)", s_no_space)
+    if m2:
+        y = int(m2.group(1))
+        is_spring = (m2.group(2) == '春')
+        return f"{y-1}-{y}-2" if is_spring else f"{y}-{y+1}-1"
+    return s
 
 
 class TimeSlotListCreateView(generics.ListCreateAPIView):
@@ -173,7 +208,52 @@ class ScheduleListCreateView(generics.ListCreateAPIView):
 
     @method_decorator(cache_page(60 * 2))  # 缓存2分钟
     def list(self, request, *args, **kwargs):
+        # 规范化学期参数，避免别名导致过滤为空
+        sem = request.query_params.get('semester')
+        if sem:
+            norm = normalize_semester(sem)
+            if norm != sem and hasattr(request, '_request') and hasattr(request._request, 'GET'):
+                try:
+                    qd = request._request.GET.copy()
+                    qd['semester'] = norm
+                    request._request.GET = qd
+                except Exception as e:
+                    logger.error(f"Failed to normalize semester: {e}")
+                    return Response({
+                        'code': 400,
+                        'message': '学期参数格式错误',
+                        'data': None
+                    }, status=status.HTTP_400_BAD_REQUEST)
+
         queryset = self.filter_queryset(self.get_queryset())
+
+        weeks_param = request.query_params.get('weeks')
+        week_param = request.query_params.get('week')
+        if weeks_param:
+            try:
+                weeks_list = Schedule.parse_week_range(weeks_param)
+                weeks_set = set(int(w) for w in weeks_list)
+                if weeks_set:
+                    queryset = [s for s in queryset if any(w in s.week_numbers for w in weeks_set)]
+            except Exception as e:
+                logger.error(f"Failed to parse weeks parameter: {e}")
+                return Response({
+                    'code': 400,
+                    'message': '周次参数格式错误',
+                    'data': None
+                }, status=status.HTTP_400_BAD_REQUEST)
+        elif week_param:
+            try:
+                week_number = int(week_param)
+                queryset = [s for s in queryset if s.is_active_in_week(week_number)]
+            except Exception as e:
+                logger.error(f"Failed to parse week parameter: {e}")
+                return Response({
+                    'code': 400,
+                    'message': '周次参数格式错误',
+                    'data': None
+                }, status=status.HTTP_400_BAD_REQUEST)
+
         page = self.paginate_queryset(queryset)
 
         if page is not None:
@@ -412,6 +492,8 @@ def get_schedule_table(request):
     user_type = request.GET.get('user_type')  # 'student', 'teacher', 'classroom'
     user_id = request.GET.get('user_id')
     classroom_id = request.GET.get('classroom_id')
+    week_param = request.GET.get('week')
+    weeks_param = request.GET.get('weeks')
 
     if not semester:
         return Response({
@@ -419,6 +501,66 @@ def get_schedule_table(request):
             'message': '缺少学期参数',
             'data': None
         }, status=status.HTTP_400_BAD_REQUEST)
+
+    # 规范化学期编码
+    semester = normalize_semester(semester)
+
+    # 参数校验：当传入筛选参数时，避免由于类型/ID不匹配导致静默空结果
+    if user_type:
+        if user_type not in ['student', 'teacher']:
+            return Response({
+                'code': 400,
+                'message': 'user_type 参数仅支持 student 或 teacher',
+                'data': None
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if user_id:
+            try:
+                uid = int(user_id)
+            except (ValueError, TypeError):
+                return Response({
+                    'code': 400,
+                    'message': 'user_id 必须为整数',
+                    'data': None
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                u = User.objects.get(id=uid)
+            except User.DoesNotExist:
+                return Response({
+                    'code': 400,
+                    'message': '指定的用户不存在',
+                    'data': None
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            if user_type == 'teacher' and u.user_type != 'teacher':
+                return Response({
+                    'code': 400,
+                    'message': '指定的用户不是教师',
+                    'data': None
+                }, status=status.HTTP_400_BAD_REQUEST)
+            if user_type == 'student' and u.user_type != 'student':
+                return Response({
+                    'code': 400,
+                    'message': '指定的用户不是学生',
+                    'data': None
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+    if classroom_id:
+        try:
+            cid = int(classroom_id)
+        except (ValueError, TypeError):
+            return Response({
+                'code': 400,
+                'message': 'classroom_id 必须为整数',
+                'data': None
+            }, status=status.HTTP_400_BAD_REQUEST)
+        if not Classroom.objects.filter(id=cid).exists():
+            return Response({
+                'code': 400,
+                'message': '指定的教室不存在',
+                'data': None
+            }, status=status.HTTP_400_BAD_REQUEST)
 
     # 基础查询
     schedules = Schedule.objects.filter(
@@ -452,6 +594,22 @@ def get_schedule_table(request):
     elif request.user.user_type == 'teacher':
         # 当前教师的课程表
         schedules = schedules.filter(teacher=request.user)
+
+    # 按周次过滤（可选）：优先使用 weeks，其次使用 week
+    if weeks_param:
+        try:
+            weeks_list = Schedule.parse_week_range(weeks_param)
+            weeks_set = set(int(w) for w in weeks_list)
+        except Exception:
+            weeks_set = set()
+        if weeks_set:
+            schedules = [s for s in schedules if any(w in s.week_numbers for w in weeks_set)]
+    elif week_param:
+        try:
+            week_number = int(week_param)
+            schedules = [s for s in schedules if s.is_active_in_week(week_number)]
+        except (ValueError, TypeError):
+            pass
 
     # 构建课程表数据结构
     time_slots = TimeSlot.objects.filter(is_active=True).order_by('order')
@@ -514,57 +672,61 @@ def schedule_statistics(request):
             'data': None
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    # 基础统计
-    total_schedules = Schedule.objects.filter(semester=semester, status='active').count()
-    total_courses = Course.objects.filter(semester=semester, is_active=True).count()
-    scheduled_courses = Schedule.objects.filter(
-        semester=semester, status='active'
-    ).values('course').distinct().count()
+    try:
+        semester = normalize_semester(semester)
 
-    # 教室利用率统计
-    from apps.classrooms.models import Classroom
-    total_classrooms = Classroom.objects.filter(is_active=True).count()
-    used_classrooms = Schedule.objects.filter(
-        semester=semester, status='active'
-    ).values('classroom').distinct().count()
+        total_schedules = Schedule.objects.filter(semester=semester, status='active').count()
+        total_courses = Course.objects.filter(semester=semester, is_active=True).count()
+        scheduled_courses = Schedule.objects.filter(
+            semester=semester, status='active'
+        ).values('course').distinct().count()
 
-    # 教师工作量统计
-    teacher_workload = Schedule.objects.filter(
-        semester=semester, status='active'
-    ).values('teacher__username').annotate(
-        schedule_count=models.Count('id')
-    ).order_by('-schedule_count')[:10]
+        total_classrooms = Classroom.objects.filter(is_active=True).count()
+        used_classrooms = Schedule.objects.filter(
+            semester=semester, status='active'
+        ).values('classroom').distinct().count()
 
-    # 时间段使用统计
-    time_slot_usage = Schedule.objects.filter(
-        semester=semester, status='active'
-    ).values('time_slot__name').annotate(
-        usage_count=models.Count('id')
-    ).order_by('-usage_count')
+        teacher_workload = Schedule.objects.filter(
+            semester=semester, status='active'
+        ).values('teacher__username').annotate(
+            schedule_count=models.Count('id')
+        ).order_by('-schedule_count')[:10]
 
-    # 按院系统计
-    department_stats = Schedule.objects.filter(
-        semester=semester, status='active'
-    ).values('course__department').annotate(
-        schedule_count=models.Count('id')
-    ).order_by('-schedule_count')
+        time_slot_usage = Schedule.objects.filter(
+            semester=semester, status='active'
+        ).values('time_slot__name').annotate(
+            usage_count=models.Count('id')
+        ).order_by('-usage_count')
 
-    return Response({
-        'code': 200,
-        'message': '获取排课统计成功',
-        'data': {
-            'total_schedules': total_schedules,
-            'total_courses': total_courses,
-            'scheduled_courses': scheduled_courses,
-            'unscheduled_courses': total_courses - scheduled_courses,
-            'total_classrooms': total_classrooms,
-            'used_classrooms': used_classrooms,
-            'classroom_utilization_rate': round(used_classrooms / total_classrooms * 100, 2) if total_classrooms > 0 else 0,
-            'teacher_workload': list(teacher_workload),
-            'time_slot_usage': list(time_slot_usage),
-            'department_stats': list(department_stats)
-        }
-    })
+        department_stats = Schedule.objects.filter(
+            semester=semester, status='active'
+        ).values('course__department').annotate(
+            schedule_count=models.Count('id')
+        ).order_by('-schedule_count')
+
+        return Response({
+            'code': 200,
+            'message': '获取排课统计成功',
+            'data': {
+                'total_schedules': total_schedules,
+                'total_courses': total_courses,
+                'scheduled_courses': scheduled_courses,
+                'unscheduled_courses': total_courses - scheduled_courses,
+                'total_classrooms': total_classrooms,
+                'used_classrooms': used_classrooms,
+                'classroom_utilization_rate': round(used_classrooms / total_classrooms * 100, 2) if total_classrooms > 0 else 0,
+                'teacher_workload': list(teacher_workload),
+                'time_slot_usage': list(time_slot_usage),
+                'department_stats': list(department_stats)
+            }
+        })
+    except Exception as e:
+        logging.exception('schedule_statistics error')
+        return Response({
+            'code': 500,
+            'message': '获取排课统计失败',
+            'data': {'error': str(e)}
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])

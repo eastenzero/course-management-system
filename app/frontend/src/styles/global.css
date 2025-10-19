@@ -43,6 +43,32 @@ body {
   background: #a8a8a8;
 }
 
+.layout-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ant-select-dropdown {
+  z-index: 4000 !important;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.ant-select-dropdown-hidden {
+  display: none !important;
+}
+
+.ant-select-dropdown.ant-slide-up-enter,
+.ant-select-dropdown.ant-slide-up-appear,
+.ant-select-dropdown.ant-slide-up-leave,
+.ant-select-dropdown.ant-zoom-enter,
+.ant-select-dropdown.ant-zoom-appear,
+.ant-select-dropdown.ant-zoom-leave {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 /* 文字选择样式 */
 ::selection {
   background-color: #1890ff;

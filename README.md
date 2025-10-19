@@ -69,6 +69,16 @@ This repository uses a flattened structure with a Linux-friendly compatibility s
   # Access http://localhost:8080/data/schedules.json
   ```
 
+- Optional: one-click startup (PowerShell script):
+  ```powershell
+  # from repo root
+  Set-Location app
+  .\start_complete_system.ps1
+  # This will start:
+  # - Data server on 8080 serving app/frontend/public
+  # - Frontend dev server on 3001 using mock API and data server
+  ```
+
 ## Importing algorithm results (optional)
 - Standalone conversion (no Django): `app/backend/import_schedule_standalone.py`
   - Reads: `app/algorithms/genetic_scheduling_result.json`

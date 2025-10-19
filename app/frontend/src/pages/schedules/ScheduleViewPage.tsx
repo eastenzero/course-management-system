@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Typography,
   Card,
@@ -12,7 +12,6 @@ import {
   Space,
   message,
   Modal,
-  Checkbox,
 } from 'antd';
 import {
   CalendarOutlined,
@@ -21,111 +20,124 @@ import {
   DownloadOutlined,
 } from '@ant-design/icons';
 import { scheduleAPI } from '../../services/api';
-import { simpleScheduleAPI } from '../../services/simpleScheduleAPI';
+import { normalizeSemester } from '../../utils/semester';
+import ScheduleGrid, { type ScheduleItem as GridScheduleItem } from '../../components/education/ScheduleGrid';
 
 const { Title } = Typography;
 const { Option } = Select;
 const { TabPane } = Tabs;
 
-interface Schedule {
-  id: string;
-  courseCode: string;
-  courseName: string;
-  teacher: string;
-  classroom: string;
-  dayOfWeek: number;
-  startTime: string;
-  endTime: string;
-  weeks: string;
+interface ScheduleListItem {
+  id: number;
+  course_code: string;
+  course_name: string;
+  teacher_name: string;
+  classroom_name: string;
+  time_slot_name: string;
+  day_of_week: number;
+  day_of_week_display: string;
   semester: string;
+  status: string;
+  status_display: string;
 }
 
 const ScheduleViewPage: React.FC = () => {
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [selectedSemester, setSelectedSemester] = useState('2024春');
+  const [schedules, setSchedules] = useState<ScheduleListItem[]>([]);
+  const [selectedSemester, setSelectedSemester] = useState('2024-1');
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [currentWeek, setCurrentWeek] = useState(1);
+  const [timeSlots, setTimeSlots] = useState<any[]>([]);
+  const [scheduleTable, setScheduleTable] = useState<Record<number, Record<number, any>>>({});
+  const [messageApi, contextHolder] = message.useMessage();
 
-  // 获取真实的排课数据
+  // 获取真实的排课数据（列表 + 课程表）
   useEffect(() => {
-    const fetchSchedules = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await simpleScheduleAPI.getSchedules({
-        semester: selectedSemester,
-        page: currentPage,
-        page_size: pageSize,
-      });
-        
-        if (response.data && response.data.results) {
-          // 直接使用mockScheduleAPI返回的数据格式
-          const scheduleData = response.data.results || [];
-          setSchedules(scheduleData);
+        const sem = normalizeSemester(selectedSemester);
+        const verbose = (import.meta as any).env?.VITE_VERBOSE_LOGS === 'true';
+
+        const [listResp, tableResp] = await Promise.all([
+          scheduleAPI.getSchedules({ semester: sem, week: String(currentWeek), page: currentPage, page_size: pageSize }),
+          scheduleAPI.getScheduleTable({ semester: sem, week: String(currentWeek) })
+        ]);
+
+        if (verbose) {
+          console.log('[ScheduleView] request params:', { sem, currentWeek, page: currentPage, pageSize });
+        }
+
+        if (listResp.data && listResp.data.results) {
+          setSchedules(listResp.data.results || []);
+        } else if (Array.isArray(listResp.data)) {
+          setSchedules(listResp.data as any);
+        }
+
+        const tableData = tableResp?.data?.data ?? tableResp?.data;
+        if (tableData) {
+          setTimeSlots(tableData.time_slots || []);
+          setScheduleTable(tableData.schedule_table || {});
+          if (verbose) {
+            const usedSlots = Object.values(tableData.schedule_table || {}).reduce((acc: Set<number>, day: any) => {
+              Object.keys(day || {}).forEach((k) => day[k] && acc.add(Number(k)));
+              return acc;
+            }, new Set<number>());
+            console.log('[ScheduleView] timeSlots:', (tableData.time_slots || []).length, 'usedSlots:', usedSlots.size);
+          }
+        } else if (verbose) {
+          console.warn('[ScheduleView] tableResp has no data:', tableResp?.data);
         }
       } catch (error) {
         console.error('获取排课数据失败:', error);
-        message.error('获取排课数据失败，请稍后重试');
+        messageApi.error('获取排课数据失败，请稍后重试');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSchedules();
-  }, [selectedSemester]);
+    fetchData();
+  }, [selectedSemester, currentPage, pageSize, currentWeek]);
 
   const weekDays = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-  const timeSlots = [
-    '08:00-09:40',
-    '10:00-11:40',
-    '14:00-15:40',
-    '16:00-17:40',
-    '19:00-20:40',
-  ];
 
   const columns = [
     {
       title: '课程代码',
-      dataIndex: 'courseCode',
-      key: 'courseCode',
+      dataIndex: 'course_code',
+      key: 'course_code',
       width: 120,
     },
     {
       title: '课程名称',
-      dataIndex: 'courseName',
-      key: 'courseName',
+      dataIndex: 'course_name',
+      key: 'course_name',
       width: 150,
     },
     {
       title: '授课教师',
-      dataIndex: 'teacher',
-      key: 'teacher',
+      dataIndex: 'teacher_name',
+      key: 'teacher_name',
       width: 120,
     },
     {
       title: '教室',
-      dataIndex: 'classroom',
-      key: 'classroom',
+      dataIndex: 'classroom_name',
+      key: 'classroom_name',
       width: 100,
     },
     {
       title: '星期',
-      dataIndex: 'dayOfWeek',
-      key: 'dayOfWeek',
+      dataIndex: 'day_of_week_display',
+      key: 'day_of_week_display',
       width: 80,
-      render: (day: number) => weekDays[day],
     },
     {
-      title: '时间',
-      key: 'time',
+      title: '时间段',
+      dataIndex: 'time_slot_name',
+      key: 'time_slot_name',
       width: 150,
-      render: (record: Schedule) => `${record.startTime}-${record.endTime}`,
-    },
-    {
-      title: '周次',
-      dataIndex: 'weeks',
-      key: 'weeks',
-      width: 100,
     },
     {
       title: '学期',
@@ -136,34 +148,73 @@ const ScheduleViewPage: React.FC = () => {
         <Tag color="blue">{semester}</Tag>
       ),
     },
+    {
+      title: '状态',
+      dataIndex: 'status_display',
+      key: 'status_display',
+      width: 100,
+      render: (statusDisplay: string) => (
+        <Tag color={statusDisplay === '启用' ? 'green' : 'red'}>{statusDisplay}</Tag>
+      ),
+    },
   ];
 
-  // 生成课程表视图
-  const generateScheduleGrid = () => {
-    const grid: any[][] = [];
-
-    // 初始化网格
-    for (let i = 0; i < timeSlots.length; i++) {
-      grid[i] = new Array(8).fill(null);
+  // 仅显示本周有课的时间段，避免表格过长
+  const displayTimeSlots = useMemo(() => {
+    const sortFn = (a: any, b: any) => {
+      const ao = (a?.order ?? 0) - (b?.order ?? 0);
+      if (ao !== 0) return ao;
+      return String(a?.start_time || '').localeCompare(String(b?.start_time || ''));
+    };
+    if (!timeSlots?.length) return [] as any[];
+    const used = new Set<number>();
+    for (let day = 1; day <= 7; day++) {
+      const daySlots = (scheduleTable as any)?.[day] || {};
+      for (const tsId in daySlots) {
+        if (daySlots[tsId]) used.add(Number(tsId));
+      }
     }
+    const filtered = timeSlots.filter(ts => used.has(ts.id));
+    const base = filtered.length > 0 ? filtered : timeSlots;
+    return [...base].sort(sortFn);
+  }, [timeSlots, scheduleTable]);
+  
+  // 转换为 ScheduleGrid 数据结构
+  const gridTimeSlots = useMemo(() => (
+    (displayTimeSlots || []).map(ts => `${String(ts.start_time).slice(0,5)}-${String(ts.end_time).slice(0,5)}`)
+  ), [displayTimeSlots]);
 
-    // 填充课程数据
-    schedules
-      .filter(schedule => schedule.semester === selectedSemester)
-      .forEach(schedule => {
-        const timeIndex = timeSlots.findIndex(slot =>
-          slot.startsWith(schedule.startTime.substring(0, 5))
-        );
-        if (timeIndex !== -1) {
-          grid[timeIndex][schedule.dayOfWeek] = schedule;
+  const gridData: GridScheduleItem[] = useMemo(() => {
+    const items: GridScheduleItem[] = [];
+    for (let day = 1; day <= 7; day++) {
+      const daySlots = (scheduleTable as any)?.[day] || {};
+      for (const ts of displayTimeSlots || []) {
+        const cell = daySlots?.[ts.id];
+        if (cell) {
+          items.push({
+            id: `${cell.id || 's'}-${day}-${ts.id}`,
+            course_id: Number(cell.id || 0),
+            course_name: String(cell.course_name || ''),
+            course_code: String(cell.course_code || ''),
+            teacher_name: String(cell.teacher_name || ''),
+            classroom: String(cell.classroom || ''),
+            time_slot: String(ts.name || ''),
+            day_of_week: day,
+            start_time: String(ts.start_time || '').slice(0,5),
+            end_time: String(ts.end_time || '').slice(0,5),
+            week_range: String(cell.week_range || '')
+          });
         }
-      });
-
-    return grid;
-  };
-
-  const scheduleGrid = generateScheduleGrid();
-  const filteredSchedules = schedules.filter(schedule => schedule.semester === selectedSemester);
+      }
+    }
+    return items;
+  }, [scheduleTable, displayTimeSlots]);
+  const normalizedSelected = normalizeSemester(selectedSemester);
+  const filteredSchedules = schedules.filter((s) => {
+    const sem = String((s as any)?.semester || '');
+    const normalized = normalizeSemester(sem);
+    return sem === normalizedSelected || normalized === normalizedSelected;
+  });
 
   const handlePrint = () => {
     window.print();
@@ -205,12 +256,12 @@ const ScheduleViewPage: React.FC = () => {
 
   const exportToExcel = async () => {
     try {
-      message.loading('正在生成Excel文件...', 0);
+      messageApi.loading('正在生成Excel文件...', 0);
 
       // 调用后端API导出Excel
       const response = await scheduleAPI.exportSchedules({
         format: 'excel',
-        semester: selectedSemester,
+        semester: normalizeSemester(selectedSemester),
         include_weekend: false,
         group_by: 'teacher'
       });
@@ -228,23 +279,23 @@ const ScheduleViewPage: React.FC = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      message.destroy();
-      message.success('Excel文件导出成功');
+      messageApi.destroy();
+      messageApi.success('Excel文件导出成功');
     } catch (error) {
-      message.destroy();
+      messageApi.destroy();
       console.error('导出Excel失败:', error);
-      message.error('导出Excel失败');
+      messageApi.error('导出Excel失败');
     }
   };
 
   const exportToPDF = async () => {
     try {
-      message.loading('正在生成PDF文件...', 0);
+      messageApi.loading('正在生成PDF文件...', 0);
 
       // 调用后端API导出PDF
       const response = await scheduleAPI.exportSchedules({
         format: 'pdf',
-        semester: selectedSemester,
+        semester: normalizeSemester(selectedSemester),
         include_weekend: false,
         group_by: 'teacher'
       });
@@ -260,23 +311,23 @@ const ScheduleViewPage: React.FC = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      message.destroy();
-      message.success('PDF文件导出成功');
+      messageApi.destroy();
+      messageApi.success('PDF文件导出成功');
     } catch (error) {
-      message.destroy();
+      messageApi.destroy();
       console.error('导出PDF失败:', error);
-      message.error('导出PDF失败');
+      messageApi.error('导出PDF失败');
     }
   };
 
   const exportToCSV = async () => {
     try {
-      message.loading('正在生成CSV文件...', 0);
+      messageApi.loading('正在生成CSV文件...', 0);
 
       // 调用后端API导出CSV
       const response = await scheduleAPI.exportSchedules({
         format: 'csv',
-        semester: selectedSemester,
+        semester: normalizeSemester(selectedSemester),
         include_weekend: false,
         group_by: 'teacher'
       });
@@ -292,38 +343,58 @@ const ScheduleViewPage: React.FC = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      message.destroy();
-      message.success('CSV文件导出成功');
+      messageApi.destroy();
+      messageApi.success('CSV文件导出成功');
     } catch (error) {
-      message.destroy();
+      messageApi.destroy();
       console.error('导出CSV失败:', error);
-      message.error('导出CSV失败');
+      messageApi.error('导出CSV失败');
     }
   };
 
   return (
     <div className="schedule-view-page">
+      {contextHolder}
       <div className="page-header">
         <Title level={2}>课程表查看</Title>
         <p>查看当前学期的课程安排</p>
       </div>
 
       <Card>
-        <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+        <Row gutter={[16, 16]} style={{ marginBottom: 16, position: 'relative', zIndex: 2 }}>
           <Col xs={24} sm={12} md={8}>
             <Select
               value={selectedSemester}
-              onChange={setSelectedSemester}
+              onChange={(val) => { setSelectedSemester(val); setCurrentWeek(1); }}
               style={{ width: '100%' }}
               placeholder="选择学期"
+              getPopupContainer={() => document.body}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ zIndex: 4000 }}
             >
               <Option value="2024-1">2024年春季学期</Option>
               <Option value="2024-2">2024年秋季学期</Option>
               <Option value="2025-1">2025年春季学期</Option>
             </Select>
+            <Select
+              value={currentWeek}
+              onChange={(v) => { setCurrentWeek(Number(v)); messageApi.success(`已切换到第${v}周`); }}
+              style={{ width: '100%', marginTop: 8 }}
+              placeholder="选择周次"
+              getPopupContainer={() => document.body}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ zIndex: 4000 }}
+            >
+              {Array.from({ length: 20 }, (_, i) => (
+                <Option key={i + 1} value={i + 1}>第{i + 1}周</Option>
+              ))}
+            </Select>
           </Col>
           <Col xs={24} sm={12} md={16} style={{ textAlign: 'right' }}>
             <Space>
+              <Button onClick={() => { const n = Math.max(1, currentWeek - 1); setCurrentWeek(n); messageApi.success(`已切换到第${n}周`); }} disabled={currentWeek <= 1}>上一周</Button>
+              <Button onClick={() => { const n = Math.min(20, currentWeek + 1); setCurrentWeek(n); messageApi.success(`已切换到第${n}周`); }} disabled={currentWeek >= 20}>下一周</Button>
+              <Tag color="blue">第{currentWeek}周</Tag>
               <Button 
                 icon={<PrinterOutlined />}
                 onClick={handlePrint}
@@ -351,96 +422,12 @@ const ScheduleViewPage: React.FC = () => {
             } 
             key="grid"
           >
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ 
-                width: '100%', 
-                border: '1px solid #d9d9d9', 
-                borderCollapse: 'collapse',
-                minWidth: '800px'
-              }}>
-                <thead>
-                  <tr>
-                    <th style={{ 
-                      border: '1px solid #d9d9d9', 
-                      padding: '12px 8px', 
-                      background: '#fafafa',
-                      fontWeight: 'bold',
-                      textAlign: 'center'
-                    }}>
-                      时间
-                    </th>
-                    {weekDays.slice(1).map(day => (
-                      <th key={day} style={{ 
-                        border: '1px solid #d9d9d9', 
-                        padding: '12px 8px', 
-                        background: '#fafafa',
-                        fontWeight: 'bold',
-                        textAlign: 'center'
-                      }}>
-                        {day}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {timeSlots.map((timeSlot, timeIndex) => (
-                    <tr key={timeSlot}>
-                      <td style={{ 
-                        border: '1px solid #d9d9d9', 
-                        padding: '12px 8px', 
-                        background: '#fafafa', 
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                        verticalAlign: 'middle'
-                      }}>
-                        {timeSlot}
-                      </td>
-                      {[1, 2, 3, 4, 5, 6, 7].map(dayIndex => {
-                        const schedule = scheduleGrid[timeIndex]?.[dayIndex];
-                        return (
-                          <td key={dayIndex} style={{ 
-                            border: '1px solid #d9d9d9', 
-                            padding: '8px', 
-                            height: '100px', 
-                            verticalAlign: 'top',
-                            width: '120px'
-                          }}>
-                            {schedule && (
-                              <div style={{
-                                background: '#e6f7ff',
-                                padding: '8px',
-                                borderRadius: '6px',
-                                fontSize: '12px',
-                                lineHeight: '1.4',
-                                height: '100%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center'
-                              }}>
-                                <div style={{ 
-                                  fontWeight: 'bold', 
-                                  color: '#1890ff',
-                                  marginBottom: '4px',
-                                  fontSize: '13px'
-                                }}>
-                                  {schedule.courseName}
-                                </div>
-                                <div style={{ color: '#666', marginBottom: '2px' }}>
-                                  {schedule.teacher}
-                                </div>
-                                <div style={{ color: '#666' }}>
-                                  {schedule.classroom}
-                                </div>
-                              </div>
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <ScheduleGrid
+              scheduleData={gridData}
+              timeSlots={gridTimeSlots}
+              weekDays={weekDays.slice(1)}
+              showWeekend={true}
+            />
           </TabPane>
 
           <TabPane 
@@ -458,11 +445,16 @@ const ScheduleViewPage: React.FC = () => {
               rowKey="id"
               loading={loading}
               pagination={{
+                current: currentPage,
+                pageSize: pageSize,
                 total: filteredSchedules.length,
-                pageSize: 10,
                 showSizeChanger: true,
                 showQuickJumper: true,
                 showTotal: (total) => `共 ${total} 条记录`,
+                onChange: (page, size) => {
+                  setCurrentPage(page);
+                  setPageSize(size || pageSize);
+                },
               }}
             />
           </TabPane>

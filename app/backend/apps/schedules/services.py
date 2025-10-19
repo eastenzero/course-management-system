@@ -486,12 +486,8 @@ class ScheduleImportExportService:
         include_weekend = options.get('include_weekend', False)
         group_by = options.get('group_by', 'teacher')
 
-        # 创建工作簿
         wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = f"课程表-{semester}"
 
-        # 获取课程安排数据
         schedules = Schedule.objects.filter(
             semester=semester,
             status='active'
@@ -499,40 +495,54 @@ class ScheduleImportExportService:
             'course', 'teacher', 'classroom', 'time_slot'
         ).order_by('day_of_week', 'time_slot__order')
 
-        # 设置标题
-        headers = [
-            '课程代码', '课程名称', '教师姓名', '教室',
-            '星期', '时间段', '开始时间', '结束时间',
-            '周次范围', '备注'
-        ]
+        if group_by in ['teacher', 'classroom']:
+            if 'Sheet' in wb.sheetnames and len(wb.sheetnames) == 1:
+                ws_to_remove = wb.active
+                wb.remove(ws_to_remove)
 
-        # 写入标题行
-        for col, header in enumerate(headers, 1):
-            cell = ws.cell(row=1, column=col, value=header)
-            cell.font = Font(bold=True)
-            cell.alignment = Alignment(horizontal='center')
-            cell.fill = PatternFill(start_color='CCCCCC', end_color='CCCCCC', fill_type='solid')
+            groups = {}
+            for s in schedules:
+                key = (s.teacher.get_full_name() or s.teacher.username) if group_by == 'teacher' else str(s.classroom)
+                groups.setdefault(key, []).append(s)
 
-        # 写入数据
-        row = 2
-        for schedule in schedules:
-            ws.cell(row=row, column=1, value=schedule.course.code)
-            ws.cell(row=row, column=2, value=schedule.course.name)
-            ws.cell(row=row, column=3, value=schedule.teacher.get_full_name() or schedule.teacher.username)
-            ws.cell(row=row, column=4, value=str(schedule.classroom))
-            ws.cell(row=row, column=5, value=schedule.get_day_of_week_display())
-            ws.cell(row=row, column=6, value=schedule.time_slot.name)
-            ws.cell(row=row, column=7, value=schedule.time_slot.start_time.strftime('%H:%M'))
-            ws.cell(row=row, column=8, value=schedule.time_slot.end_time.strftime('%H:%M'))
-            ws.cell(row=row, column=9, value=schedule.week_range)
-            ws.cell(row=row, column=10, value=schedule.notes)
-            row += 1
+            for name, sched_list in groups.items():
+                title = f"{('教师' if group_by=='teacher' else '教室')}-{name}"[:31]
+                ws = wb.create_sheet(title)
+                table = ScheduleImportExportService._create_schedule_table_data(sched_list, include_weekend)
+                for r_idx, row_vals in enumerate(table, start=1):
+                    for c_idx, val in enumerate(row_vals, start=1):
+                        ws.cell(row=r_idx, column=c_idx, value=val)
+                for col in range(1, len(table[0]) + 1):
+                    ws.column_dimensions[get_column_letter(col)].width = 18
+        else:
+            ws = wb.active
+            ws.title = f"课程表-{semester}"
+            headers = [
+                '课程代码', '课程名称', '教师姓名', '教室',
+                '星期', '时间段', '开始时间', '结束时间',
+                '周次范围', '备注'
+            ]
+            for col, header in enumerate(headers, 1):
+                cell = ws.cell(row=1, column=col, value=header)
+                cell.font = Font(bold=True)
+                cell.alignment = Alignment(horizontal='center')
+                cell.fill = PatternFill(start_color='CCCCCC', end_color='CCCCCC', fill_type='solid')
+            row = 2
+            for schedule in schedules:
+                ws.cell(row=row, column=1, value=schedule.course.code)
+                ws.cell(row=row, column=2, value=schedule.course.name)
+                ws.cell(row=row, column=3, value=schedule.teacher.get_full_name() or schedule.teacher.username)
+                ws.cell(row=row, column=4, value=str(schedule.classroom))
+                ws.cell(row=row, column=5, value=schedule.get_day_of_week_display())
+                ws.cell(row=row, column=6, value=schedule.time_slot.name)
+                ws.cell(row=row, column=7, value=schedule.time_slot.start_time.strftime('%H:%M'))
+                ws.cell(row=row, column=8, value=schedule.time_slot.end_time.strftime('%H:%M'))
+                ws.cell(row=row, column=9, value=schedule.week_range)
+                ws.cell(row=row, column=10, value=schedule.notes)
+                row += 1
+            for col in range(1, len(headers) + 1):
+                ws.column_dimensions[get_column_letter(col)].width = 15
 
-        # 调整列宽
-        for col in range(1, len(headers) + 1):
-            ws.column_dimensions[get_column_letter(col)].width = 15
-
-        # 保存到内存
         from io import BytesIO
         output = BytesIO()
         wb.save(output)
@@ -754,36 +764,26 @@ class ScheduleImportExportService:
 
     @staticmethod
     def _create_schedule_table_data(schedules: List[Schedule], include_weekend: bool = False) -> List[List[str]]:
-        """创建课程表格数据"""
-        # 时间段和星期的映射
-        time_slots = list(range(1, 11))  # 假设有10个时间段
-        days = list(range(1, 8 if include_weekend else 6))  # 周一到周五或周日
+        active_slots = TimeSlot.objects.filter(is_active=True).order_by('order')
+        days = list(range(1, 8 if include_weekend else 6))
         day_names = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日']
-
-        # 创建表格结构
         headers = ['时间段'] + [day_names[day] for day in days]
         data = [headers]
 
-        # 创建时间段到课程的映射
-        schedule_map = {}
+        schedule_map: Dict[Tuple[int, int], List[Schedule]] = {}
         for schedule in schedules:
-            key = (schedule.day_of_week, schedule.time_slot.order)
-            if key not in schedule_map:
-                schedule_map[key] = []
-            schedule_map[key].append(schedule)
+            key = (schedule.day_of_week, schedule.time_slot.id)
+            schedule_map.setdefault(key, []).append(schedule)
 
-        # 填充表格数据
-        for time_slot in time_slots:
-            row = [f'第{time_slot}节']
+        for ts in active_slots:
+            row = [ts.name]
             for day in days:
-                key = (day, time_slot)
+                key = (day, ts.id)
                 if key in schedule_map:
-                    # 如果有课程安排
-                    schedule_info = []
-                    for schedule in schedule_map[key]:
-                        info = f"{schedule.course.name}\n{schedule.classroom}"
-                        schedule_info.append(info)
-                    row.append('\n'.join(schedule_info))
+                    texts = []
+                    for s in schedule_map[key]:
+                        texts.append(f"{s.course.name}\n{str(s.classroom)}")
+                    row.append('\n'.join(texts))
                 else:
                     row.append('')
             data.append(row)

@@ -9,7 +9,6 @@ import {
   Modal,
   Form,
   Input,
-  TimePicker,
   message,
   Row,
   Col,
@@ -21,10 +20,11 @@ import {
   EditOutlined,
   DeleteOutlined,
   ExclamationCircleOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons';
-import dayjs from 'dayjs';
-import { scheduleAPI } from '../../services/api';
-import { simpleScheduleAPI } from '../../services/simpleScheduleAPI';
+import { scheduleAPI, courseAPI, userAPI, classroomAPI } from '../../services/api';
+import { normalizeSemester, semesterToAcademicYear } from '../../utils/semester';
+import ScheduleImportExport from '../../components/education/ScheduleImportExport';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -48,13 +48,18 @@ const ScheduleManagePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
-  const [selectedSemester, setSelectedSemester] = useState('2024-spring');
+  const [selectedSemester, setSelectedSemester] = useState('2024-1');
   const [form] = Form.useForm();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 20,
     total: 0,
   });
+  const [courseOptions, setCourseOptions] = useState<any[]>([]);
+  const [teacherOptions, setTeacherOptions] = useState<any[]>([]);
+  const [classroomOptions, setClassroomOptions] = useState<any[]>([]);
+  const [timeSlotOptions, setTimeSlotOptions] = useState<any[]>([]);
+  const [exportVisible, setExportVisible] = useState(false);
 
   // 获取课程表数据
   const fetchSchedules = async (page = 1, pageSize = 20, semester = '') => {
@@ -66,13 +71,13 @@ const ScheduleManagePage: React.FC = () => {
       };
 
       if (semester) {
-        params.semester = semester;
+        params.semester = normalizeSemester(semester);
       }
 
-      const response = await simpleScheduleAPI.getSchedules(params);
+      const response = await scheduleAPI.getSchedules(params);
 
       if (response.data && response.data.results) {
-        setSchedules(response.data.results.data || []);
+        setSchedules(response.data.results || []);
         setPagination({
           current: page,
           pageSize,
@@ -90,6 +95,32 @@ const ScheduleManagePage: React.FC = () => {
   useEffect(() => {
     fetchSchedules(1, 20, selectedSemester);
   }, [selectedSemester]);
+
+  useEffect(() => {
+    const loadOptions = async () => {
+      try {
+        const [coursesResp, teachersResp, classroomsResp, timeSlotsResp] = await Promise.all([
+          courseAPI.getCourses({ page_size: 1000 }),
+          userAPI.getUsers({ user_type: 'teacher', page_size: 1000 }),
+          classroomAPI.getClassrooms({ page_size: 1000 }),
+          scheduleAPI.getTimeSlotsSimple()
+        ]);
+
+        const courses = coursesResp.data?.results || coursesResp.data?.data || [];
+        const teachers = teachersResp.data?.results || teachersResp.data?.data || [];
+        const classrooms = classroomsResp.data?.results || classroomsResp.data?.data || [];
+        const timeSlots = timeSlotsResp.data?.data || timeSlotsResp.data?.results || [];
+
+        setCourseOptions(courses);
+        setTeacherOptions(teachers);
+        setClassroomOptions(classrooms);
+        setTimeSlotOptions(timeSlots);
+      } catch (e) {
+        // ignore
+      }
+    };
+    loadOptions();
+  }, []);
 
   const weekDays = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
@@ -186,13 +217,26 @@ const ScheduleManagePage: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleEdit = (schedule: Schedule) => {
-    setEditingSchedule(schedule);
-    form.setFieldsValue({
-      ...schedule,
-      time: [dayjs(schedule.startTime, 'HH:mm'), dayjs(schedule.endTime, 'HH:mm')],
-    });
-    setIsModalVisible(true);
+  const handleEdit = async (schedule: Schedule) => {
+    try {
+      setEditingSchedule(schedule);
+      setIsModalVisible(true);
+      const detail = await scheduleAPI.getSchedule(schedule.id);
+      const data = detail.data?.data || detail.data;
+      if (data) {
+        form.setFieldsValue({
+          course: data.course,
+          teacher: data.teacher,
+          classroom: data.classroom,
+          day_of_week: data.day_of_week,
+          time_slot: data.time_slot,
+          week_range: data.week_range,
+          semester: data.semester,
+        });
+      }
+    } catch (e) {
+      // ignore
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -210,70 +254,52 @@ const ScheduleManagePage: React.FC = () => {
   const handleModalOk = async () => {
     try {
       const values = await form.validateFields();
-      const [startTime, endTime] = values.time;
+      const sem = normalizeSemester(values.semester);
+      const payload = {
+        course: values.course,
+        teacher: values.teacher,
+        classroom: values.classroom,
+        time_slot: values.time_slot,
+        day_of_week: values.day_of_week,
+        week_range: values.week_range,
+        semester: sem,
+        academic_year: semesterToAcademicYear(sem),
+        notes: values.notes,
+      };
 
-      // 检查时间冲突
-      const conflictCheck = checkTimeConflict(values, editingSchedule?.id);
-      if (conflictCheck.hasConflict) {
-        message.error(`时间冲突：${conflictCheck.message}`);
+      const conflictResp = await scheduleAPI.checkConflicts({
+        course_id: payload.course,
+        teacher_id: payload.teacher,
+        classroom_id: payload.classroom,
+        day_of_week: payload.day_of_week,
+        time_slot_id: payload.time_slot,
+        semester: payload.semester,
+        exclude_schedule_id: editingSchedule?.id,
+      });
+      const hasConflicts = conflictResp.data?.data?.has_conflicts === true;
+      if (hasConflicts) {
+        message.error('时间冲突，请调整后再试');
         return;
       }
 
-      const scheduleData = {
-        ...values,
-        startTime: startTime.format('HH:mm'),
-        endTime: endTime.format('HH:mm'),
-      };
-
       if (editingSchedule) {
-        setSchedules(schedules.map(schedule =>
-          schedule.id === editingSchedule.id
-            ? { ...schedule, ...scheduleData }
-            : schedule
-        ));
+        await scheduleAPI.updateSchedule(editingSchedule.id, payload);
         message.success('课程安排更新成功');
       } else {
-        const newSchedule: Schedule = {
-          id: Date.now().toString(),
-          ...scheduleData,
-        };
-        setSchedules([...schedules, newSchedule]);
+        await scheduleAPI.createSchedule(payload);
         message.success('课程安排添加成功');
       }
 
       setIsModalVisible(false);
       form.resetFields();
+      fetchSchedules(pagination.current, pagination.pageSize, selectedSemester);
     } catch (error) {
-      console.error('表单验证失败:', error);
+      console.error('提交失败:', error);
+      message.error('提交失败');
     }
   };
 
-  // 检查时间冲突
-  const checkTimeConflict = (newSchedule: any, excludeId?: string) => {
-    const conflicts = schedules.filter(schedule => {
-      if (excludeId && schedule.id === excludeId) return false;
-      
-      return (
-        schedule.semester === newSchedule.semester &&
-        schedule.dayOfWeek === newSchedule.dayOfWeek &&
-        (
-          schedule.classroom === newSchedule.classroom ||
-          schedule.teacher === newSchedule.teacher
-        )
-      );
-    });
-
-    if (conflicts.length > 0) {
-      const conflict = conflicts[0];
-      const conflictType = conflict.classroom === newSchedule.classroom ? '教室' : '教师';
-      return {
-        hasConflict: true,
-        message: `${conflictType}在该时间段已有安排（${conflict.courseName}）`
-      };
-    }
-
-    return { hasConflict: false, message: '' };
-  };
+  
 
   return (
     <div className="schedule-manage-page">
@@ -291,9 +317,9 @@ const ScheduleManagePage: React.FC = () => {
               style={{ width: '100%' }}
               placeholder="选择学期"
             >
-              <Option value="2024-spring">2024年春季学期</Option>
-              <Option value="2024-fall">2024年秋季学期</Option>
-              <Option value="2025-spring">2025年春季学期</Option>
+              <Option value="2024-1">2024年春季学期</Option>
+              <Option value="2024-2">2024年秋季学期</Option>
+              <Option value="2025-1">2025年春季学期</Option>
             </Select>
           </Col>
           <Col xs={24} sm={12} md={16} style={{ textAlign: 'right' }}>
@@ -303,6 +329,13 @@ const ScheduleManagePage: React.FC = () => {
               onClick={handleAdd}
             >
               添加课程安排
+            </Button>
+            <Button
+              style={{ marginLeft: 8 }}
+              icon={<DownloadOutlined />}
+              onClick={() => setExportVisible(true)}
+            >
+              导出课程表
             </Button>
           </Col>
         </Row>
@@ -322,7 +355,7 @@ const ScheduleManagePage: React.FC = () => {
             onChange: (page, pageSize) => {
               fetchSchedules(page, pageSize, selectedSemester);
             },
-            onShowSizeChange: (current, size) => {
+            onShowSizeChange: (_current, size) => {
               fetchSchedules(1, size, selectedSemester);
             },
           }}
@@ -345,49 +378,52 @@ const ScheduleManagePage: React.FC = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="courseCode"
-                label="课程代码"
-                rules={[{ required: true, message: '请输入课程代码' }]}
+                name="course"
+                label="课程"
+                rules={[{ required: true, message: '请选择课程' }]}
               >
-                <Input placeholder="如：CS101" />
+                <Select placeholder="选择课程" showSearch optionFilterProp="label">
+                  {courseOptions.map((c: any) => (
+                    <Option key={c.id} value={c.id} label={`${c.code || ''} ${c.name || ''}`}>{`${c.code || ''} ${c.name || ''}`}</Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                name="courseName"
-                label="课程名称"
-                rules={[{ required: true, message: '请输入课程名称' }]}
-              >
-                <Input placeholder="如：数据结构" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 name="teacher"
                 label="授课教师"
-                rules={[{ required: true, message: '请输入授课教师' }]}
+                rules={[{ required: true, message: '请选择授课教师' }]}
               >
-                <Input placeholder="如：张教授" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="classroom"
-                label="教室"
-                rules={[{ required: true, message: '请输入教室' }]}
-              >
-                <Input placeholder="如：A101" />
+                <Select placeholder="选择教师" showSearch optionFilterProp="label">
+                  {teacherOptions.map((t: any) => {
+                    const name = `${t.first_name || ''} ${t.last_name || ''}`.trim() || t.username;
+                    return (
+                      <Option key={t.id} value={t.id} label={name}>{name}</Option>
+                    );
+                  })}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
-            <Col span={8}>
+            <Col span={12}>
               <Form.Item
-                name="dayOfWeek"
+                name="classroom"
+                label="教室"
+                rules={[{ required: true, message: '请选择教室' }]}
+              >
+                <Select placeholder="选择教室" showSearch optionFilterProp="label">
+                  {classroomOptions.map((r: any) => (
+                    <Option key={r.id} value={r.id} label={r.full_name || r.room_number}>{r.full_name || r.room_number}</Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="day_of_week"
                 label="星期"
                 rules={[{ required: true, message: '请选择星期' }]}
               >
@@ -398,17 +434,22 @@ const ScheduleManagePage: React.FC = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={16}>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={24}>
               <Form.Item
-                name="time"
+                name="time_slot"
                 label="上课时间"
-                rules={[{ required: true, message: '请选择上课时间' }]}
+                rules={[{ required: true, message: '请选择时间段' }]}
               >
-                <TimePicker.RangePicker
-                  format="HH:mm"
-                  placeholder={['开始时间', '结束时间']}
-                  style={{ width: '100%' }}
-                />
+                <Select placeholder="选择时间段" showSearch optionFilterProp="label">
+                  {timeSlotOptions.map((ts: any) => (
+                    <Option key={ts.id} value={ts.id} label={`${ts.name || ''} (${ts.start_time}-${ts.end_time})`}>
+                      {`${ts.name || ''} (${ts.start_time}-${ts.end_time})`}
+                    </Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
@@ -416,7 +457,7 @@ const ScheduleManagePage: React.FC = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="weeks"
+                name="week_range"
                 label="周次"
                 rules={[{ required: true, message: '请输入周次' }]}
               >
@@ -439,6 +480,37 @@ const ScheduleManagePage: React.FC = () => {
           </Row>
         </Form>
       </Modal>
+
+      <ScheduleImportExport
+        visible={exportVisible}
+        onCancel={() => setExportVisible(false)}
+        mode="export"
+        semester={selectedSemester}
+        onExportRequest={async (opts: any) => {
+          const sem = normalizeSemester(opts.semester || selectedSemester);
+          const format = opts.format === 'csv' ? 'csv' : 'excel';
+          const params = {
+            semester: sem,
+            format,
+            include_weekend: !!opts.includeWeekend,
+            group_by: opts.groupBy || 'teacher',
+          } as any;
+          const resp = await scheduleAPI.exportSchedules(params);
+          const mime = format === 'csv'
+            ? 'text/csv;charset=utf-8;'
+            : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+          const blob = new Blob([resp.data], { type: mime });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `课程表_${sem}.${format === 'csv' ? 'csv' : 'xlsx'}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+          setExportVisible(false);
+        }}
+      />
     </div>
   );
 };

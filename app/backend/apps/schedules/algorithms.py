@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from collections import defaultdict
 from django.db import models
 from django.db.models import Q
+from math import ceil
+from django.conf import settings
 
 from .models import Schedule, TimeSlot
 from apps.courses.models import Course
@@ -75,6 +77,9 @@ class SchedulingAlgorithm:
         # 优化：使用字典快速查找已分配的时间槽
         self.teacher_schedule: Dict[int, Dict[tuple, ScheduleConstraint]] = {}
         self.classroom_schedule: Dict[int, Dict[tuple, ScheduleConstraint]] = {}
+        self.time_slot_usage: Dict[int, int] = defaultdict(int)
+        # 配置
+        self.cfg = getattr(settings, 'SCHEDULE_CONFIG', {})
         
     def add_constraint(self, constraint: ScheduleConstraint):
         """添加排课约束"""
@@ -101,8 +106,8 @@ class SchedulingAlgorithm:
             )
             occupied_slots.add(slot)
         
-        # 生成所有可能的时间槽
-        for day in range(1, 8):  # 周一到周日
+        # 生成所有可能的时间槽（仅周一到周五）
+        for day in range(1, 6):  # 1-5: 周一到周五
             for time_slot in time_slots:
                 for classroom in classrooms:
                     slot = ScheduleSlot(
@@ -152,25 +157,27 @@ class SchedulingAlgorithm:
             if classroom_id not in self.classroom_schedule:
                 self.classroom_schedule[classroom_id] = {}
             self.classroom_schedule[classroom_id][time_key] = constraint
+            # 更新全局时间段使用计数（用于均衡打分）
+            self.time_slot_usage[slot.time_slot.id] += 1
     
     def calculate_slot_score(self, constraint: ScheduleConstraint, slot: ScheduleSlot) -> float:
         """计算时间槽的适合度分数"""
         score = 0.0
         
         # 优先级权重
-        score += constraint.priority * 10
+        score += constraint.priority * self.cfg.get('priority_weight', 10)
         
         # 偏好教室权重
         if slot.classroom in constraint.preferred_classrooms:
-            score += 20
+            score += self.cfg.get('preferred_classroom_bonus', 20)
         
         # 偏好时间段权重
         if slot.time_slot in constraint.preferred_time_slots:
-            score += 15
+            score += self.cfg.get('preferred_time_slot_bonus', 15)
         
         # 偏好星期权重
         if slot.day_of_week in constraint.preferred_days:
-            score += 10
+            score += self.cfg.get('preferred_day_bonus', 10)
         
         # 教室容量适合度
         if hasattr(constraint.course, 'max_students') and constraint.course.max_students:
@@ -183,13 +190,28 @@ class SchedulingAlgorithm:
                 score -= 20  # 容量不足，大幅减分
         
         # 避免过早或过晚的时间
-        if 2 <= slot.time_slot.order <= 6:  # 假设这是比较好的时间段
-            score += 5
+        if self.cfg.get('good_time_slot_order_min', 2) <= slot.time_slot.order <= self.cfg.get('good_time_slot_order_max', 6):
+            score += self.cfg.get('good_time_slot_bonus', 5)
         
         # 避免中午时间
         if constraint.avoid_noon and self._is_noon_time(slot.time_slot):
-            score -= 30
+            score -= self.cfg.get('noon_penalty', 30)
         
+        # 同一教师同一天已有课则降权，鼓励分散到不同天
+        teacher_id = constraint.teacher.id
+        same_day_count = 0
+        if teacher_id in self.teacher_schedule:
+            for (d, _ts_id) in self.teacher_schedule[teacher_id].keys():
+                if d == slot.day_of_week:
+                    same_day_count += 1
+        if same_day_count > 0:
+            score -= self.cfg.get('teacher_same_day_penalty', 8) * same_day_count
+
+        # 时间段均衡：已使用越多的 time_slot 降权，促进稀疏分布
+        slot_used = self.time_slot_usage.get(slot.time_slot.id, 0)
+        if slot_used > 0:
+            score -= self.cfg.get('time_slot_usage_penalty', 2.0) * slot_used
+
         return score
     
     def find_best_slots(self, constraint: ScheduleConstraint) -> List[ScheduleSlot]:
@@ -249,6 +271,13 @@ class SchedulingAlgorithm:
             # 检查每天最大课时数限制
             if (constraint.max_daily_sessions > 0 and 
                 daily_sessions[slot.day_of_week] >= constraint.max_daily_sessions):
+                continue
+
+            # 限制教师在同一天的总授课数（跨课程），缓解某天过满
+            teacher_day_load = 0
+            if constraint.teacher.id in self.teacher_schedule:
+                teacher_day_load = sum(1 for (d, _ts) in self.teacher_schedule[constraint.teacher.id].keys() if d == slot.day_of_week)
+            if teacher_day_load >= self.cfg.get('teacher_day_load_limit', 3):
                 continue
                 
             # 如果避免连续排课，检查是否在同一天（如果已经排了一天的课）
@@ -387,14 +416,8 @@ class SchedulingAlgorithm:
                     self._update_conflict_tracking(constraint, best_slots)
                     return True
 
-            # 放宽日期限制
-            if constraint.preferred_days:
-                constraint.preferred_days = []
-                best_slots = self.find_best_slots(constraint)
-                if len(best_slots) >= constraint.sessions_per_week:
-                    self.assigned_slots[constraint] = best_slots
-                    self._update_conflict_tracking(constraint, best_slots)
-                    return True
+            # 不放宽日期限制，严格限定周一到周五
+            # 保持 constraint.preferred_days 不变
 
         except Exception:
             pass
@@ -409,9 +432,17 @@ class SchedulingAlgorithm:
     def create_schedules(self) -> List[Schedule]:
         """根据分配结果创建Schedule对象"""
         schedules = []
+        used_teacher_keys = set()
+        used_classroom_keys = set()
         
         for constraint, slots in self.assigned_slots.items():
             for slot in slots:
+                teacher_key = (constraint.teacher.id, slot.day_of_week, slot.time_slot.id)
+                classroom_key = (slot.classroom.id, slot.day_of_week, slot.time_slot.id)
+                if teacher_key in used_teacher_keys or classroom_key in used_classroom_keys:
+                    continue
+                used_teacher_keys.add(teacher_key)
+                used_classroom_keys.add(classroom_key)
                 schedule = Schedule(
                     course=constraint.course,
                     teacher=constraint.teacher,
@@ -420,7 +451,7 @@ class SchedulingAlgorithm:
                     day_of_week=slot.day_of_week,
                     semester=self.semester,
                     academic_year=self.academic_year,
-                    week_range="1-18",  # 默认18周
+                    week_range="1-18",
                     status='active'
                 )
                 schedules.append(schedule)
@@ -586,8 +617,14 @@ def create_auto_schedule(semester: str, academic_year: str, course_ids: List[int
         courses_query = courses_query.filter(id__in=course_ids)
     
     # 获取可用资源
+    cfg = getattr(settings, 'SCHEDULE_CONFIG', {})
     available_classrooms = list(Classroom.objects.filter(is_active=True))
     available_time_slots = list(TimeSlot.objects.filter(is_active=True))
+    # 以约2小时为标准的时间段集合（容忍小幅偏差）
+    two_hour_slots = [
+        ts for ts in available_time_slots
+        if getattr(ts, 'duration_minutes', 0) and cfg.get('two_hour_minutes_min', 115) <= ts.duration_minutes <= cfg.get('two_hour_minutes_max', 125)
+    ]
     
     # 为每个课程创建约束
     for course in courses_query:
@@ -598,7 +635,7 @@ def create_auto_schedule(semester: str, academic_year: str, course_ids: List[int
             
         # 根据课程类型设置偏好
         preferred_classrooms = available_classrooms
-        preferred_time_slots = available_time_slots
+        preferred_time_slots = two_hour_slots if two_hour_slots else available_time_slots
         preferred_days = list(range(1, 6))  # 周一到周五
         
         # 根据课程类型调整偏好
@@ -609,10 +646,13 @@ def create_auto_schedule(semester: str, academic_year: str, course_ids: List[int
             # 理论课偏好大教室
             preferred_classrooms = [c for c in available_classrooms if c.capacity >= 50]
         
-        # 计算每周课时数（简化计算）
-        sessions_per_week = min(course.hours // 18, 4)  # 假设18周，最多4次/周
-        if sessions_per_week == 0:
-            sessions_per_week = 1
+        # 计算每周节次数（以配置的节时长与学期周数为准）
+        term_weeks = cfg.get('TERM_WEEKS', 18)
+        session_duration_hours = cfg.get('SESSION_DURATION_HOURS', 2)
+        weekly_hours = (getattr(course, 'hours', 2) or 2) / term_weeks
+        sessions_raw = ceil(weekly_hours / session_duration_hours) if session_duration_hours > 0 else 1
+        sessions_cap = cfg.get('sessions_per_week_cap', 2)
+        sessions_per_week = max(1, min(sessions_raw, sessions_cap))
         
         constraint = ScheduleConstraint(
             course=course,
@@ -621,9 +661,9 @@ def create_auto_schedule(semester: str, academic_year: str, course_ids: List[int
             preferred_time_slots=preferred_time_slots,
             preferred_days=preferred_days,
             sessions_per_week=sessions_per_week,
-            avoid_consecutive=course.course_type == 'lecture',  # 理论课避免连续
-            avoid_noon=False,  # 默认不禁用中午时间
-            max_daily_sessions=0,  # 默认无每日限制
+            avoid_consecutive=True,  # 所有课程避免同日连续
+            avoid_noon=cfg.get('avoid_noon_default', False),        # 默认中午时间惩罚
+            max_daily_sessions=cfg.get('max_daily_sessions_per_course', 1),    # 每门课每天最多1节
             priority=3 if course.course_type == 'required' else 2  # 必修课优先级高
         )
         

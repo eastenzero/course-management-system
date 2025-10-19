@@ -8,7 +8,8 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: LoginForm, { rejectWithValue }) => {
     try {
-      const response = await authAPI.login(credentials);
+      const { username, password } = credentials;
+      const response = await authAPI.login({ username, password });
       // 后端返回格式: {code, message, data: {access, refresh, user}}
       if (response.data.code === 200) {
         const { data } = response.data;
@@ -31,7 +32,13 @@ export const login = createAsyncThunk(
         return rejectWithValue(response.data.message || '登录失败');
       }
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || '登录失败');
+      const backendMsg =
+        error?.response?.data?.message ||
+        error?.response?.data?.detail ||
+        (Array.isArray(error?.response?.data?.non_field_errors)
+          ? error.response.data.non_field_errors[0]
+          : undefined);
+      return rejectWithValue(backendMsg || '登录失败');
     }
   }
 );

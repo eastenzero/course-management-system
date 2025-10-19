@@ -1,4 +1,5 @@
 import { apiClient } from './api';
+import { normalizeSemester } from '../utils/semester';
 
 export interface StudentProfile {
   id: number;
@@ -168,7 +169,11 @@ export const studentAPI = {
     semester?: string;
     week?: string;
   }) =>
-    apiClient.get('/schedules/table/', { params }),
+    apiClient.get('/schedules/table/', {
+      params: params?.semester
+        ? { ...params, semester: normalizeSemester(params.semester) }
+        : params,
+    }),
 
   // 获取成绩列表
   getGrades: (params?: {
@@ -195,8 +200,10 @@ export const studentAPI = {
   exportSchedule: (params?: {
     semester?: string;
   }) =>
-    apiClient.get('/students/schedule/export/', { 
-      params,
-      responseType: 'blob'
+    apiClient.get('/students/schedule/export/', {
+      params: params?.semester
+        ? { ...params, semester: normalizeSemester(params.semester) }
+        : params,
+      responseType: 'blob',
     }),
 };

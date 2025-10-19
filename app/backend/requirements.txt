@@ -12,7 +12,7 @@ celery==5.3.4
 
 # CORS and Filters
 django-cors-headers==4.3.1
-django-filter==23.3
+django-filter==24.2
 
 # API Documentation
 drf-spectacular==0.26.5
@@ -28,12 +28,13 @@ coverage==7.3.2
 
 # Utilities
 python-decouple==3.8
-Pillow==10.1.0
+Pillow==11.0.0
 gunicorn==21.2.0
 channels==4.0.0
 channels-redis==4.1.0
 dj-database-url==2.1.0
 python-magic==0.4.27
+PyYAML==6.0.2
 
 # Algorithms dependencies
 numpy>=1.21.0
@@ -56,3 +57,7 @@ sqlparse==0.5.3
 tzdata==2025.2
 vine==5.1.0
 wcwidth==0.2.13
+
+# Export dependencies
+openpyxl==3.1.5
+reportlab==4.2.2

@@ -37,6 +37,13 @@ class MockClassroom:
     def __str__(self):
         return self.name
 
+    # Ensure equality by ID so lists from different sources match
+    def __eq__(self, other):
+        return isinstance(other, MockClassroom) and self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
+
 class MockTimeSlot:
     def __init__(self, id, name, order, start_time="08:00", end_time="08:45"):
         self.id = id
@@ -44,6 +51,13 @@ class MockTimeSlot:
         self.order = order
         self.start_time = start_time
         self.end_time = end_time
+
+    # Ensure equality by ID so lists from different sources match
+    def __eq__(self, other):
+        return isinstance(other, MockTimeSlot) and self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
 
 @dataclass
 class ScheduleConstraint:

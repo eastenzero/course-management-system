@@ -102,9 +102,13 @@ const preloadComponent = async (routeKey: string): Promise<void> => {
   try {
     await config.component();
     preloadedComponents.add(routeKey);
-    console.log(`✅ Preloaded component: ${routeKey}`);
+    if (import.meta.env.VITE_VERBOSE_LOGS === 'true') {
+      console.log(`✅ Preloaded component: ${routeKey}`);
+    }
   } catch (error) {
-    console.warn(`❌ Failed to preload component: ${routeKey}`, error);
+    if (import.meta.env.VITE_VERBOSE_LOGS === 'true') {
+      console.warn(`❌ Failed to preload component: ${routeKey}`, error);
+    }
   }
 };
 
