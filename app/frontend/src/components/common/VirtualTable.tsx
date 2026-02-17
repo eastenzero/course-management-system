@@ -1,6 +1,6 @@
 import React, { useMemo, CSSProperties } from 'react';
 import { Table, TableProps } from 'antd';
-import { List } from 'react-window';
+import { FixedSizeList as List } from 'react-window';
 import type { ListChildComponentProps } from 'react-window';
 
 export interface VirtualTableProps<T = any> extends TableProps<T> {
@@ -22,7 +22,7 @@ const VirtualTableRow = <T extends Record<string, any>>({
 }: ListChildComponentProps & { data: { columns: any[]; dataSource: T[] } }) => {
   const { dataSource } = data;
   const item = dataSource[index];
-  
+
   return (
     <tr style={style}>
       {data.columns.map((column, columnIndex) => {
@@ -55,7 +55,7 @@ const VirtualTable = <T extends Record<string, any>>({
   // 使用虚拟滚动渲染
   if (shouldUseVirtual) {
     const itemData = useMemo(() => ({ columns, dataSource }), [columns, dataSource]);
-    
+
     return (
       <Table
         {...props}
