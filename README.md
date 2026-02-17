@@ -4,13 +4,15 @@ A comprehensive course management system built with Django (Backend) and React (
 
 ## 📸 Screenshots (Real Running Application)
 
-> All screenshots below are captured from the **real running application** via browser automation against Docker containers. No generated or placeholder images are used.
+> All screenshots below are captured from the **real running application** via browser automation (Chromium) against Docker containers on 2026-02-17. No generated or placeholder images are used.
 
-| **Dashboard** (`/dashboard`) | **Course List** (`/courses/list`) |
+| **Login** (`/login`) | **Dashboard** (`/dashboard`) |
 |:---:|:---:|
-| ![Dashboard](screenshots/home.png) | ![Course List](screenshots/course-list.png) |
-| **Schedule View** (`/schedules/view`) | **User Management** (`/users/list`) |
-| ![Schedule View](screenshots/course-detail.png) | ![User Management](screenshots/admin.png) |
+| ![Login](screenshots/home.png) | ![Dashboard](screenshots/course-list.png) |
+| **Course List** (`/courses/list`) | **Schedule Management** (`/schedules/manage`) |
+| ![Course List](screenshots/course-detail.png) | ![Schedule Management](screenshots/admin.png) |
+| **User Management** (`/users/list`) | |
+| ![User Management](screenshots/user-management.png) | |
 
 ## 🚀 One-Click Start (Recommended)
 **Prerequisites**: [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed.
@@ -40,6 +42,13 @@ A comprehensive course management system built with Django (Backend) and React (
     ```bash
     docker compose down
     ```
+
+5.  **Prepare Demo Data** (optional, for screenshots / demos):
+    ```bash
+    docker compose exec backend python manage.py seed_full_data \
+      --num_buildings=4 --num_classrooms=20 --num_teachers=15 --num_courses=50
+    ```
+    This injects buildings, classrooms, teachers, courses, and auto-generates schedules. Command is idempotent.
 
 ## 🏗 Project Structure
 ```
