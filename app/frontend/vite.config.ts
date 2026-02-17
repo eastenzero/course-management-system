@@ -28,7 +28,7 @@ export default defineConfig({
     host: '0.0.0.0', // 允许局域网访问
     proxy: {
       '/api': {
-        target: 'http://localhost:18000',
+        target: 'http://localhost:18086',
         changeOrigin: true,
         secure: false,
       },

@@ -1,102 +1,93 @@
-# Course Management System — Project Structure & Windows Compatibility
+# Course Management System (CMS)
 
-This repository uses a flattened structure with a Linux-friendly compatibility symlink. This document explains the layout and how to run the system on Windows without relying on symlinks.
+A comprehensive course management system built with Django (Backend) and React (Frontend), featuring intelligent scheduling algorithms and a modern user interface.
 
-## Project structure
-- `app/`
-  - Main project root (backend, frontend, scripts, docs)
-  - Example paths:
-    - Backend: `app/backend/`
-    - Frontend: `app/frontend/`
-    - Algorithms data: `app/algorithms/`
-    - Data generation docs: `app/backend/data_generation/`
-- `course-management-system` (symlink)
-  - Linux/macOS convenience symlink pointing to `app/`
-  - Not required on Windows. Windows users can use `app/` directly.
-- `archive/legacy_backend_root/backend/`
-  - Archived legacy root-level backend (kept for reference only)
-- `results/`, `docs/`
-  - Auxiliary materials and scripts
+## 🏗 Project Structure
+```
+.
+├── app/
+│   ├── backend/          # Django API & Business Logic
+│   ├── frontend/         # React + Vite Frontend
+│   └── algorithms/       # Scheduling Algorithms
+├── docker-compose.yml    # Main Docker orchestration
+├── .env.example          # Environment variables template
+└── README.md             # This file
+```
 
-## What changed (compatibility improvements)
-- Scripts that previously used absolute paths now resolve paths relative to their script directory:
-  - `app/cors_data_server.py`
-  - `app/backend/import_schedule_standalone.py`
-  - `app/backend/import_schedule_results.py`
-  - `app/start_complete_system.sh`
-- These changes improve portability across Linux/macOS/Windows.
+## 🚀 One-Click Start (Recommended)
+**Prerequisites**: [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed.
 
-## Windows notes
-- The Linux symlink `course-management-system -> app` may not work on Windows in some environments (without elevated privileges or special git settings). On Windows, prefer using the real path `app/`.
-- If you strictly need the old path, you can create a directory junction (run as Administrator):
-  - Command Prompt:
-    ```bat
-    mklink /J course-management-system app
-    ```
-  - PowerShell (as Admin):
-    ```powershell
-    New-Item -ItemType Junction -Path "course-management-system" -Target "app"
+1.  **Configure Environment**:
+    ```bash
+    cp .env.example .env
+    # Edit .env if needed (defaults work for local dev)
     ```
 
-## Running on Windows (recommended)
-- Prerequisites:
-  - Node.js (LTS), npm
-  - Python 3.10+ (with `py` launcher or `python` available)
+2.  **Start Services**:
+    ```bash
+    docker-compose up -d --build
+    ```
 
-- Start data server (serves static data to avoid CORS issues):
-  ```powershell
-  # from repo root
-  Set-Location app/frontend/public
-  py -3 -m http.server 8080
-  # or: python -m http.server 8080
-  ```
+3.  **Access Application**:
+    - **Frontend**: [http://localhost:15178](http://localhost:15178)
+    - **Backend API**: [http://localhost:18086/api/](http://localhost:18086/api/)
+    - **Admin Panel**: [http://localhost:18086/admin/](http://localhost:18086/admin/)
 
-- Start frontend (new terminal):
-  ```powershell
-  # from repo root
-  Set-Location app/frontend
-  $env:VITE_USE_MOCK_API = "true"
-  $env:VITE_DATA_SERVER_URL = "http://localhost:8080"
-  npm install
-  npm run dev -- --host 0.0.0.0 --port 3001
-  ```
+## 🛠 Local Development (Manual & Experimental)
+> **WARNING**: Local setup without Docker is **FRAGILE** due to strict dependency requirements (Python 3.9, Node 18, PostgreSQL 13, Redis 6). Use Docker whenever possible.
+> **Note**: This environment configuration has been generated but **NOT locally verified** due to missing Docker on the executing machine. Manual testing is required.
 
-- Optional: use the CORS data server script (resolves paths automatically):
-  ```powershell
-  # from repo root
-  Set-Location app
-  py -3 cors_data_server.py
-  # Access http://localhost:8080/data/schedules.json
-  ```
+### Backend
+1.  Navigate to `app/backend`.
+2.  Create virtual environment and install dependencies:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    ```
+3.  Set up `.env` in `app/` (see `app/.env.example`).
+4.  Run migrations and start server:
+    ```bash
+    python manage.py migrate
+    python manage.py runserver 0.0.0.0:8000
+    ```
 
-- Optional: one-click startup (PowerShell script):
-  ```powershell
-  # from repo root
-  Set-Location app
-  .\start_complete_system.ps1
-  # This will start:
-  # - Data server on 8080 serving app/frontend/public
-  # - Frontend dev server on 3001 using mock API and data server
-  ```
+### Frontend
+1.  Navigate to `app/frontend`.
+2.  Install dependencies:
+    ```bash
+    npm install
+    # Note: package.json has been recreated; verify dependencies if issues arise.
+    ```
+3.  Start dev server:
+    ```bash
+    npm run dev
+    ```
 
-## Importing algorithm results (optional)
-- Standalone conversion (no Django): `app/backend/import_schedule_standalone.py`
-  - Reads: `app/algorithms/genetic_scheduling_result.json`
-  - Writes: `app/frontend/public/data/schedules.json`
+## 🔌 Port Mapping
+| Service  | Host Port | Internal Port | Description |
+| :--- | :--- | :--- | :--- |
+| Frontend | **15178** | 80 | Web Interface |
+| Backend | **18086** | 8000 | API Server |
+| Database | **15432** | 5432 | PostgreSQL |
+| Redis | **16379** | 6379 | Cache & Queue |
 
-- Import into Django DB (requires Django environment): `app/backend/import_schedule_results.py`
-  - Now uses relative paths; ensure your virtual environment and Django settings are active.
+## ⚙️ Environment Variables
+Check `.env.example` for the full list. Key variables include:
+- `DB_PASSWORD`: Database password.
+- `SECRET_KEY`: Django secret key.
+- `VITE_API_BASE_URL`: Frontend API target (default: `http://localhost:18086/api/v1`).
 
-## Git symlink and Windows
-- If you clone on Windows and want symlinks preserved, ensure developer mode is enabled or run git with symlink support. Otherwise, use the real `app/` folder.
-- Git setting (optional):
-  ```bat
-  git config core.symlinks true
-  ```
+## ❓ FAQ
+**Q: The frontend build fails with type errors?**
+A: The strict type checking has been relaxed in `tsconfig.json` to allow building legacy code. Ensure you are using the provided `docker-compose` setup which handles the build environment.
 
-## Troubleshooting
-- If files are not found, verify you’re using the `app/` path on Windows.
-- Ensure `app/frontend/public/data/schedules.json` exists when testing the frontend schedule pages.
+**Q: I cannot connect to the database locally.**
+A: Ensure your local `.env` matches your local Postgres setup. If using Docker, use the port `15432` to connect tools like DBeaver.
 
-## Security note
-- Avoid committing credentials (tokens, PATs) into the repository. Prefer environment variables or local credential managers.
+**Q: How do I run the scheduling algorithms?**
+A: Algorithms are integrated into the backend. Access them via the "Schedule" section in the frontend or respective API endpoints.
+
+## ⚠️ Known Limitations
+- Local environment setup (non-Docker) may be unstable due to strict dependency versions.
+- Frontend contains legacy code that may produce warnings during build; these are suppressed in the production build.
