@@ -43,7 +43,7 @@ interface ScheduleListItem {
 
 const ScheduleViewPage: React.FC = () => {
   const [schedules, setSchedules] = useState<ScheduleListItem[]>([]);
-  const [selectedSemester, setSelectedSemester] = useState('2024-1');
+  const [selectedSemester, setSelectedSemester] = useState('2025-2026-1');
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -178,10 +178,10 @@ const ScheduleViewPage: React.FC = () => {
     const base = filtered.length > 0 ? filtered : timeSlots;
     return [...base].sort(sortFn);
   }, [timeSlots, scheduleTable]);
-  
+
   // 转换为 ScheduleGrid 数据结构
   const gridTimeSlots = useMemo(() => (
-    (displayTimeSlots || []).map(ts => `${String(ts.start_time).slice(0,5)}-${String(ts.end_time).slice(0,5)}`)
+    (displayTimeSlots || []).map(ts => `${String(ts.start_time).slice(0, 5)}-${String(ts.end_time).slice(0, 5)}`)
   ), [displayTimeSlots]);
 
   const gridData: GridScheduleItem[] = useMemo(() => {
@@ -200,8 +200,8 @@ const ScheduleViewPage: React.FC = () => {
             classroom: String(cell.classroom || ''),
             time_slot: String(ts.name || ''),
             day_of_week: day,
-            start_time: String(ts.start_time || '').slice(0,5),
-            end_time: String(ts.end_time || '').slice(0,5),
+            start_time: String(ts.start_time || '').slice(0, 5),
+            end_time: String(ts.end_time || '').slice(0, 5),
             week_range: String(cell.week_range || '')
           });
         }
@@ -372,9 +372,8 @@ const ScheduleViewPage: React.FC = () => {
               dropdownMatchSelectWidth={false}
               dropdownStyle={{ zIndex: 4000 }}
             >
-              <Option value="2024-1">2024年春季学期</Option>
-              <Option value="2024-2">2024年秋季学期</Option>
-              <Option value="2025-1">2025年春季学期</Option>
+              <Option value="2024春季">2024年春季学期</Option>
+              <Option value="2025-2026-1">2025-2026学年第一学期</Option>
             </Select>
             <Select
               value={currentWeek}
@@ -395,13 +394,13 @@ const ScheduleViewPage: React.FC = () => {
               <Button onClick={() => { const n = Math.max(1, currentWeek - 1); setCurrentWeek(n); messageApi.success(`已切换到第${n}周`); }} disabled={currentWeek <= 1}>上一周</Button>
               <Button onClick={() => { const n = Math.min(20, currentWeek + 1); setCurrentWeek(n); messageApi.success(`已切换到第${n}周`); }} disabled={currentWeek >= 20}>下一周</Button>
               <Tag color="blue">第{currentWeek}周</Tag>
-              <Button 
+              <Button
                 icon={<PrinterOutlined />}
                 onClick={handlePrint}
               >
                 打印课程表
               </Button>
-              <Button 
+              <Button
                 type="primary"
                 icon={<DownloadOutlined />}
                 onClick={handleExport}
@@ -413,13 +412,13 @@ const ScheduleViewPage: React.FC = () => {
         </Row>
 
         <Tabs defaultActiveKey="grid">
-          <TabPane 
+          <TabPane
             tab={
               <span>
                 <CalendarOutlined />
                 课程表视图
               </span>
-            } 
+            }
             key="grid"
           >
             <ScheduleGrid
@@ -430,13 +429,13 @@ const ScheduleViewPage: React.FC = () => {
             />
           </TabPane>
 
-          <TabPane 
+          <TabPane
             tab={
               <span>
                 <TableOutlined />
                 列表视图
               </span>
-            } 
+            }
             key="list"
           >
             <Table

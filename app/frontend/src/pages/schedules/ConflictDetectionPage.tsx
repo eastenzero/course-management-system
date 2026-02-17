@@ -50,7 +50,7 @@ interface Conflict {
 const ConflictDetectionPage: React.FC = () => {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
-  const [selectedSemester, setSelectedSemester] = useState('2024-1');
+  const [selectedSemester, setSelectedSemester] = useState('2025-2026-1');
   const [loading, setLoading] = useState(false);
 
   // 模拟数据
@@ -66,7 +66,7 @@ const ConflictDetectionPage: React.FC = () => {
         startTime: '08:00',
         endTime: '09:40',
         weeks: '1-16',
-        semester: '2024-1',
+        semester: '2025-2026-1',
       },
       {
         id: '2',
@@ -78,7 +78,7 @@ const ConflictDetectionPage: React.FC = () => {
         startTime: '08:30', // 时间重叠
         endTime: '10:10',
         weeks: '1-16',
-        semester: '2024-1',
+        semester: '2025-2026-1',
       },
       {
         id: '3',
@@ -90,7 +90,7 @@ const ConflictDetectionPage: React.FC = () => {
         startTime: '09:00', // 时间重叠
         endTime: '10:40',
         weeks: '1-16',
-        semester: '2024-1',
+        semester: '2025-2026-1',
       },
     ];
     setSchedules(mockSchedules);
@@ -321,21 +321,20 @@ const ConflictDetectionPage: React.FC = () => {
               style={{ width: '100%' }}
               placeholder="选择学期"
             >
-              <Option value="2024-1">2024年春季学期</Option>
-              <Option value="2024-2">2024年秋季学期</Option>
-              <Option value="2025-1">2025年春季学期</Option>
+              <Option value="2024春季">2024年春季学期</Option>
+              <Option value="2025-2026-1">2025-2026学年第一学期</Option>
             </Select>
           </Col>
           <Col xs={24} sm={12} md={16} style={{ textAlign: 'right' }}>
             <Space>
-              <Button 
+              <Button
                 icon={<ReloadOutlined />}
                 onClick={handleRecheck}
                 loading={loading}
               >
                 重新检测
               </Button>
-              <Button 
+              <Button
                 icon={<SettingOutlined />}
                 type="primary"
               >
@@ -364,7 +363,7 @@ const ConflictDetectionPage: React.FC = () => {
               showIcon
               style={{ marginBottom: 16 }}
             />
-            
+
             <Table
               columns={columns}
               dataSource={conflicts}

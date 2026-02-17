@@ -48,7 +48,7 @@ const ScheduleManagePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
-  const [selectedSemester, setSelectedSemester] = useState('2024-1');
+  const [selectedSemester, setSelectedSemester] = useState('2025-2026-1');
   const [form] = Form.useForm();
   const [pagination, setPagination] = useState({
     current: 1,
@@ -82,6 +82,15 @@ const ScheduleManagePage: React.FC = () => {
           current: page,
           pageSize,
           total: response.data.count || 0,
+        });
+      } else {
+        const items = response.data?.data || response.data || [];
+        const list = Array.isArray(items) ? items : [];
+        setSchedules(list);
+        setPagination({
+          current: page,
+          pageSize,
+          total: list.length,
         });
       }
     } catch (error) {
@@ -299,7 +308,7 @@ const ScheduleManagePage: React.FC = () => {
     }
   };
 
-  
+
 
   return (
     <div className="schedule-manage-page">
@@ -317,9 +326,8 @@ const ScheduleManagePage: React.FC = () => {
               style={{ width: '100%' }}
               placeholder="选择学期"
             >
-              <Option value="2024-1">2024年春季学期</Option>
-              <Option value="2024-2">2024年秋季学期</Option>
-              <Option value="2025-1">2025年春季学期</Option>
+              <Option value="2024春季">2024年春季学期</Option>
+              <Option value="2025-2026-1">2025-2026学年第一学期</Option>
             </Select>
           </Col>
           <Col xs={24} sm={12} md={16} style={{ textAlign: 'right' }}>
@@ -471,9 +479,8 @@ const ScheduleManagePage: React.FC = () => {
                 rules={[{ required: true, message: '请选择学期' }]}
               >
                 <Select placeholder="选择学期">
-                  <Option value="2024-1">2024年春季学期</Option>
-                  <Option value="2024-2">2024年秋季学期</Option>
-                  <Option value="2025-1">2025年春季学期</Option>
+                  <Option value="2024春季">2024年春季学期</Option>
+                  <Option value="2025-2026-1">2025-2026学年第一学期</Option>
                 </Select>
               </Form.Item>
             </Col>
